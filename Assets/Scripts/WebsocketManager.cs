@@ -63,7 +63,7 @@ namespace Base {
         /// </summary>
         public event AREditorEventArgs.StringEventHandler OnLogicItemRemoved;
         /// <summary>
-        /// Invoked when logic item updated. Contains info of updated logic item.
+        /// Invoked when logic item updated. Contains info of updated logic item. 
         /// </summary>
         public event AREditorEventArgs.LogicItemChangedEventHandler OnLogicItemUpdated;
         public event AREditorEventArgs.StringEventHandler OnProjectRemoved;
@@ -243,7 +243,7 @@ namespace Base {
             if (key < 0) {
                 key = Interlocked.Increment(ref requestID);
             }
-
+            
 
             if (storeResult) {
                 responses[key] = null;
@@ -576,7 +576,7 @@ namespace Base {
 
         private void HandleStateBefore(string obj) {
             string puck_id;
-
+            
             try {
 
                 IO.Swagger.Model.ActionStateBefore actionStateBefore = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionStateBefore>(obj);
@@ -601,8 +601,8 @@ namespace Base {
                         ActionsManager.Instance.CurrentlyRunningAction.StopAction();
                     ActionsManager.Instance.CurrentlyRunningAction = null;
                 }
-
-
+                
+                
 
             } catch (NullReferenceException e) {
                 Debug.Log("Parse error in HandleCurrentAction()");
@@ -610,7 +610,7 @@ namespace Base {
             } catch (ItemNotFoundException e) {
                 Debug.LogError(e);
             }
-
+            
         }
 
         private void HandleActionStateAfter(string obj) {
@@ -624,12 +624,12 @@ namespace Base {
                 if (ActionsManager.Instance.CurrentlyRunningAction != null)
                         ActionsManager.Instance.CurrentlyRunningAction.StopAction();
                     ActionsManager.Instance.CurrentlyRunningAction = null;
-
+                
             } catch (NullReferenceException e) {
                 Debug.Log("Parse error in HandleCurrentAction()");
                 return;
             }
-
+            
         }
 
 
@@ -668,7 +668,7 @@ namespace Base {
         }
 
         /// <summary>
-        /// Decodes project exception
+        /// Decodes project exception 
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleProjectException(string data) {
@@ -758,7 +758,7 @@ namespace Base {
         }
 
         /// <summary>
-        /// Decodes changes on actions and invokes proper callback
+        /// Decodes changes on actions and invokes proper callback 
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleActionChanged(string data) {
@@ -1128,7 +1128,7 @@ namespace Base {
             IO.Swagger.Model.StopPackageRequest request = new IO.Swagger.Model.StopPackageRequest(id: r_id, request: "StopPackage");
             responsesCallback.Add(r_id, Tuple.Create("", callback));
             SendDataToServer(request.ToJson(), r_id, false);
-
+            
         }
 
         /// <summary>
@@ -1369,7 +1369,7 @@ namespace Base {
 
         /// <summary>
         /// Asks server to remove object from scene.
-        ///
+        /// 
         /// </summary>
         /// <param name="id">ID of action object</param>
         /// <param name="force">Indicates whether or not it should be forced</param>
@@ -2161,7 +2161,7 @@ namespace Base {
             IO.Swagger.Model.RemoveLogicItemRequest request = new IO.Swagger.Model.RemoveLogicItemRequest(r_id, "RemoveLogicItem", args);
             SendDataToServer(request.ToJson(), r_id, true);
             IO.Swagger.Model.RemoveLogicItemResponse response = await WaitForResult<IO.Swagger.Model.RemoveLogicItemResponse>(r_id);
-
+            
             if (response == null || !response.Result)
                 throw new RequestFailedException(response == null ? "Request timed out" : response.Messages[0]);
         }
@@ -2726,7 +2726,7 @@ namespace Base {
 
         public async Task StepAction() {
             int r_id = Interlocked.Increment(ref requestID);
-
+            
             IO.Swagger.Model.StepActionRequest request = new IO.Swagger.Model.StepActionRequest(r_id, "StepAction");
             SendDataToServer(request.ToJson(), r_id, true);
             IO.Swagger.Model.StepActionResponse response = await WaitForResult<IO.Swagger.Model.StepActionResponse>(r_id);

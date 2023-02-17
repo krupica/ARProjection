@@ -5,11 +5,11 @@ using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.UI;
 using IO.Swagger.Model;
-using UnityEngine.XR.ARFoundation;
+//using UnityEngine.XR.ARFoundation;
 using UnityEngine.Events;
 using System.Collections;
 using Newtonsoft.Json;
-using MiniJSON;
+//using MiniJSON;
 
 namespace Base {
     /// <summary>
@@ -139,7 +139,7 @@ namespace Base {
         /// <summary>
         /// Loading screen with animation
         /// </summary>
-        public LoadingScreen LoadingScreen;
+        //public LoadingScreen LoadingScreen;
         /// <summary>
         /// Canvas group of main menu button (hamburger menu in editor screen)
         /// </summary>
@@ -271,7 +271,7 @@ namespace Base {
         /// Holds info abour AR session
         /// </summary>
         [SerializeField]
-        private ARSession ARSession;
+        //private ARSession ARSession;
 
         /// <summary>
         /// Callback to be invoked when requested object is selected and potentionally validated
@@ -449,7 +449,7 @@ namespace Base {
             // request for delayed openning of main screen to allow loading of action objects and their actions
             if (openMainScreenRequest && ActionsManager.Instance.ActionsReady) {
                 openMainScreenRequest = false;
-                await OpenMainScreen(openMainScreenData.What, openMainScreenData.Highlight);
+                //await OpenMainScreen(openMainScreenData.What, openMainScreenData.Highlight);
             }
             if (openPackageRunningScreenFlag && GetGameState() != GameStateEnum.PackageRunning) {
                 openPackageRunningScreenFlag = false;
@@ -474,7 +474,7 @@ namespace Base {
 
         //TODO: use onvalidate in all scripts to check if everything sets correctly - it allows to check in editor
         private void OnValidate() {
-            Debug.Assert(LoadingScreen != null);
+            //Debug.Assert(LoadingScreen != null);
         }
 
         /// <summary>
@@ -531,162 +531,162 @@ namespace Base {
         /// <param name="message">Message displayed to the user</param>
         /// <param name="validationCallback">Action to be called when user selects object. If returns true, callback is called,
         /// otherwise waits for selection of another object</param>
-        public async Task RequestObject(EditorStateEnum requestType, Action<object> callback, string message, Func<object, Task<RequestResult>> validationCallback = null, UnityAction onCancelCallback = null) {
-            // only for "selection" requests
-            Debug.Assert(requestType != EditorStateEnum.Closed &&
-                requestType != EditorStateEnum.Normal &&
-                requestType != EditorStateEnum.InteractionDisabled);
-            SetEditorState(requestType);
+        //public async Task RequestObject(EditorStateEnum requestType, Action<object> callback, string message, Func<object, Task<RequestResult>> validationCallback = null, UnityAction onCancelCallback = null) {
+        //    // only for "selection" requests
+        //    Debug.Assert(requestType != EditorStateEnum.Closed &&
+        //        requestType != EditorStateEnum.Normal &&
+        //        requestType != EditorStateEnum.InteractionDisabled);
+        //    SetEditorState(requestType);
 
-            SelectorMenu.Instance.PointsToggle.SetInteractivity(false);
-            SelectorMenu.Instance.ActionsToggle.SetInteractivity(false);
-            SelectorMenu.Instance.IOToggle.SetInteractivity(false);
-            SelectorMenu.Instance.ObjectsToggle.SetInteractivity(false);
-            SelectorMenu.Instance.OthersToggle.SetInteractivity(false);
-            SelectorMenu.Instance.RobotsToggle.SetInteractivity(false);
+        //    SelectorMenu.Instance.PointsToggle.SetInteractivity(false);
+        //    SelectorMenu.Instance.ActionsToggle.SetInteractivity(false);
+        //    SelectorMenu.Instance.IOToggle.SetInteractivity(false);
+        //    SelectorMenu.Instance.ObjectsToggle.SetInteractivity(false);
+        //    SelectorMenu.Instance.OthersToggle.SetInteractivity(false);
+        //    SelectorMenu.Instance.RobotsToggle.SetInteractivity(false);
 
-            // "disable" non-relevant elements to simplify process for the user
-            switch (requestType) {
-                case EditorStateEnum.SelectingActionObject:
-                    SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
-                    SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
-                    SceneManager.Instance.EnableAllActionObjects(true, true);
-                    ProjectManager.Instance.EnableAllActionPoints(false);
-                    ProjectManager.Instance.EnableAllActions(false);
-                    ProjectManager.Instance.EnableAllOrientations(false);
-                    if (SceneManager.Instance.SceneStarted)
-                        await ProjectManager.Instance.EnableAllRobotsEE(false);
-                    break;
-                case EditorStateEnum.SelectingActionOutput:
-                    ProjectManager.Instance.EnableAllActionPoints(true);
-                    ProjectManager.Instance.EnableAllActions(true);
-                    SceneManager.Instance.EnableAllActionObjects(false);
-                    ProjectManager.Instance.EnableAllOrientations(false);
-                    if (SceneManager.Instance.SceneStarted)
-                        await ProjectManager.Instance.EnableAllRobotsEE(false);
-                    break;
-                case EditorStateEnum.SelectingActionInput:
-                    ProjectManager.Instance.EnableAllActionPoints(true);
-                    ProjectManager.Instance.EnableAllActions(true);
-                    SceneManager.Instance.EnableAllActionObjects(false);
-                    ProjectManager.Instance.EnableAllOrientations(false);
-                    if (SceneManager.Instance.SceneStarted)
-                        await ProjectManager.Instance.EnableAllRobotsEE(false);
-                    break;
-                case EditorStateEnum.SelectingActionPointParent:
-                    SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
-                    SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
-                    SelectorMenu.Instance.PointsToggle.SetInteractivity(true);
-                    ProjectManager.Instance.EnableAllActions(false);
-                    ProjectManager.Instance.EnableAllOrientations(false);
-                    if (SceneManager.Instance.SceneStarted)
-                        await ProjectManager.Instance.EnableAllRobotsEE(false);
-                    SceneManager.Instance.EnableAllActionObjects(true, true);
-                    ProjectManager.Instance.EnableAllActionPoints(true);
-                    break;
-                case EditorStateEnum.SelectingAPOrientation:
-                    ProjectManager.Instance.EnableAllActions(false);
-                    if (SceneManager.Instance.SceneStarted)
-                        await ProjectManager.Instance.EnableAllRobotsEE(false);
-                    SceneManager.Instance.EnableAllActionObjects(true, true);
-                    ProjectManager.Instance.EnableAllActionPoints(true);
-                    ProjectManager.Instance.EnableAllOrientations(true);
-                    break;
-                case EditorStateEnum.SelectingEndEffector:
-                    ProjectManager.Instance.EnableAllActions(false);
-                    if (SceneManager.Instance.SceneStarted)
-                        await ProjectManager.Instance.EnableAllRobotsEE(true);
-                    SceneManager.Instance.EnableAllActionObjects(false, false);
-                    SceneManager.Instance.EnableAllRobots(true);
-                    ProjectManager.Instance.EnableAllActionPoints(false);
-                    ProjectManager.Instance.EnableAllOrientations(false);
-                    break;
-            }
-            ObjectCallback = callback;
-            ObjectValidationCallback = validationCallback;
-            // display info for user and bind cancel callback,
+        //    // "disable" non-relevant elements to simplify process for the user
+        //    switch (requestType) {
+        //        case EditorStateEnum.SelectingActionObject:
+        //            SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
+        //            SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
+        //            SceneManager.Instance.EnableAllActionObjects(true, true);
+        //            ProjectManager.Instance.EnableAllActionPoints(false);
+        //            ProjectManager.Instance.EnableAllActions(false);
+        //            ProjectManager.Instance.EnableAllOrientations(false);
+        //            if (SceneManager.Instance.SceneStarted)
+        //                await ProjectManager.Instance.EnableAllRobotsEE(false);
+        //            break;
+        //        case EditorStateEnum.SelectingActionOutput:
+        //            ProjectManager.Instance.EnableAllActionPoints(true);
+        //            ProjectManager.Instance.EnableAllActions(true);
+        //            SceneManager.Instance.EnableAllActionObjects(false);
+        //            ProjectManager.Instance.EnableAllOrientations(false);
+        //            if (SceneManager.Instance.SceneStarted)
+        //                await ProjectManager.Instance.EnableAllRobotsEE(false);
+        //            break;
+        //        case EditorStateEnum.SelectingActionInput:
+        //            ProjectManager.Instance.EnableAllActionPoints(true);
+        //            ProjectManager.Instance.EnableAllActions(true);
+        //            SceneManager.Instance.EnableAllActionObjects(false);
+        //            ProjectManager.Instance.EnableAllOrientations(false);
+        //            if (SceneManager.Instance.SceneStarted)
+        //                await ProjectManager.Instance.EnableAllRobotsEE(false);
+        //            break;
+        //        case EditorStateEnum.SelectingActionPointParent:
+        //            SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
+        //            SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
+        //            SelectorMenu.Instance.PointsToggle.SetInteractivity(true);
+        //            ProjectManager.Instance.EnableAllActions(false);
+        //            ProjectManager.Instance.EnableAllOrientations(false);
+        //            if (SceneManager.Instance.SceneStarted)
+        //                await ProjectManager.Instance.EnableAllRobotsEE(false);
+        //            SceneManager.Instance.EnableAllActionObjects(true, true);
+        //            ProjectManager.Instance.EnableAllActionPoints(true);
+        //            break;
+        //        case EditorStateEnum.SelectingAPOrientation:
+        //            ProjectManager.Instance.EnableAllActions(false);
+        //            if (SceneManager.Instance.SceneStarted)
+        //                await ProjectManager.Instance.EnableAllRobotsEE(false);
+        //            SceneManager.Instance.EnableAllActionObjects(true, true);
+        //            ProjectManager.Instance.EnableAllActionPoints(true);
+        //            ProjectManager.Instance.EnableAllOrientations(true);
+        //            break;
+        //        case EditorStateEnum.SelectingEndEffector:
+        //            ProjectManager.Instance.EnableAllActions(false);
+        //            if (SceneManager.Instance.SceneStarted)
+        //                await ProjectManager.Instance.EnableAllRobotsEE(true);
+        //            SceneManager.Instance.EnableAllActionObjects(false, false);
+        //            SceneManager.Instance.EnableAllRobots(true);
+        //            ProjectManager.Instance.EnableAllActionPoints(false);
+        //            ProjectManager.Instance.EnableAllOrientations(false);
+        //            break;
+        //    }
+        //    ObjectCallback = callback;
+        //    ObjectValidationCallback = validationCallback;
+        //    // display info for user and bind cancel callback,
 
 
-            if (onCancelCallback == null) {
-                SelectObjectInfo.Show(message, () => CancelSelection());
-            } else {
+        //    if (onCancelCallback == null) {
+        //        SelectObjectInfo.Show(message, () => CancelSelection());
+        //    } else {
 
-                SelectObjectInfo.Show(message,
-                    () => {
-                        onCancelCallback();
-                        CancelSelection();
-                    });
-            }
-        }
+        //        SelectObjectInfo.Show(message,
+        //            () => {
+        //                onCancelCallback();
+        //                CancelSelection();
+        //            });
+        //    }
+        //}
 
         /// <summary>
         /// Method called to cancel selection process. Calls selection callback with null to inform
         /// that nothing was selected
         /// </summary>
-        public void CancelSelection() {
-            if (ObjectCallback != null) {
-                // invoke selection callbeck with null to inform "caller" that nothing was selected
-                ObjectCallback.Invoke(null);
-                ObjectCallback = null;
-            }
-            SelectorMenu.Instance.PointsToggle.SetInteractivity(true);
-            SelectorMenu.Instance.ActionsToggle.SetInteractivity(true);
-            SelectorMenu.Instance.IOToggle.SetInteractivity(true);
-            SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
-            SelectorMenu.Instance.OthersToggle.SetInteractivity(true);
-            SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
-            SetEditorState(EditorStateEnum.Normal);
-            SelectObjectInfo.gameObject.SetActive(false);
-            RestoreFilters();
-        }
+        //public void CancelSelection() {
+        //    if (ObjectCallback != null) {
+        //        // invoke selection callbeck with null to inform "caller" that nothing was selected
+        //        ObjectCallback.Invoke(null);
+        //        ObjectCallback = null;
+        //    }
+        //    SelectorMenu.Instance.PointsToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.ActionsToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.IOToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.OthersToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
+        //    SetEditorState(EditorStateEnum.Normal);
+        //    SelectObjectInfo.gameObject.SetActive(false);
+        //    RestoreFilters();
+        //}
 
         /// <summary>
         /// Enables / disables interactive objects which are not part of scene or project
         /// </summary>
         /// <param name="enable"></param>
-        public void EnableServiceInteractiveObjects(bool enable) {
-#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
-            VRModeManager.Instance.ARCameraVis.GetComponent<InteractiveObject>().Enable(enable);
-#endif
-        }
+//        public void EnableServiceInteractiveObjects(bool enable) {
+//#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
+//            VRModeManager.Instance.ARCameraVis.GetComponent<InteractiveObject>().Enable(enable);
+//#endif
+//        }
 
         /// <summary>
         /// The object which was selected calls this method to inform game manager about it.
         /// Validation and potentionally selection callbacks are called and editor is set to normal state.
         /// </summary>
         /// <param name="selectedObject"></param>
-        public async void ObjectSelected(object selectedObject) {
-            // if validation callbeck is specified, check if this object is valid
-            if (ObjectValidationCallback != null) {
-                RequestResult result = await ObjectValidationCallback.Invoke(selectedObject);
-                if (!result.Success) {
-                    Notifications.Instance.ShowNotification(result.Message, "");
-                    return;
-                }
+        //public async void ObjectSelected(object selectedObject) {
+        //    // if validation callbeck is specified, check if this object is valid
+        //    if (ObjectValidationCallback != null) {
+        //        RequestResult result = await ObjectValidationCallback.Invoke(selectedObject);
+        //        if (!result.Success) {
+        //            Notifications.Instance.ShowNotification(result.Message, "");
+        //            return;
+        //        }
                 
-            }
-            SelectorMenu.Instance.PointsToggle.SetInteractivity(true);
-            SelectorMenu.Instance.ActionsToggle.SetInteractivity(true);
-            SelectorMenu.Instance.IOToggle.SetInteractivity(true);
-            SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
-            SelectorMenu.Instance.OthersToggle.SetInteractivity(true);
-            SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
-            SetEditorState(EditorStateEnum.Normal);
-            // hide selection info 
-            SelectObjectInfo.gameObject.SetActive(false);
-            RestoreFilters();
-            // invoke selection callback
-            if (ObjectCallback != null)
-                ObjectCallback.Invoke(selectedObject);
-            ObjectCallback = null;
-        }
+        //    }
+        //    SelectorMenu.Instance.PointsToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.ActionsToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.IOToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.OthersToggle.SetInteractivity(true);
+        //    SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
+        //    SetEditorState(EditorStateEnum.Normal);
+        //    // hide selection info 
+        //    SelectObjectInfo.gameObject.SetActive(false);
+        //    RestoreFilters();
+        //    // invoke selection callback
+        //    if (ObjectCallback != null)
+        //        ObjectCallback.Invoke(selectedObject);
+        //    ObjectCallback = null;
+        //}
 
         /// <summary>
         /// Enables all visual elements (objects, actions etc.)
         /// </summary>
-        private void RestoreFilters() {
-            SelectorMenu.Instance.UpdateFilters();
-        }
+        //private void RestoreFilters() {
+        //    SelectorMenu.Instance.UpdateFilters();
+        //}
 
         /// <summary>
         /// Sets framerate to default value (30fps)
@@ -722,7 +722,7 @@ namespace Base {
 #endif
             Scene.SetActive(false);
             if (Application.isEditor || Debug.isDebugBuild) {
-                TrilleonAutomation.AutomationMaster.Initialize();
+                //TrilleonAutomation.AutomationMaster.Initialize();
             }
             ActionsManager.Instance.OnActionsLoaded += OnActionsLoaded;
             WebsocketManager.Instance.OnConnectedEvent += OnConnected;
@@ -818,7 +818,9 @@ namespace Base {
         /// <param name="args"></param>
         private async void OnShowMainScreen(object sender, ShowMainScreenEventArgs args) {
             if (ActionsManager.Instance.ActionsReady)
-                await OpenMainScreen(args.Data.What, args.Data.Highlight);
+            {
+                //await OpenMainScreen(args.Data.What, args.Data.Highlight);
+            }
             else {
                 openMainScreenRequest = true;
                 openMainScreenData = args.Data;
@@ -872,7 +874,7 @@ namespace Base {
                     ServerVersion.text = "Editor version: " + Application.version +
                         "\nServer version: " + systemInfo.Version;
                     ConnectionInfo.text = WebsocketManager.Instance.APIDomainWS;
-                    MainMenu.Instance.gameObject.SetActive(false);
+                    //MainMenu.Instance.gameObject.SetActive(false);
 
 
                     OnConnectedToServer?.Invoke(this, new StringEventArgs(WebsocketManager.Instance.APIDomainWS));
@@ -908,26 +910,26 @@ namespace Base {
         /// Shows loading screen
         /// </summary>
         /// <param name="text">Optional text for user</param>
-        /// <param name="forceToHide">Sets if HideLoadingScreen needs to be run with force flag to
+        /// <param name="forceToHide">Sets if //HideLoadingScreen needs to be run with force flag to
         /// hide loading screen. Used to avoid flickering when several actions with own loading
         /// screen management are chained.</param>
-        public void ShowLoadingScreen(string text = "Loading...", bool forceToHide = false) {
-            Debug.Assert(LoadingScreen != null);
-            // HACK to make loading screen in foreground
-            // TODO - find better way
-            headUpCanvas.enabled = false;
-            headUpCanvas.enabled = true;
-            LoadingScreen.Show(text, forceToHide);
-        }
+        //public void //ShowLoadingScreen(string text = "Loading...", bool forceToHide = false) {
+        //    Debug.Assert(LoadingScreen != null);
+        //    // HACK to make loading screen in foreground
+        //    // TODO - find better way
+        //    headUpCanvas.enabled = false;
+        //    headUpCanvas.enabled = true;
+        //    LoadingScreen.Show(text, forceToHide);
+        //}
 
         /// <summary>
         /// Hides loading screen
         /// </summary>
-        /// <param name="force">Specify if hiding has to be forced. More details in ShowLoadingScreen</param>
-        public void HideLoadingScreen(bool force = false) {
-            Debug.Assert(LoadingScreen != null);
-            LoadingScreen.Hide(force);
-        }
+        /// <param name="force">Specify if hiding has to be forced. More details in //ShowLoadingScreen</param>
+        //public void //HideLoadingScreen(bool force = false) {
+        //    Debug.Assert(LoadingScreen != null);
+        //    LoadingScreen.Hide(force);
+        //}
 
         /// <summary>
         /// Connects to server
@@ -935,7 +937,7 @@ namespace Base {
         /// <param name="domain">hostname or IP address</param>
         /// <param name="port">Port of ARServer</param>
         public async void ConnectToSever(string domain, int port) {
-            ShowLoadingScreen("Connecting to server");
+            //ShowLoadingScreen("Connecting to server");
             OnConnectingToServer?.Invoke(this, new StringEventArgs(WebsocketManager.Instance.GetWSURI(domain, port)));
             WebsocketManager.Instance.ConnectToServer(domain, port);
         }
@@ -954,7 +956,7 @@ namespace Base {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnActionsLoaded(object sender, EventArgs e) {
-            MainMenu.Instance.gameObject.SetActive(true);
+            //MainMenu.Instance.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -1067,12 +1069,12 @@ namespace Base {
                     OpenSceneEditor();                    
                 } else {
                     Notifications.Instance.SaveLogs(scene, null, "Failed to initialize scene");
-                    HideLoadingScreen();
+                    //HideLoadingScreen();
                 }
             } catch (TimeoutException ex) {
                 Debug.LogError(ex);
                 Notifications.Instance.SaveLogs(scene, null, "Failed to initialize scene");
-                HideLoadingScreen();
+                //HideLoadingScreen();
             } 
             
 
@@ -1100,19 +1102,19 @@ namespace Base {
                 if (!await SceneManager.Instance.CreateScene(scene, true)) {
                     Notifications.Instance.SaveLogs(scene, project, "Failed to initialize scene");
                     Debug.LogError("wft");
-                    HideLoadingScreen();
+                    //HideLoadingScreen();
                     return;
                 }
                 if (await ProjectManager.Instance.CreateProject(project, true)) {
                     OpenProjectEditor();
                 } else {
                     Notifications.Instance.SaveLogs(scene, project, "Failed to initialize project");
-                    HideLoadingScreen();
+                    //HideLoadingScreen();
                 }
             } catch (TimeoutException ex) {
                 Debug.LogError(ex);
                 Notifications.Instance.SaveLogs(scene, project, "Failed to initialize project");
-                HideLoadingScreen();
+                //HideLoadingScreen();
             }
         }
 
@@ -1194,11 +1196,11 @@ namespace Base {
                     }
                 } else if (state.State == PackageStateData.StateEnum.Paused) {
                     OnPausePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-                    HideLoadingScreen();
+                    //HideLoadingScreen();
                     updatingPackageState = false;
                 } else if (state.State == PackageStateData.StateEnum.Running) {
                     OnResumePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-                    HideLoadingScreen();
+                    //HideLoadingScreen();
                     updatingPackageState = false;
                 }
 
@@ -1209,7 +1211,7 @@ namespace Base {
             } else if (state.State == PackageStateData.StateEnum.Stopped) {
                 SetGameState(GameStateEnum.ClosingPackage);
                 PackageInfo = null;
-                ShowLoadingScreen("Stopping package...");
+                //ShowLoadingScreen("Stopping package...");
                 ProjectManager.Instance.DestroyProject();
                 SceneManager.Instance.DestroyScene();
                 updatingPackageState = false;
@@ -1227,7 +1229,7 @@ namespace Base {
         /// </summary>
         internal void SceneClosed() {
             SetGameState(GameStateEnum.ClosingScene);
-            ShowLoadingScreen();
+            //ShowLoadingScreen();
             SceneManager.Instance.DestroyScene();
             OnCloseScene?.Invoke(this, EventArgs.Empty);
             SetGameState(GameStateEnum.None);
@@ -1238,7 +1240,7 @@ namespace Base {
         /// </summary>
         internal void ProjectClosed() {
             SetGameState(GameStateEnum.ClosingProject);
-            ShowLoadingScreen();
+            //ShowLoadingScreen();
             ProjectManager.Instance.DestroyProject();
             SceneManager.Instance.DestroyScene();
             OnCloseProject?.Invoke(this, EventArgs.Empty);
@@ -1301,9 +1303,9 @@ namespace Base {
         /// </summary>
         /// <returns></returns>
         public async Task<IO.Swagger.Model.SaveSceneResponse> SaveScene() {
-            ShowLoadingScreen("Saving scene...");
+            //ShowLoadingScreen("Saving scene...");
             IO.Swagger.Model.SaveSceneResponse response = await WebsocketManager.Instance.SaveScene();
-            HideLoadingScreen();
+            //HideLoadingScreen();
             return response;
         }
 
@@ -1312,7 +1314,7 @@ namespace Base {
         /// </summary>
         /// <returns></returns>
         public void SaveProject() {
-            ShowLoadingScreen("Saving project...");
+            //ShowLoadingScreen("Saving project...");
             WebsocketManager.Instance.SaveProject(false, SaveProjectCallback);
         }
 
@@ -1323,7 +1325,7 @@ namespace Base {
         /// <param name="response"></param>
         public void SaveProjectCallback(string _, string response) {
             SaveProjectResponse saveProjectResponse = JsonConvert.DeserializeObject<SaveProjectResponse>(response);
-            HideLoadingScreen();
+            //HideLoadingScreen();
             if (saveProjectResponse.Result) {
                 OnSaveProject?.Invoke(this, EventArgs.Empty);
             } else {
@@ -1338,16 +1340,16 @@ namespace Base {
         /// </summary>
         /// <param name="id">Project id</param>
         public async void OpenProject(string id) {
-            ShowLoadingScreen();
+            //ShowLoadingScreen();
             try {
                 await WebsocketManager.Instance.OpenProject(id);
                 await Task.Run(() => WaitForProjectReady(5000));
             } catch (RequestFailedException ex) {
                 Notifications.Instance.ShowNotification("Failed to open project", ex.Message);
-                HideLoadingScreen();
+                //HideLoadingScreen();
             } catch (TimeoutException e) {
                 Notifications.Instance.ShowNotification("Open project failed", "Failed to load project");
-                HideLoadingScreen();
+                //HideLoadingScreen();
             } 
         }
 
@@ -1356,12 +1358,12 @@ namespace Base {
         /// </summary>
         /// <param name="id">Scene id</param>
         public async Task OpenScene(string id) {
-            ShowLoadingScreen();
+            //ShowLoadingScreen();
             try {
                 await WebsocketManager.Instance.OpenScene(id);
             } catch (RequestFailedException e) {
                 Notifications.Instance.ShowNotification("Open scene failed", e.Message);
-                HideLoadingScreen();
+                //HideLoadingScreen();
                 return;
             }    
             try {
@@ -1369,7 +1371,7 @@ namespace Base {
                 return;
             } catch (TimeoutException e) {
                 Notifications.Instance.ShowNotification("Open scene failed", "Failed to open selected scene");
-                HideLoadingScreen();
+                //HideLoadingScreen();
             }
            
         }
@@ -1379,13 +1381,13 @@ namespace Base {
         /// </summary>
         /// <param name="id">Project id</param>
         public async Task<bool> RunPackage(string packageId) {
-            ShowLoadingScreen();
+            //ShowLoadingScreen();
             try {
                 await WebsocketManager.Instance.RunPackage(packageId);
                 return true;
             } catch (RequestFailedException ex) {
                 Notifications.Instance.ShowNotification("Failed to run project", ex.Message);
-                HideLoadingScreen();
+                //HideLoadingScreen();
                 return false;
             } 
         }
@@ -1396,11 +1398,11 @@ namespace Base {
         /// <param name="name">Name of the new package</param>
         /// <returns></returns>
         public async Task<string> BuildPackage(string name) {
-            ShowLoadingScreen();
+            //ShowLoadingScreen();
             Debug.Assert(Base.ProjectManager.Instance.ProjectMeta != null);
             if (ProjectManager.Instance.ProjectChanged) {
                 Notifications.Instance.ShowNotification("Unsaved changes", "There are some unsaved changes in project. Save it before build the package.");
-                HideLoadingScreen();
+                //HideLoadingScreen();
                 throw new RequestFailedException("Unsaved changes");
             }
             try {
@@ -1409,7 +1411,7 @@ namespace Base {
                 Notifications.Instance.ShowNotification("Failed to build package", ex.Message);
                 throw;
             } finally {
-                HideLoadingScreen();
+                //HideLoadingScreen();
             }
         }
 
@@ -1419,13 +1421,13 @@ namespace Base {
         /// Asks server to pause running package
         /// </summary>
         public async Task<bool> PausePackage() {
-            ShowLoadingScreen();
+            //ShowLoadingScreen();
             try {
                 await WebsocketManager.Instance.PausePackage();
                 return true;
             } catch (RequestFailedException ex) {
                 Notifications.Instance.ShowNotification("Failed to pause project", ex.Message);
-                HideLoadingScreen();
+                //HideLoadingScreen();
                 return false;
             }
         }
@@ -1435,13 +1437,13 @@ namespace Base {
         /// Asks server to resume paused package
         /// </summary>
         public async Task<bool> ResumePackage() {
-            ShowLoadingScreen();
+            //ShowLoadingScreen();
             try {
                 await WebsocketManager.Instance.ResumePackage();
                 return true;
             } catch (RequestFailedException ex) {
                 Notifications.Instance.ShowNotification("Failed to resume project", ex.Message);
-                HideLoadingScreen();
+                //HideLoadingScreen();
                 return false;
             }
         }
@@ -1452,7 +1454,7 @@ namespace Base {
         /// <param name="objectType">Description of object type</param>
         /// <returns></returns>
         public async Task<bool> CreateNewObjectType(IO.Swagger.Model.ObjectTypeMeta objectType) {
-            ShowLoadingScreen();
+            //ShowLoadingScreen();
             try {
                 await WebsocketManager.Instance.CreateNewObjectType(objectType, false);
                 return true;
@@ -1460,7 +1462,7 @@ namespace Base {
                 Notifications.Instance.ShowNotification("Failed to create new object type", ex.Message);
                 return false;
             } finally {
-                HideLoadingScreen();
+                //HideLoadingScreen();
             }
         }
 
@@ -1487,7 +1489,7 @@ namespace Base {
         /// and thus define logical flow of the progeam
         /// <returns></returns>
         public async Task NewProject(string name, string sceneId, bool hasLogic) {
-            ShowLoadingScreen("Creating new project...");
+            //ShowLoadingScreen("Creating new project...");
             Debug.Assert(sceneId != null && sceneId != "");
             Debug.Assert(name != null && name != "");
             
@@ -1495,7 +1497,7 @@ namespace Base {
                 await WebsocketManager.Instance.CreateProject(name, sceneId, "", hasLogic, false);
             } catch (RequestFailedException e) {
                 Notifications.Instance.ShowNotification("Failed to create project", e.Message);
-                HideLoadingScreen();
+                //HideLoadingScreen();
             } finally {
             }        
         }
@@ -1506,18 +1508,18 @@ namespace Base {
         /// <param name="name">Name of the scene</param>
         /// <returns>True if scene was successfully created, false otherwise</returns>
         public async Task<bool> NewScene(string name) {
-            ShowLoadingScreen("Creating new scene...");
+            //ShowLoadingScreen("Creating new scene...");
 
             if (name == "") {
                 Notifications.Instance.ShowNotification("Failed to create new scene", "Scene name not defined");
-                HideLoadingScreen();
+                //HideLoadingScreen();
                 return false;
             }
             try {
                 await WebsocketManager.Instance.CreateScene(name, "");
             } catch (RequestFailedException e) {
                 Notifications.Instance.ShowNotification("Failed to create new scene", e.Message);
-                HideLoadingScreen();
+                //HideLoadingScreen();
             }
             return true;
         }
@@ -1529,14 +1531,16 @@ namespace Base {
         /// <returns>True if request was successfull. If not, message describing error is attached</returns>
         public async Task<RequestResult> CloseScene(bool force, bool dryRun = false) {
             if (!dryRun)
-                ShowLoadingScreen();
+            {
+                //ShowLoadingScreen();
+            }
             try {
                 await WebsocketManager.Instance.CloseScene(force, dryRun);
                 return (true, "");
             } catch (RequestFailedException ex) {
                 if (!dryRun && force) {
                     Notifications.Instance.ShowNotification("Failed to close scene", ex.Message);
-                    HideLoadingScreen();                   
+                    //HideLoadingScreen();                   
                 }
                 return (false, ex.Message);
             }          
@@ -1551,14 +1555,16 @@ namespace Base {
         /// <returns></returns>
         public async Task<RequestResult> CloseProject(bool force, bool dryRun = false) {
             if (!dryRun)
-                ShowLoadingScreen("Closing project");
+            {
+                //ShowLoadingScreen("Closing project");
+            }
             try {
                 await WebsocketManager.Instance.CloseProject(force, dryRun: dryRun);
                 return (true, "");
             } catch (RequestFailedException ex) {
                 if (!dryRun && force) {
                     Notifications.Instance.ShowNotification("Failed to close project", ex.Message);
-                    HideLoadingScreen();
+                    //HideLoadingScreen();
                 }                
                 return (false, ex.Message);
             }           
@@ -1673,33 +1679,33 @@ namespace Base {
         /// <param name="what">Defines what list should be displayed (scenes/projects/packages)</param>
         /// <param name="highlight">ID of element to highlight (e.g. when scene is closed, it is highlighted for a few seconds</param>
         /// <returns></returns>
-        public async Task OpenMainScreen(ShowMainScreenData.WhatEnum what, string highlight) {
+//        public async Task OpenMainScreen(ShowMainScreenData.WhatEnum what, string highlight) {
 
-#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
-            ARSession.enabled = false;
-#endif
-            Scene.SetActive(false);
-            MainMenu.Instance.Close();
-            switch (what) {
-                case ShowMainScreenData.WhatEnum.PackagesList:
-                    MainScreen.Instance.SwitchToPackages();
+//#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
+//            ARSession.enabled = false;
+//#endif
+//            Scene.SetActive(false);
+//            MainMenu.Instance.Close();
+//            switch (what) {
+//                case ShowMainScreenData.WhatEnum.PackagesList:
+//                    MainScreen.Instance.SwitchToPackages();
                     
-                    break;
-                case ShowMainScreenData.WhatEnum.ScenesList:
-                    MainScreen.Instance.SwitchToScenes();
-                    break;
-                case ShowMainScreenData.WhatEnum.ProjectsList:
-                    MainScreen.Instance.SwitchToProjects();
-                    break;
-            }
-            if (!string.IsNullOrEmpty(highlight)) {
-                MainScreen.Instance.HighlightTile(highlight);
-            }
-            SetGameState(GameStateEnum.MainScreen);
-            OnOpenMainScreen?.Invoke(this, EventArgs.Empty);
-            SetEditorState(EditorStateEnum.Closed);
-            HideLoadingScreen();
-        }
+//                    break;
+//                case ShowMainScreenData.WhatEnum.ScenesList:
+//                    MainScreen.Instance.SwitchToScenes();
+//                    break;
+//                case ShowMainScreenData.WhatEnum.ProjectsList:
+//                    MainScreen.Instance.SwitchToProjects();
+//                    break;
+//            }
+//            if (!string.IsNullOrEmpty(highlight)) {
+//                MainScreen.Instance.HighlightTile(highlight);
+//            }
+//            SetGameState(GameStateEnum.MainScreen);
+//            OnOpenMainScreen?.Invoke(this, EventArgs.Empty);
+//            SetEditorState(EditorStateEnum.Closed);
+//            //HideLoadingScreen();
+//        }
 
         /// <summary>
         /// Opens scene editor
@@ -1714,11 +1720,11 @@ namespace Base {
             Scene.SetActive(true);
 #endif
             AREditorResources.Instance.LeftMenuScene.DeactivateAllSubmenus();
-            MainMenu.Instance.Close();
+            //MainMenu.Instance.Close();
             SetGameState(GameStateEnum.SceneEditor);
             OnOpenSceneEditor?.Invoke(this, EventArgs.Empty);
             SetEditorState(EditorStateEnum.Normal);
-            HideLoadingScreen(true);
+            //HideLoadingScreen(true);
         }
 
         /// <summary>
@@ -1734,11 +1740,11 @@ namespace Base {
             Scene.SetActive(true);
 #endif
             AREditorResources.Instance.LeftMenuProject.DeactivateAllSubmenus();
-            MainMenu.Instance.Close();
+            //MainMenu.Instance.Close();
             SetGameState(GameStateEnum.ProjectEditor);
             OnOpenProjectEditor?.Invoke(this, EventArgs.Empty);
             SetEditorState(EditorStateEnum.Normal);
-            HideLoadingScreen(true);
+            //HideLoadingScreen(true);
         }
 
         /// <summary>
@@ -1747,7 +1753,7 @@ namespace Base {
         public async void OpenPackageRunningScreen() {
             openPackageRunningScreenFlag = false;
             try {
-                MainMenu.Instance.Close();
+                //MainMenu.Instance.Close();
                 SetGameState(GameStateEnum.PackageRunning);
                 SetEditorState(EditorStateEnum.InteractionDisabled);
                 EditorHelper.EnableCanvasGroup(MainMenuBtnCG, true);
@@ -1767,7 +1773,7 @@ namespace Base {
                 Debug.LogError(ex);
                 Notifications.Instance.ShowNotification("Failed to open package run screen", "Package info did not arrived");
             } finally {
-                HideLoadingScreen(true);
+                //HideLoadingScreen(true);
             }
         }
 
@@ -1792,10 +1798,10 @@ namespace Base {
 #if (UNITY_ANDROID || UNITY_IOS) && AR_ON
             ARSession.enabled = false;
 #endif
-            MainMenu.Instance.Close();
+            //MainMenu.Instance.Close();
             Scene.SetActive(false);
             SetGameState(GameStateEnum.Disconnected);
-            HideLoadingScreen(true);
+            //HideLoadingScreen(true);
         }
 
         /// <summary>
