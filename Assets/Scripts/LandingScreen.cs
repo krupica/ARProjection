@@ -26,9 +26,9 @@ public class LandingScreen : Base.Singleton<LandingScreen>
         Base.GameManager.Instance.OnDisconnectedFromServer += DisconnectedFromServer;
         Domain.text = PlayerPrefs.GetString("arserver_domain", "");
         Port.text = PlayerPrefs.GetInt("arserver_port", 6789).ToString();
-        Username.text = PlayerPrefs.GetString("arserver_username", "user1");
-        KeepConnected.isOn = keepConnected;
-        Version.text = Application.version;
+        //Username.text = PlayerPrefs.GetString("arserver_username", "user1");
+        //KeepConnected.isOn = false;
+        //Version.text = Application.version;
         ConnectToServerBtn.onClick.AddListener(() => ConnectToServer(true));
 #if UNITY_STANDALONE //automatic connection for android and ios is handled by OnApplicationPause method in GameManager
         if (keepConnected) {
@@ -47,8 +47,8 @@ public class LandingScreen : Base.Singleton<LandingScreen>
         int port = int.Parse(Port.text);
         PlayerPrefs.SetString("arserver_domain", domain);
         PlayerPrefs.SetInt("arserver_port", port);
-        PlayerPrefs.SetString("arserver_username", GetUsername());
-        PlayerPrefs.SetInt("arserver_keep_connected", KeepConnected.isOn ? 1 : 0);
+        PlayerPrefs.SetString("arserver_username", "test");
+        PlayerPrefs.SetInt("arserver_keep_connected", 0);
         PlayerPrefs.Save();
         Base.GameManager.Instance.ConnectToSever(domain, port);
     }
