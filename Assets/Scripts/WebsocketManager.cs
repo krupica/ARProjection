@@ -173,7 +173,7 @@ namespace Base {
                 Debug.LogError(ex);
                 Notifications.Instance.ShowNotification("Failed to parse domain", ex.Message);
                 GameManager.Instance.ConnectionStatus = GameManager.ConnectionStatusEnum.Disconnected;
-                GameManager.Instance.HideLoadingScreen(true);
+                //GameManager.Instance.HideLoadingScreen(true);
             }
         }
 
@@ -198,7 +198,7 @@ namespace Base {
             GameManager.Instance.ConnectionStatus = GameManager.ConnectionStatusEnum.Disconnected;
             websocket = null;
             serverDomain = null;
-            GameManager.Instance.HideLoadingScreen();
+            //GameManager.Instance.HideLoadingScreen();
         }
 
         /// <summary>

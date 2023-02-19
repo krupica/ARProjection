@@ -13,8 +13,8 @@ public class EditorScreen : MonoBehaviour {
        
     private CanvasGroup CanvasGroup;
 
-    [SerializeField]
-    private ButtonWithTooltip StartStopSceneBtn;
+    //[SerializeField]
+    //private ButtonWithTooltip StartStopSceneBtn;
     [SerializeField]
     private Image StartStopSceneIcon;
 
@@ -43,10 +43,10 @@ public class EditorScreen : MonoBehaviour {
     private void OnSceneStateEvent(object sender, SceneStateEventArgs args) {
         if (args.Event.State == IO.Swagger.Model.SceneStateData.StateEnum.Started) {
             StartStopSceneIcon.sprite = AREditorResources.Instance.SceneOnline;
-            StartStopSceneBtn.SetDescription("Go offline");
+            //StartStopSceneBtn.SetDescription("Go offline");
         } else {
             StartStopSceneIcon.sprite = AREditorResources.Instance.SceneOffline;
-            StartStopSceneBtn.SetDescription("Go online");
+            //StartStopSceneBtn.SetDescription("Go online");
         }
     }
 

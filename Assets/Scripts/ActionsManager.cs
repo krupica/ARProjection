@@ -6,7 +6,7 @@ using IO.Swagger.Model;
 using System.Threading.Tasks;
 using System.Collections;
 using Newtonsoft.Json;
-using UnityEngine.XR.ARSubsystems;
+//using UnityEngine.XR.ARSubsystems;
 
 namespace Base {
 

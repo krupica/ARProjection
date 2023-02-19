@@ -8,8 +8,8 @@ public abstract class StartEndAction : Base.Action {
     public GameObject VisualRoot;
 
     protected string playerPrefsKey;
-    [SerializeField]
-    protected OutlineOnClick outlineOnClick;
+    //[SerializeField]
+    //protected OutlineOnClick outlineOnClick;
     public GameObject ModelPrefab;
 
 
@@ -42,15 +42,15 @@ public abstract class StartEndAction : Base.Action {
             GameManager.Instance.GetGameState() != GameManager.GameStateEnum.PackageRunning) {
             return;
         }
-        outlineOnClick.Highlight();
+        //outlineOnClick.Highlight();
         NameText.gameObject.SetActive(true);
-        if (SelectorMenu.Instance.ManuallySelected) {
+        //if (SelectorMenu.Instance.ManuallySelected) {
             DisplayOffscreenIndicator(true);
-        }
+        //}
     }
 
     public override void OnHoverEnd() {
-        outlineOnClick.UnHighlight();
+        //outlineOnClick.UnHighlight();
         NameText.gameObject.SetActive(false);
         DisplayOffscreenIndicator(false);
     }

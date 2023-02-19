@@ -19,10 +19,10 @@ public abstract class InteractiveObject : Clickable {
 
     public bool Blocklisted => blocklisted;
 
-    public SelectorItem SelectorItem;
+    //public SelectorItem SelectorItem;
     public List<Collider> Colliders = new List<Collider>();
 
-    protected Target offscreenIndicator;
+    //protected Target offscreenIndicator;
 
     /// <summary>
     /// Indicates that object is on blacklist and should not be listed in aim menu and object visibility should be 0
@@ -31,24 +31,24 @@ public abstract class InteractiveObject : Clickable {
 
     protected virtual void Start() {
         LockingEventsCache.Instance.OnObjectLockingEvent += OnObjectLockingEvent;
-        if (!offscreenIndicator) {
-            offscreenIndicator = gameObject.GetComponent<Target>();
-            DisplayOffscreenIndicator(false);
-        }
+        //if (!offscreenIndicator) {
+        //    offscreenIndicator = gameObject.GetComponent<Target>();
+        //    DisplayOffscreenIndicator(false);
+        //}
     }
 
     public virtual void DisplayOffscreenIndicator(bool active) {
-        if (!offscreenIndicator) {
-            offscreenIndicator = gameObject.GetComponent<Target>();
-        }
+        //if (!offscreenIndicator) {
+        //    offscreenIndicator = gameObject.GetComponent<Target>();
+        //}
 
-        offscreenIndicator.enabled = active;
+        //offscreenIndicator.enabled = active;
     }
 
     // ONDESTROY CANNOT BE USED BECAUSE OF ITS DELAYED CALL - it causes mess when directly creating project from scene
     public virtual void DestroyObject() {
-        if (SelectorItem != null)
-            SelectorMenu.Instance.DestroySelectorItem(SelectorItem);
+        //if (SelectorItem != null)
+            //SelectorMenu.Instance.DestroySelectorItem(SelectorItem);
         LockingEventsCache.Instance.OnObjectLockingEvent -= OnObjectLockingEvent;
     }
 
@@ -98,14 +98,14 @@ public abstract class InteractiveObject : Clickable {
             return;
         if (putOnBlocklist) {
             blocklisted = true;
-            SelectorMenu.Instance.PutOnBlocklist(SelectorItem);
-            PlayerPrefsHelper.SaveBool($"ActionObject/{GetId()}/blocklisted", true);
+            //SelectorMenu.Instance.PutOnBlocklist(SelectorItem);
+            //PlayerPrefsHelper.SaveBool($"ActionObject/{GetId()}/blocklisted", true);
         }
         if (removeFromBlocklist) {
             blocklisted = false;
-            SelectorMenu.Instance.RemoveFromBlacklist(SelectorItem);
+            //SelectorMenu.Instance.RemoveFromBlacklist(SelectorItem);
 
-            PlayerPrefsHelper.SaveBool($"ActionObject/{GetId()}/blocklisted", false);
+           // PlayerPrefsHelper.SaveBool($"ActionObject/{GetId()}/blocklisted", false);
         }
         Enabled = enable;
         UpdateColor();
@@ -113,11 +113,11 @@ public abstract class InteractiveObject : Clickable {
         foreach (Collider collider in Colliders) {
             collider.enabled = enable;
         }
-        if (SelectorItem != null)
-            SelectorItem.gameObject.SetActive(enable || blocklisted);
-        if (!enable && SelectorMenu.Instance.GetSelectedObject() == this) {
-            SelectorMenu.Instance.DeselectObject(true);
-        }
+        //if (SelectorItem != null)
+        //    SelectorItem.gameObject.SetActive(enable || blocklisted);
+        //if (!enable && SelectorMenu.Instance.GetSelectedObject() == this) {
+        //    SelectorMenu.Instance.DeselectObject(true);
+        //}
     }
 
     public abstract void UpdateColor();
@@ -207,7 +207,7 @@ public abstract class InteractiveObject : Clickable {
     }
 
     public virtual void EnableOffscreenIndicator(bool enable) {
-        offscreenIndicator.enabled = enable;
+        //offscreenIndicator.enabled = enable;
     }
 
     public abstract void EnableVisual(bool enable);

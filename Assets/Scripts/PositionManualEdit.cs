@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Base;
 using IO.Swagger.Model;
-using Michsky.UI.ModernUIPack;
+//using Michsky.UI.ModernUIPack;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,8 +15,8 @@ public class PositionManualEdit : MonoBehaviour
     [SerializeField]
     private Button ConfirmButton;
 
-    [SerializeField]
-    private TooltipContent buttonTooltip;
+    //[SerializeField]
+    //private TooltipContent buttonTooltip;
 
     public void SetPosition(Position position) {
         NumberFormatInfo numberFormatInfo = new NumberFormatInfo();
@@ -26,8 +26,8 @@ public class PositionManualEdit : MonoBehaviour
         InputY.text = position.Y.ToString(numberFormatInfo);
         InputZ.text = position.Z.ToString(numberFormatInfo);
 
-        buttonTooltip.description = "First, edit the position";
-        buttonTooltip.enabled = true;
+        //buttonTooltip.description = "First, edit the position";
+        //buttonTooltip.enabled = true;
         ConfirmButton.interactable = false;
     }
 
@@ -42,7 +42,7 @@ public class PositionManualEdit : MonoBehaviour
         bool interactable = true;
 
         if (string.IsNullOrEmpty(InputX.text) || string.IsNullOrEmpty(InputY.text) || string.IsNullOrEmpty(InputZ.text)) {
-            buttonTooltip.description = "All values are required";
+            //buttonTooltip.description = "All values are required";
             interactable = false;
         } else {
             try {
@@ -51,11 +51,11 @@ public class PositionManualEdit : MonoBehaviour
                 decimal.Parse(InputZ.text, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture);
             } catch (Exception ex) {
                 interactable = false;
-                buttonTooltip.description = ex.Message;
+                //buttonTooltip.description = ex.Message;
             }
         }
 
-        buttonTooltip.enabled = !interactable;
+        //buttonTooltip.enabled = !interactable;
         ConfirmButton.interactable = interactable;
     }
 }

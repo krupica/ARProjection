@@ -1,4 +1,4 @@
-using Michsky.UI.ModernUIPack;
+//using Michsky.UI.ModernUIPack;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,7 +10,7 @@ public class RelPoseParam : MonoBehaviour, IParameter {
 
     [SerializeField]
     private TMPro.TMP_Text label;
-    private TooltipContent tooltipContent;
+    //private TooltipContent tooltipContent;
 
     [SerializeField]
     private LabeledInput posX, posY, posZ, orX, orY, orZ, orW;
@@ -28,9 +28,9 @@ public class RelPoseParam : MonoBehaviour, IParameter {
         Debug.Assert(orY != null);
         Debug.Assert(orZ != null);
         Debug.Assert(orW != null);
-        tooltipContent = label.GetComponent<TooltipContent>();
-        tooltipContent.tooltipRect = Base.GameManager.Instance.Tooltip;
-        tooltipContent.descriptionText = Base.GameManager.Instance.Text;
+        //tooltipContent = label.GetComponent<TooltipContent>();
+        //tooltipContent.tooltipRect = Base.GameManager.Instance.Tooltip;
+        //tooltipContent.descriptionText = Base.GameManager.Instance.Text;
     }
 
 
@@ -57,7 +57,7 @@ public class RelPoseParam : MonoBehaviour, IParameter {
 
     public void SetLabel(string label, string description) {
         this.label.text = label;
-        tooltipContent.description = description;
+        //tooltipContent.description = description;
     }
 
     public void SetValue(object value) {

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Michsky.UI.ModernUIPack;
+//using Michsky.UI.ModernUIPack;
 using Base;
 
 public class FocusConfirmationDialog : MonoBehaviour
@@ -9,7 +9,7 @@ public class FocusConfirmationDialog : MonoBehaviour
     public string RobotName, ArmId, EndEffectorId, OrientationId, JointsId, OrientationName, ActionPointId, ActionPointName;
     public bool UpdatePosition;
     public TMPro.TMP_Text SettingsText;
-    public ModalWindowManager WindowManager;
+    //public ModalWindowManager WindowManager;
 
     private string RobotId;
 
@@ -42,9 +42,9 @@ public class FocusConfirmationDialog : MonoBehaviour
             await WebsocketManager.Instance.UpdateActionPointOrientationUsingRobot(RobotId, EndEffectorId, OrientationId, ArmId);
             await WebsocketManager.Instance.UpdateActionPointJointsUsingRobot(JointsId);
             
-            GetComponent<ModalWindowManager>().CloseWindow();
+            //GetComponent<ModalWindowManager>().CloseWindow();
         } catch (Base.RequestFailedException ex) {
-            Base.NotificationsModernUI.Instance.ShowNotification("Failed to update", ex.Message);
+            //Base.NotificationsModernUI.Instance.ShowNotification("Failed to update", ex.Message);
         }
     }
 }

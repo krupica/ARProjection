@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Michsky.UI.ModernUIPack;
+//using Michsky.UI.ModernUIPack;
 using UnityEngine.UI;
 using System;
 
 public abstract class Dialog : MonoBehaviour
 {
-    protected ModalWindowManager windowManager;
+    //protected ModalWindowManager windowManager;
 
     private bool visible;
     public bool Visible => visible;
 
     public virtual void Awake() {
-        windowManager = GetComponent<ModalWindowManager>();
+        //windowManager = GetComponent<ModalWindowManager>();
     }
 
     protected virtual void UpdateToggleGroup(GameObject togglePrefab, GameObject toggleGroup, List<IO.Swagger.Model.ListScenesResponseData> scenes) {
@@ -63,17 +63,17 @@ public abstract class Dialog : MonoBehaviour
 
     public virtual void Close() {
         visible = false;
-        InputHandler.Instance.OnEscPressed -= OnEscPressed;
-        InputHandler.Instance.OnEnterPressed -= OnEnterPressed;
-        windowManager.CloseWindow();
+        //InputHandler.Instance.OnEscPressed -= OnEscPressed;
+        //InputHandler.Instance.OnEnterPressed -= OnEnterPressed;
+        //windowManager.CloseWindow();
         
     }
 
     public virtual void Open() {
         visible = true;
-        InputHandler.Instance.OnEscPressed += OnEscPressed;
-        InputHandler.Instance.OnEnterPressed += OnEnterPressed;
-        windowManager.OpenWindow();
+        //InputHandler.Instance.OnEscPressed += OnEscPressed;
+        //InputHandler.Instance.OnEnterPressed += OnEnterPressed;
+        //windowManager.OpenWindow();
     }
 
     private void OnEnterPressed(object sender, EventArgs e) {

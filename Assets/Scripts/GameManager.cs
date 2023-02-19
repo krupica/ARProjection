@@ -1719,7 +1719,7 @@ namespace Base {
 #else
             Scene.SetActive(true);
 #endif
-            AREditorResources.Instance.LeftMenuScene.DeactivateAllSubmenus();
+            //AREditorResources.Instance.LeftMenuScene.DeactivateAllSubmenus();
             //MainMenu.Instance.Close();
             SetGameState(GameStateEnum.SceneEditor);
             OnOpenSceneEditor?.Invoke(this, EventArgs.Empty);
@@ -1739,7 +1739,7 @@ namespace Base {
 #else
             Scene.SetActive(true);
 #endif
-            AREditorResources.Instance.LeftMenuProject.DeactivateAllSubmenus();
+            //AREditorResources.Instance.LeftMenuProject.DeactivateAllSubmenus();
             //MainMenu.Instance.Close();
             SetGameState(GameStateEnum.ProjectEditor);
             OnOpenProjectEditor?.Invoke(this, EventArgs.Empty);

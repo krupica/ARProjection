@@ -13,9 +13,9 @@ public interface IRobot
 
     Task<List<string>> GetArmsIds();
 
-    Task<RobotEE> GetEE(string ee_id, string arm_id);
+    //Task<RobotEE> GetEE(string ee_id, string arm_id);
 
-    Task<List<RobotEE>> GetAllEE();
+    //Task<List<RobotEE>> GetAllEE();
 
     bool HasUrdf();
 

@@ -25,11 +25,11 @@ public class EndAction : StartEndAction
     public override void UpdateColor()
     {
         if (Enabled) {
-            foreach (Renderer renderer in outlineOnClick.Renderers)
-                renderer.material.color = Color.red;
+            //foreach (Renderer renderer in outlineOnClick.Renderers)
+                //renderer.material.color = Color.red;
         } else {
-            foreach (Renderer renderer in outlineOnClick.Renderers)
-                renderer.material.color = Color.grey;
+            //foreach (Renderer renderer in outlineOnClick.Renderers)
+                //renderer.material.color = Color.grey;
         }
     }
 

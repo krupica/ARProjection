@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Michsky.UI.ModernUIPack;
+//using Michsky.UI.ModernUIPack;
 using System.Threading.Tasks;
 using Base;
 
@@ -12,7 +12,7 @@ public class NewProjectDialog : Dialog
     public GameObject ToggleGroup, GenerateLogicToggle;
     public GameObject TogglePrefab;
     public LabeledInput NewProjectName;
-    public ButtonWithTooltip OKBtn;
+    //public ButtonWithTooltip OKBtn;
     public void Start()
     {
         Base.GameManager.Instance.OnScenesListChanged += UpdateScenes;
@@ -44,7 +44,7 @@ public class NewProjectDialog : Dialog
 
     public async void FieldChanged() {
         Base.RequestResult result = await ValidateFields();
-        OKBtn.SetInteractivity(result.Success, result.Message);
+        //OKBtn.SetInteractivity(result.Success, result.Message);
 
     }
 

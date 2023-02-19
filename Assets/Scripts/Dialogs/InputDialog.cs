@@ -42,15 +42,15 @@ public class InputDialog : UniversalDialog {
 
     public async void Validate(string value) {
         if (validateFunc == null) {
-            okBtn.SetInteractivity(true, "");
+            //okBtn.SetInteractivity(true, "");
             return;
         }
             
         Base.RequestResult result = await validateFunc.Invoke(value);
         if (result.Success) {
-            okBtn.SetInteractivity(true, "");
+            //okBtn.SetInteractivity(true, "");
         } else {
-            okBtn.SetInteractivity(false, result.Message);
+            //okBtn.SetInteractivity(false, result.Message);
         }
             
     }

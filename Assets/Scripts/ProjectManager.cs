@@ -374,7 +374,7 @@ namespace Base {
             }
             Valid = true;
             OnLoadProject?.Invoke(this, EventArgs.Empty);
-            SetActionInputOutputVisibility(MainSettingsMenu.Instance.ConnectionsSwitch.IsOn());
+            //SetActionInputOutputVisibility(MainSettingsMenu.Instance.ConnectionsSwitch.IsOn());
             return true;
         }
 
@@ -404,7 +404,7 @@ namespace Base {
                 EndAction = null;
             }
             ActionPoints.Clear();
-            ConnectionManagerArcoro.Instance.Clear();
+            //ConnectionManagerArcoro.Instance.Clear();
             LogicItems.Clear();
             ProjectParameters.Clear();
             return true;
@@ -783,9 +783,9 @@ namespace Base {
 
                 // If deleted AP is selected in SelectorMenu (which most of the times should be),
                 // deselect it, in order to update buttons, references, etc.
-                if (actionPoint == SelectorMenu.Instance.GetSelectedObject()) {
-                    SelectorMenu.Instance.DeselectObject();
-                }
+                //if (actionPoint == SelectorMenu.Instance.GetSelectedObject()) {
+                    //SelectorMenu.Instance.DeselectObject();
+                //}
 
                 // Call function in corresponding action point that will delete it and properly remove all references and connections.
                 // We don't want to update project, because we are calling this method only upon received update from server.
@@ -947,9 +947,9 @@ namespace Base {
             if (!Valid)
                 return;
             foreach (ActionPoint ap in ActionPoints.Values) {
-                foreach (APOrientation orietationVisual in ap.GetOrientationsVisuals()) {
-                    orietationVisual.Enable(enable);
-                }
+                //foreach (APOrientation orietationVisual in ap.GetOrientationsVisuals()) {
+                    //orietationVisual.Enable(enable);
+                //}
             }
         }
 
@@ -958,9 +958,9 @@ namespace Base {
         /// </summary>
         public async Task EnableAllRobotsEE(bool enable) {
             foreach (IRobot robot in SceneManager.Instance.GetRobots()) {
-                foreach (RobotEE robotEE in await robot.GetAllEE()) {
-                    robotEE.Enable(enable);
-                }
+                //foreach (RobotEE robotEE in await robot.GetAllEE()) {
+                //    robotEE.Enable(enable);
+                //}
             }
         }
 
@@ -1203,8 +1203,8 @@ namespace Base {
                 return;
             try {
                 ActionPoint ap = GetActionPointWithOrientation(orientationId);
-                APOrientation orientation = ap.GetOrientationVisual(orientationId);
-                orientation.HighlightOrientation(highlight);
+                //APOrientation orientation = ap.GetOrientationVisual(orientationId);
+                //orientation.HighlightOrientation(highlight);
             } catch (KeyNotFoundException ex) {
                 Debug.LogError(ex);
             }
@@ -1213,9 +1213,9 @@ namespace Base {
         public void SetActionInputOutputVisibility(bool visible) {
             if (!Valid || !ProjectMeta.HasLogic)
                 return;
-            if (SelectorMenu.Instance.IOToggle.Toggled != visible)
-                SelectorMenu.Instance.IOToggle.SwitchToggle();
-            SelectorMenu.Instance.IOToggle.SetInteractivity(visible, "Connections are hidden");
+            //if (SelectorMenu.Instance.IOToggle.Toggled != visible)
+            //    SelectorMenu.Instance.IOToggle.SwitchToggle();
+            //SelectorMenu.Instance.IOToggle.SetInteractivity(visible, "Connections are hidden");
         }
 
         public bool AnyOrientationInTheProject() {

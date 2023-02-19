@@ -436,13 +436,13 @@ namespace Base {
     }
 
     public class GizmoAxisEventArgs : EventArgs {
-        public Gizmo.Axis SelectedAxis {
-            get; set;
-        }
+        //public Gizmo.Axis SelectedAxis {
+            //get; set;
+        //}
 
-        public GizmoAxisEventArgs(Gizmo.Axis gizmoAxis) {
-            SelectedAxis = gizmoAxis;
-        }
+        //public GizmoAxisEventArgs(Gizmo.Axis gizmoAxis) {
+            //SelectedAxis = gizmoAxis;
+        //}
     }
 
     public class AREditorEventArgs {

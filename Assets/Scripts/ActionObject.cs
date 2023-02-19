@@ -32,22 +32,22 @@ namespace Base {
             }
             CreateModel(customCollisionModels);
             enabled = true;
-            SelectorItem = SelectorMenu.Instance.CreateSelectorItem(this);
-            if (VRModeManager.Instance.VRModeON) {
-                SetVisibility(PlayerPrefsHelper.LoadFloat("AOVisibilityVR", 1f));
-            } else {
-                SetVisibility(PlayerPrefsHelper.LoadFloat("AOVisibilityAR", 0f));
-            }
+            //SelectorItem = SelectorMenu.Instance.CreateSelectorItem(this);
+            //if (VRModeManager.Instance.VRModeON) {
+            //    SetVisibility(PlayerPrefsHelper.LoadFloat("AOVisibilityVR", 1f));
+            //} else {
+            //    SetVisibility(PlayerPrefsHelper.LoadFloat("AOVisibilityAR", 0f));
+            //}
 
-            if (PlayerPrefsHelper.LoadBool($"ActionObject/{GetId()}/blocklisted", false)) {
-                Enable(false, true, false);
-            }
+            //if (PlayerPrefsHelper.LoadBool($"ActionObject/{GetId()}/blocklisted", false)) {
+            //    Enable(false, true, false);
+            //}
 
         }
         
         public virtual void UpdateObjectName(string newUserId) {
             Data.Name = newUserId;
-            SelectorItem.SetText(newUserId);
+           // SelectorItem.SetText(newUserId);
         }
 
         protected virtual void Update() {

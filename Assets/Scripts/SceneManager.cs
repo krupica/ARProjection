@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using IO.Swagger.Model;
 using UnityEngine;
 using UnityEngine.Networking;
-using WebSocketSharp;
+//using WebSocketSharp;
 using static Base.GameManager;
 
 namespace Base {
@@ -139,7 +139,7 @@ namespace Base {
 
         public string SelectedArmId;
 
-        private RobotEE selectedEndEffector;
+        //private RobotEE selectedEndEffector;
 
         public string SelectCreatedActionObject;
         public bool OpenTransformMenuOnCreatedObject;
@@ -170,10 +170,10 @@ namespace Base {
             get => sceneStarted;
             private set => sceneStarted = value;
         }
-        public RobotEE SelectedEndEffector {
-            get => selectedEndEffector;
-            set => selectedEndEffector = value;
-        }
+        //public RobotEE SelectedEndEffector {
+        //    get => selectedEndEffector;
+        //    set => selectedEndEffector = value;
+        //}
 
         /// <summary>
         /// Creates scene from given json
@@ -187,7 +187,7 @@ namespace Base {
             Debug.Assert(ActionsManager.Instance.ActionsReady);
             if (SceneMeta != null)
                 return false;
-            SelectorMenu.Instance.Clear();
+            //SelectorMenu.Instance.Clear();
             SetSceneMeta(DataHelper.SceneToBareScene(scene));            
             this.loadResources = loadResources;
             LoadSettings();
@@ -214,7 +214,7 @@ namespace Base {
             SceneStarted = false;
             Valid = false;
             RemoveActionObjects();
-            SelectorMenu.Instance.SelectorItems.Clear();
+            //SelectorMenu.Instance.SelectorItems.Clear();
             SceneMeta = null;
             return true;
         }
@@ -302,13 +302,13 @@ namespace Base {
         private async void OnSceneState(object sender, SceneStateEventArgs args) {
             switch (args.Event.State) {
                 case SceneStateData.StateEnum.Starting:
-                    GameManager.Instance.ShowLoadingScreen("Going online...");
+                    //GameManager.Instance.ShowLoadingScreen("Going online...");
                     OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
                     break;
                 case SceneStateData.StateEnum.Stopping:
                     SceneStarted = false;
-                    GameManager.Instance.ShowLoadingScreen("Going offline...");
-                    if (!args.Event.Message.IsNullOrEmpty()) {
+                    //GameManager.Instance.ShowLoadingScreen("Going offline...");
+                    if (!string.IsNullOrEmpty(args.Event.Message)) {
                         Notifications.Instance.ShowNotification("Scene service failed", args.Event.Message);
                     }
                     OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
@@ -318,10 +318,10 @@ namespace Base {
                     break;
                 case SceneStateData.StateEnum.Stopped:
                     SceneStarted = false;
-                    GameManager.Instance.HideLoadingScreen();
+                    //GameManager.Instance.HideLoadingScreen();
                     SelectedRobot = null;
                     SelectedArmId = null;
-                    SelectedEndEffector = null;
+                    //SelectedEndEffector = null;
                     OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
                     if (RobotsEEVisible)
                         OnHideRobotsEE?.Invoke(this, EventArgs.Empty);
@@ -343,7 +343,7 @@ namespace Base {
             SelectedArmId = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedRobotArmId", null);
             string selectedEndEffectorId = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedEndEffectorId", null);
             await SelectRobotAndEE(selectedRobotID, SelectedArmId, selectedEndEffectorId);
-            GameManager.Instance.HideLoadingScreen();
+            //GameManager.Instance.HideLoadingScreen();
             OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
         }
 
@@ -353,7 +353,7 @@ namespace Base {
                     IRobot robot = GetRobot(robotId);
                     if (!string.IsNullOrEmpty(eeId)) {
                         try {
-                            SelectRobotAndEE(await (robot.GetEE(eeId, armId)));
+                            //SelectRobotAndEE(await (robot.GetEE(eeId, armId)));
                         } catch (ItemNotFoundException ex) {
                             PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", null);
                             PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", null);
@@ -365,43 +365,43 @@ namespace Base {
                     Debug.LogError(ex);
                 }
             } else {
-                SelectRobotAndEE(null);
+                //SelectRobotAndEE(null);
             }
         }
 
-        public void SelectRobotAndEE(RobotEE endEffector) {
-            if (endEffector == null) {
-                SelectedArmId = null;
-                SelectedRobot = null;
-                SelectedEndEffector = null;
-                PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", null);
-                PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", null);
-                PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", null);
-            } else {
-                try {
-                    SelectedArmId = endEffector.ARMId;
-                    SelectedRobot = GetRobot(endEffector.Robot.GetId());
-                    SelectedEndEffector = endEffector;
-                } catch (ItemNotFoundException ex) {
-                    PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", null);
-                    Debug.LogError(ex);
-                }
+        //public void SelectRobotAndEE(RobotEE endEffector) {
+        //    if (endEffector == null) {
+        //        SelectedArmId = null;
+        //        SelectedRobot = null;
+        //        SelectedEndEffector = null;
+        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", null);
+        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", null);
+        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", null);
+        //    } else {
+        //        try {
+        //            SelectedArmId = endEffector.ARMId;
+        //            SelectedRobot = GetRobot(endEffector.Robot.GetId());
+        //            SelectedEndEffector = endEffector;
+        //        } catch (ItemNotFoundException ex) {
+        //            PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", null);
+        //            Debug.LogError(ex);
+        //        }
 
-                PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", SelectedRobot.GetId());
-                PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", SelectedArmId);
-                PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", SelectedEndEffector.EEId);
-            }
+        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", SelectedRobot.GetId());
+        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", SelectedArmId);
+        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", SelectedEndEffector.EEId);
+        //    }
 
-            OnRobotSelected(this, EventArgs.Empty);
-        }
+        //    OnRobotSelected(this, EventArgs.Empty);
+        //}
 
         public bool IsRobotSelected() {
             return SelectedRobot != null && !string.IsNullOrEmpty(SelectedArmId);
         }
 
-        public bool IsRobotAndEESelected() {
-            return IsRobotSelected() && SelectedEndEffector != null;
-        }
+        //public bool IsRobotAndEESelected() {
+        //    return IsRobotSelected() && SelectedEndEffector != null;
+        //}
 
         /// <summary>
         /// Register or unregister to/from subsription of joints or end effectors pose of each robot in the scene.
@@ -451,9 +451,9 @@ namespace Base {
             foreach (RobotEefDataEefPose eefPose in args.Data.EndEffectors) {
                 try {
                     IRobot robot = GetRobot(args.Data.RobotId);
-                    RobotEE ee = await robot.GetEE(eefPose.EndEffectorId, eefPose.ArmId);
-                    ee.UpdatePosition(TransformConvertor.ROSToUnity(DataHelper.PositionToVector3(eefPose.Pose.Position)),
-                        TransformConvertor.ROSToUnity(DataHelper.OrientationToQuaternion(eefPose.Pose.Orientation)));
+                    //RobotEE ee = await robot.GetEE(eefPose.EndEffectorId, eefPose.ArmId);
+                    //ee.UpdatePosition(TransformConvertor.ROSToUnity(DataHelper.PositionToVector3(eefPose.Pose.Position)),
+                        //TransformConvertor.ROSToUnity(DataHelper.OrientationToQuaternion(eefPose.Pose.Orientation)));
                 } catch (ItemNotFoundException) {
                     continue;
                 }
@@ -500,7 +500,7 @@ namespace Base {
         /// Loads selected setings from player prefs
         /// </summary>
         internal void LoadSettings() {
-            ActionObjectsVisibility = PlayerPrefsHelper.LoadFloat("AOVisibility" + (VRModeManager.Instance.VRModeON ? "VR" : "AR"), (VRModeManager.Instance.VRModeON ? 1f : 0f));
+            //ActionObjectsVisibility = PlayerPrefsHelper.LoadFloat("AOVisibility" + (VRModeManager.Instance.VRModeON ? "VR" : "AR"), (VRModeManager.Instance.VRModeON ? 1f : 0f));
             ActionObjectsInteractive = PlayerPrefsHelper.LoadBool("scene/" + SceneMeta.Id + "/AOInteractivity", true);
             RobotsEEVisible = PlayerPrefsHelper.LoadBool("scene/" + SceneMeta.Id + "/RobotsEEVisibility", true);
         }
@@ -673,7 +673,7 @@ namespace Base {
             List<IRobot> robots = new List<IRobot>();
             foreach (ActionObject actionObject in ActionObjects.Values) {
                 if (actionObject.IsRobot()) {
-                    robots.Add((RobotActionObject) actionObject);
+                    //robots.Add((RobotActionObject) actionObject);
                 }                    
             }
             return robots;
@@ -779,15 +779,15 @@ namespace Base {
         public void SceneObjectAdded(SceneObject sceneObject) {
             ActionObject actionObject = SpawnActionObject(sceneObject);
             if (!string.IsNullOrEmpty(SelectCreatedActionObject) && sceneObject.Name.Contains(SelectCreatedActionObject)) {
-                if (ActionObjectPickerMenu.Instance.IsVisible())
-                    AREditorResources.Instance.LeftMenuScene.AddButtonClick();
-                SelectorMenu.Instance.SetSelectedObject(actionObject.SelectorItem, true);
-                if (!actionObject.ActionObjectMetadata.HasPose)
-                    SelectorMenu.Instance.BottomButtons.SelectButton(SelectorMenu.Instance.BottomButtons.Buttons[2], true);
+                //if (ActionObjectPickerMenu.Instance.IsVisible())
+                //    AREditorResources.Instance.LeftMenuScene.AddButtonClick();
+                //SelectorMenu.Instance.SetSelectedObject(actionObject.SelectorItem, true);
+                //if (!actionObject.ActionObjectMetadata.HasPose)
+                //    SelectorMenu.Instance.BottomButtons.SelectButton(SelectorMenu.Instance.BottomButtons.Buttons[2], true);
             }
             if (OpenTransformMenuOnCreatedObject) {
-                AREditorResources.Instance.LeftMenuScene.SetActiveSubmenu(LeftMenuSelection.Utility);
-                AREditorResources.Instance.LeftMenuScene.MoveClick();
+                //AREditorResources.Instance.LeftMenuScene.SetActiveSubmenu(LeftMenuSelection.Utility);
+                //AREditorResources.Instance.LeftMenuScene.MoveClick();
             }
             SelectCreatedActionObject = "";
             OpenTransformMenuOnCreatedObject = false;
@@ -889,7 +889,7 @@ namespace Base {
             foreach (ActionObject actionObject in ActionObjects.Values) {
                 actionObject.SetVisibility(value);
             }
-            PlayerPrefsHelper.SaveFloat("AOVisibility" + (VRModeManager.Instance.VRModeON ? "VR" : "AR"), value);
+            //PlayerPrefsHelper.SaveFloat("AOVisibility" + (VRModeManager.Instance.VRModeON ? "VR" : "AR"), value);
             ActionObjectsVisibility = value;
         }
 
@@ -999,14 +999,14 @@ namespace Base {
             return objects;
         }
 
-        public async Task<List<RobotEE>> GetAllRobotsEEs() {
-            List<RobotEE> eeList = new List<RobotEE>();
-            foreach (ActionObject ao in ActionObjects.Values) {
-                if (ao.IsRobot())
-                    eeList.AddRange(await ((IRobot) ao).GetAllEE());
-            }
-            return eeList;
-        }
+        //public async Task<List<RobotEE>> GetAllRobotsEEs() {
+        //    List<RobotEE> eeList = new List<RobotEE>();
+        //    foreach (ActionObject ao in ActionObjects.Values) {
+        //        if (ao.IsRobot())
+        //            eeList.AddRange(await ((IRobot) ao).GetAllEE());
+        //    }
+        //    return eeList;
+        //}
 
         public List<ActionObject> GetAllObjectsOfType(string type) {
             return ActionObjects.Values.Where(obj => obj.ActionObjectMetadata.Type == type).ToList();

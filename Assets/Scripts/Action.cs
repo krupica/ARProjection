@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using Michsky.UI.ModernUIPack;
+//using Michsky.UI.ModernUIPack;
 using IO.Swagger.Model;
 using TMPro;
 using System.Linq;
@@ -40,12 +40,12 @@ namespace Base {
             UpdateName(Data.Name);
             if (actionProvider != null)
                 UpdateType();
-            SelectorItem = SelectorMenu.Instance.CreateSelectorItem(this);
+            //SelectorItem = SelectorMenu.Instance.CreateSelectorItem(this);
         }
 
         public virtual void ActionUpdateBaseData(IO.Swagger.Model.BareAction action) {
             Data.Name = action.Name;
-            SelectorItem.SetText(action.Name);
+            //SelectorItem.SetText(action.Name);
         }
 
         public virtual void ActionUpdate(IO.Swagger.Model.Action action, bool updateConnections = false) {
@@ -136,9 +136,9 @@ namespace Base {
         public async void AddConnection() {
             if (!Output.AnyConnection()) {
                 if (GetId() != "START" && Metadata.Returns.Count > 0 && Metadata.Returns[0] == "boolean") {
-                    ShowOutputTypeDialog(async () => await CreateNewConnection());
+                    //ShowOutputTypeDialog(async () => await CreateNewConnection());
                 } else {
-                    await CreateNewConnection();
+                    //await CreateNewConnection();
                 }
             } else {
                 // if there is "Any" connection, no new could be created and this one should be selected
@@ -171,7 +171,7 @@ namespace Base {
                     return;
                 }
                 
-                AREditorResources.Instance.ConnectionSelectorDialog.Open(items, showNewConnectionButton, this, () => WriteUnlock());
+                //AREditorResources.Instance.ConnectionSelectorDialog.Open(items, showNewConnectionButton, this, () => WriteUnlock());
             }
         }
 
@@ -188,51 +188,51 @@ namespace Base {
                     return;
                 } else {
                     bool condition = JsonConvert.DeserializeObject<bool>(item.Data.Condition.Value);
-                    AREditorResources.Instance.OutputTypeDialog.Open(Output, callback, false, !condition, condition);
+                    //AREditorResources.Instance.OutputTypeDialog.Open(Output, callback, false, !condition, condition);
                     return;
                 }
             }
-            AREditorResources.Instance.OutputTypeDialog.Open(Output, callback, true, true, true);
+            //AREditorResources.Instance.OutputTypeDialog.Open(Output, callback, true, true, true);
         }
 
-        private async Task CreateNewConnection() {
-            ConnectionManagerArcoro.Instance.CreateConnectionToPointer(Output.gameObject);
+        //private async Task CreateNewConnection() {
+        //    ConnectionManagerArcoro.Instance.CreateConnectionToPointer(Output.gameObject);
             
-            await GameManager.Instance.RequestObject(GameManager.EditorStateEnum.SelectingAction, GetOtherAction,
-                "Select input of other action", ValidateInput, async () => await WriteUnlock());
-        }
+        //    await GameManager.Instance.RequestObject(GameManager.EditorStateEnum.SelectingAction, GetOtherAction,
+        //        "Select input of other action", ValidateInput, async () => await WriteUnlock());
+        //}
 
-        protected async virtual void GetOtherAction(object otherAction) {
-            Base.Action input = (Base.Action) otherAction;
+        //protected async virtual void GetOtherAction(object otherAction) {
+        //    Base.Action input = (Base.Action) otherAction;
 
-            if (otherAction == null || input == null) {
-                ConnectionManagerArcoro.Instance.DestroyConnectionToMouse();
-                return;
-            }
-            try {
-                await WebsocketManager.Instance.AddLogicItem(GetId(), input.GetId(), GetProjectLogicIf(), false);
-                Output.ifValue = null;
-                ConnectionManagerArcoro.Instance.DestroyConnectionToMouse();
-            } catch (RequestFailedException ex) {
-                Debug.LogError(ex);
-                Notifications.Instance.SaveLogs("Failed to add connection");
-            }
+        //    if (otherAction == null || input == null) {
+        //        ConnectionManagerArcoro.Instance.DestroyConnectionToMouse();
+        //        return;
+        //    }
+        //    try {
+        //        await WebsocketManager.Instance.AddLogicItem(GetId(), input.GetId(), GetProjectLogicIf(), false);
+        //        Output.ifValue = null;
+        //        ConnectionManagerArcoro.Instance.DestroyConnectionToMouse();
+        //    } catch (RequestFailedException ex) {
+        //        Debug.LogError(ex);
+        //        Notifications.Instance.SaveLogs("Failed to add connection");
+        //    }
 
-        }
+        //}
 
-        private async Task<RequestResult> ValidateInput(object selectedInput) {
-            if (selectedInput is Base.Action action) {
-                RequestResult result = new RequestResult(true, "");
-                if (!await ConnectionManagerArcoro.Instance.ValidateConnection(Output, action.Input, GetProjectLogicIf())) {
-                    result.Success = false;
-                    result.Message = "Invalid connection";
-                }
-                return result;
-            } else {
-                return new RequestResult(false, "Wrong object type selected");
-            }
+        //private async Task<RequestResult> ValidateInput(object selectedInput) {
+        //    if (selectedInput is Base.Action action) {
+        //        RequestResult result = new RequestResult(true, "");
+        //        if (!await ConnectionManagerArcoro.Instance.ValidateConnection(Output, action.Input, GetProjectLogicIf())) {
+        //            result.Success = false;
+        //            result.Message = "Invalid connection";
+        //        }
+        //        return result;
+        //    } else {
+        //        return new RequestResult(false, "Wrong object type selected");
+        //    }
             
-        }
+        //}
 
         private IO.Swagger.Model.ProjectLogicIf GetProjectLogicIf() {
             if (Output.ifValue is null)
@@ -244,12 +244,12 @@ namespace Base {
         }
 
         public async Task SelectedConnection(LogicItem logicItem) {
-            AREditorResources.Instance.ConnectionSelectorDialog.Close();
+            //AREditorResources.Instance.ConnectionSelectorDialog.Close();
             if (logicItem == null) {
                 if (Metadata.Returns.Count > 0 && Metadata.Returns[0] == "boolean") {
-                    ShowOutputTypeDialog(async () => await CreateNewConnection());
+                    //ShowOutputTypeDialog(async () => await CreateNewConnection());
                 } else {
-                    await CreateNewConnection();
+                    //await CreateNewConnection();
                 }
             } else {
                 try {
@@ -258,16 +258,16 @@ namespace Base {
                         otherAction = ProjectManager.Instance.GetAction(logicItem.Data.End);
                     else
                         otherAction = ProjectManager.Instance.GetAction(logicItem.Data.Start);
-                    GameManager.Instance.ShowLoadingScreen("Removing old connection...");
+                    //GameManager.Instance.ShowLoadingScreen("Removing old connection...");
                     await WebsocketManager.Instance.RemoveLogicItem(logicItem.Data.Id);
-                    GameManager.Instance.HideLoadingScreen();
+                    //GameManager.Instance.HideLoadingScreen();
                     if (!await otherAction.WriteLock(false)) {
                         return;
                     }
                     AddConnection();
                     
                 } catch (RequestFailedException ex) {
-                    GameManager.Instance.HideLoadingScreen();
+                    //GameManager.Instance.HideLoadingScreen();
                     Notifications.Instance.ShowNotification("Failed to remove connection", ex.Message);
                     
                 }

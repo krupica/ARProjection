@@ -7,14 +7,14 @@ using IO.Swagger.Model;
 using Newtonsoft.Json;
 using static Base.Clickable;
 using UnityEngine.Events;
-using RosSharp.RosBridgeClient.MessageTypes.Nav;
+//using RosSharp.RosBridgeClient.MessageTypes.Nav;
 
 namespace Base {
     public abstract class InputOutput : MonoBehaviour, ISubItem {
         public Action Action;
         private List<string> logicItemIds = new List<string>();
-        [SerializeField]
-        private OutlineOnClick outlineOnClick;
+        //[SerializeField]
+        //private OutlineOnClick outlineOnClick;
 
         public object ifValue;
 
@@ -42,9 +42,9 @@ namespace Base {
 
         protected bool CheckClickType(Click type) {
            
-            if (!(bool) MainSettingsMenu.Instance.ConnectionsSwitch.GetValue()) {
-                return false;
-            }
+            //if (!(bool) MainSettingsMenu.Instance.ConnectionsSwitch.GetValue()) {
+            //    return false;
+            //}
             if (GameManager.Instance.GetGameState() != GameManager.GameStateEnum.ProjectEditor) {
                 return false;
             }

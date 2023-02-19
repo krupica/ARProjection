@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using IO.Swagger.Model;
-using WebSocketSharp;
+//using WebSocketSharp;
 
 namespace Base {
     public abstract class ActionPoint : InteractiveObject, IActionPointParent {
@@ -48,7 +48,7 @@ namespace Base {
         public virtual void ActionPointBaseUpdate(IO.Swagger.Model.BareActionPoint apData) {
             Data.Name = apData.Name;
             Data.Position = apData.Position;
-            SelectorItem.SetText(apData.Name);
+            //SelectorItem.SetText(apData.Name);
             // update position and rotation based on received data from swagger
             transform.localPosition = GetScenePosition();
             if (Parent != null)
@@ -61,7 +61,7 @@ namespace Base {
             SetParent(parent);
             Data = apData;
 
-            SelectorItem = SelectorMenu.Instance.CreateSelectorItem(this);
+            //SelectorItem = SelectorMenu.Instance.CreateSelectorItem(this);
             OrientationsVisible = PlayerPrefsHelper.LoadBool("/AP/" + Data.Id + "/visible", true);
             ActionsCollapsed = PlayerPrefsHelper.LoadBool("/AP/" + Data.Id + "/actionsCollapsed", false);
             BreakPoint = PlayerPrefsHelper.LoadBool("/AP/" + Data.Id + "/breakPoint", false);
@@ -198,25 +198,25 @@ namespace Base {
         /// </summary>
         /// <param name="id">UUID of orientation</param>
         /// <returns></returns>
-        public APOrientation GetOrientationVisual(string id) {
-            foreach (Transform transform in orientations.transform) {
-                APOrientation orientation = transform.GetComponent<APOrientation>();
-                if (orientation != null && orientation.OrientationId == id) {
-                    return orientation;
-                }
-            }
-            throw new KeyNotFoundException("Orientation with id " + id + " not found.");
-        }
+        //public APOrientation GetOrientationVisual(string id) {
+        //    foreach (Transform transform in orientations.transform) {
+        //        APOrientation orientation = transform.GetComponent<APOrientation>();
+        //        if (orientation != null && orientation.OrientationId == id) {
+        //            return orientation;
+        //        }
+        //    }
+        //    throw new KeyNotFoundException("Orientation with id " + id + " not found.");
+        //}
 
-        public List<APOrientation> GetOrientationsVisuals() {
-            List<APOrientation> orientationsList = new List<APOrientation>();
-            foreach (Transform transform in orientations.transform) {
-                APOrientation o = transform.GetComponent<APOrientation>();
-                if (o != null)
-                    orientationsList.Add(o);
-            }
-            return orientationsList;
-        }
+        //public List<APOrientation> GetOrientationsVisuals() {
+        //    List<APOrientation> orientationsList = new List<APOrientation>();
+        //    foreach (Transform transform in orientations.transform) {
+        //        APOrientation o = transform.GetComponent<APOrientation>();
+        //        if (o != null)
+        //            orientationsList.Add(o);
+        //    }
+        //    return orientationsList;
+        //}
 
         public IO.Swagger.Model.Pose GetDefaultPose() {
             foreach (IO.Swagger.Model.NamedOrientation orientation in Data.Orientations) {
@@ -269,7 +269,7 @@ namespace Base {
             }
             foreach (IO.Swagger.Model.ProjectRobotJoints robotJoint in Data.RobotJoints) {
                 if ((uniqueOnly && poses.ContainsKey(robotJoint.Id)) ||
-                    (!robot_id.IsNullOrEmpty() && robot_id != robotJoint.RobotId) ||
+                    (!string.IsNullOrEmpty(robot_id) && robot_id != robotJoint.RobotId) ||
                     (valid_only && !robotJoint.IsValid)) {
                     continue;
                 }                
@@ -525,8 +525,8 @@ namespace Base {
             NamedOrientation originalOrientation = GetOrientation(orientation.Id);
             originalOrientation.Orientation = orientation.Orientation;
             try {
-                APOrientation orientationArrow = GetOrientationVisual(orientation.Id);
-                orientationArrow.SetOrientation(orientation.Orientation);
+                //APOrientation orientationArrow = GetOrientationVisual(orientation.Id);
+               // orientationArrow.SetOrientation(orientation.Orientation);
             } catch (KeyNotFoundException) {
                 AddNewOrientationVisual(orientation);
             }
@@ -542,7 +542,7 @@ namespace Base {
         public void BaseUpdateOrientation(NamedOrientation orientation) {
             NamedOrientation originalOrientation = GetOrientation(orientation.Id);
             BaseUpdateOrientation(originalOrientation, orientation);
-            GetOrientationVisual(orientation.Id).SelectorItem.SetText(orientation.Name);
+            //GetOrientationVisual(orientation.Id).SelectorItem.SetText(orientation.Name);
         }
 
         public void BaseUpdateOrientation(NamedOrientation originalOrientation, NamedOrientation orientation) {
@@ -571,8 +571,8 @@ namespace Base {
 
         private void RemoveOrientationVisual(string id) {
             try {
-                APOrientation o = GetOrientationVisual(id);
-                o.DestroyObject();
+                //APOrientation o = GetOrientationVisual(id);
+                //o.DestroyObject();
             } catch (KeyNotFoundException) {
                 // älready destroyed..
             }          
@@ -623,18 +623,18 @@ namespace Base {
         }
 
         private void AddNewOrientationVisual(NamedOrientation orientation) {
-            APOrientation apOrientation = Instantiate(ActionsManager.Instance.ActionPointOrientationPrefab, orientations.transform).GetComponent<APOrientation>();
-            apOrientation.ActionPoint = this;
-            apOrientation.SetOrientation(orientation.Orientation);
-            apOrientation.OrientationId = orientation.Id;
-            apOrientation.SelectorItem = SelectorMenu.Instance.CreateSelectorItem(apOrientation);
+            //APOrientation apOrientation = Instantiate(ActionsManager.Instance.ActionPointOrientationPrefab, orientations.transform).GetComponent<APOrientation>();
+            //apOrientation.ActionPoint = this;
+            //apOrientation.SetOrientation(orientation.Orientation);
+            //apOrientation.OrientationId = orientation.Id;
+            //apOrientation.SelectorItem = SelectorMenu.Instance.CreateSelectorItem(apOrientation);
         }
 
         internal async Task<bool> ShowOrientationDetailMenu(string orientationId) {
-            if (await ActionPointAimingMenu.Instance.Show(this, true)) {
-                ActionPointAimingMenu.Instance.OpenDetailMenu(GetOrientation(orientationId));
-                return true;
-            }
+            //if (await ActionPointAimingMenu.Instance.Show(this, true)) {
+            //    ActionPointAimingMenu.Instance.OpenDetailMenu(GetOrientation(orientationId));
+            //    return true;
+            //}
             return false;
         }
 
