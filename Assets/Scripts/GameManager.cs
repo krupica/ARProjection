@@ -201,7 +201,7 @@ namespace Base {
         /// <summary>
         /// Api version
         /// </summary>        
-        public const string ApiVersion = "1.0.0";
+        public const string ApiVersion = "0.20.0";
         /// <summary>
         /// List of projects metadata
         /// </summary>
@@ -301,11 +301,11 @@ namespace Base {
         /// </summary>
         /// <param name="interactable"></param>
         public void InvokeSceneInteractable(bool interactable) {
-            if (interactable && (gameState == GameStateEnum.SceneEditor || gameState == GameStateEnum.ProjectEditor)) {
-                OnSceneInteractable?.Invoke(this, EventArgs.Empty);
-            } else {
-                OnSceneNotInteractable?.Invoke(this, EventArgs.Empty);
-            }
+            //if (interactable && (gameState == GameStateEnum.SceneEditor || gameState == GameStateEnum.ProjectEditor)) {
+            //    OnSceneInteractable?.Invoke(this, EventArgs.Empty);
+            //} else {
+            //    OnSceneNotInteractable?.Invoke(this, EventArgs.Empty);
+            //}
         }
 
 
@@ -462,7 +462,8 @@ namespace Base {
         /// Holds connection status and invokes callback when status changed
         /// </summary>
         public ConnectionStatusEnum ConnectionStatus {
-            get => connectionStatus; set {
+            get => connectionStatus; 
+            set {
                 if (connectionStatus != value) {
                     OnConnectionStatusChanged(value);
                 }
@@ -720,7 +721,7 @@ namespace Base {
 #if (UNITY_ANDROID || UNITY_IOS) && AR_ON
             ARSession.enabled = false;
 #endif
-            Scene.SetActive(false);
+            //Scene.SetActive(false);
             if (Application.isEditor || Debug.isDebugBuild) {
                 //TrilleonAutomation.AutomationMaster.Initialize();
             }
@@ -859,7 +860,7 @@ namespace Base {
                     IO.Swagger.Model.SystemInfoResponseData systemInfo;
                     try {
                         systemInfo = await WebsocketManager.Instance.GetSystemInfo();
-                        await WebsocketManager.Instance.RegisterUser(LandingScreen.Instance.Username.text);
+                        await WebsocketManager.Instance.RegisterUser("ARProjection");
                     } catch (RequestFailedException ex) {
                         DisconnectFromSever();
                         Notifications.Instance.ShowNotification("Connection failed", ex.Message);
@@ -871,9 +872,9 @@ namespace Base {
                     }
 
                     SystemInfo = systemInfo;
-                    ServerVersion.text = "Editor version: " + Application.version +
-                        "\nServer version: " + systemInfo.Version;
-                    ConnectionInfo.text = WebsocketManager.Instance.APIDomainWS;
+                    //ServerVersion.text = "Editor version: " + Application.version +
+                    //    "\nServer version: " + systemInfo.Version;
+                    //ConnectionInfo.text = WebsocketManager.Instance.APIDomainWS;
                     //MainMenu.Instance.gameObject.SetActive(false);
 
 
@@ -901,7 +902,7 @@ namespace Base {
 
                     ProjectManager.Instance.DestroyProject();
                     SceneManager.Instance.DestroyScene();
-                    Scene.SetActive(false);
+                    //Scene.SetActive(false);
                     break;
             }
         }
@@ -1591,7 +1592,8 @@ namespace Base {
         /// <param name="versionString">Version string in format 0.0.0 (major, minor, patch)</param>
         /// <returns>First number (major version)</returns>
         public int GetMajorVersion(string versionString) {
-            return int.Parse(SplitVersionString(versionString)[0]);
+            var x = int.Parse(SplitVersionString(versionString)[0]);
+            return x;
         }
 
         /// <summary>
@@ -1734,10 +1736,10 @@ namespace Base {
 #if (UNITY_ANDROID || UNITY_IOS) && AR_ON
             ARSession.enabled = true;
             if (CalibrationManager.Instance.Calibrated) {
-                Scene.SetActive(true);
+                //Scene.SetActive(true);
             }
 #else
-            Scene.SetActive(true);
+            //Scene.SetActive(true);
 #endif
             //AREditorResources.Instance.LeftMenuProject.DeactivateAllSubmenus();
             //MainMenu.Instance.Close();
@@ -1799,8 +1801,8 @@ namespace Base {
             ARSession.enabled = false;
 #endif
             //MainMenu.Instance.Close();
-            Scene.SetActive(false);
-            SetGameState(GameStateEnum.Disconnected);
+            //Scene.SetActive(false);
+            //SetGameState(GameStateEnum.Disconnected);
             //HideLoadingScreen(true);
         }
 

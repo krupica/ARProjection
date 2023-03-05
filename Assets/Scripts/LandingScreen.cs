@@ -16,11 +16,11 @@ public class LandingScreen : Base.Singleton<LandingScreen>
     public Button ConnectToServerBtn;
 
     private void Start() {
-        Debug.Assert(Domain != null);
-        Debug.Assert(Port != null);
-        Debug.Assert(KeepConnected != null);
-        Debug.Assert(CanvasGroup != null);
-        Debug.Assert(Version != null);
+        //Debug.Assert(Domain != null);
+        //Debug.Assert(Port != null);
+        //Debug.Assert(KeepConnected != null);
+        //Debug.Assert(CanvasGroup != null);
+        //Debug.Assert(Version != null);
         bool keepConnected = PlayerPrefs.GetInt("arserver_keep_connected", 0) == 1 ? true : false;
         Base.GameManager.Instance.OnConnectedToServer += ConnectedToServer;
         Base.GameManager.Instance.OnDisconnectedFromServer += DisconnectedFromServer;
@@ -54,17 +54,18 @@ public class LandingScreen : Base.Singleton<LandingScreen>
     }
 
     internal string GetUsername() {
-        return Username.text;
+        return "ARProjection";
+        //return Username.text;
     }
 
     private void ConnectedToServer(object sender, EventArgs args) {
-        CanvasGroup.alpha = 0;
-        CanvasGroup.blocksRaycasts = false;
+        //CanvasGroup.alpha = 0;
+        //CanvasGroup.blocksRaycasts = false;
     }
 
     private void DisconnectedFromServer(object sender, EventArgs args) {
-        CanvasGroup.alpha = 1;
-        CanvasGroup.blocksRaycasts = true;
+        //CanvasGroup.alpha = 1;
+        //CanvasGroup.blocksRaycasts = true;
     }
 
     public void SaveLogs() {

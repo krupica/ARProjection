@@ -18,8 +18,8 @@ namespace Base {
         // Dictionary of all action parameters for this Action
         private Dictionary<string, Parameter> parameters = new Dictionary<string, Parameter>();
         
-        public InputOutput Input;
-        public PuckOutput Output;
+        //public InputOutput Input;
+        //public PuckOutput Output;
         public IActionProvider ActionProvider;
 
         public ActionPoint ActionPoint;
@@ -134,64 +134,64 @@ namespace Base {
         }
 
         public async void AddConnection() {
-            if (!Output.AnyConnection()) {
-                if (GetId() != "START" && Metadata.Returns.Count > 0 && Metadata.Returns[0] == "boolean") {
-                    //ShowOutputTypeDialog(async () => await CreateNewConnection());
-                } else {
-                    //await CreateNewConnection();
-                }
-            } else {
-                // if there is "Any" connection, no new could be created and this one should be selected
-                // if there are both "true" and "false" connections, no new could be created
+            //if (!Output.AnyConnection()) {
+            //    if (GetId() != "START" && Metadata.Returns.Count > 0 && Metadata.Returns[0] == "boolean") {
+            //        //ShowOutputTypeDialog(async () => await CreateNewConnection());
+            //    } else {
+            //        //await CreateNewConnection();
+            //    }
+            //} else {
+            //    // if there is "Any" connection, no new could be created and this one should be selected
+            //    // if there are both "true" and "false" connections, no new could be created
 
-                bool showNewConnectionButton = true;
-                bool conditionValue = false;
+            //    bool showNewConnectionButton = true;
+            //    bool conditionValue = false;
 
-                int howManyConditions = 0;
+            //    int howManyConditions = 0;
 
-                // kterej connection chci, případně chci vytvořit novej
-                Dictionary<string, LogicItem> items = new Dictionary<string, LogicItem>();
-                foreach (LogicItem logicItem in Output.GetLogicItems()) {
-                    Action start = ProjectManager.Instance.GetAction(logicItem.Data.Start);
-                    Action end = ProjectManager.Instance.GetAction(logicItem.Data.End);
-                    string label = start.Data.Name + " -> " + end.Data.Name;
-                    if (!(logicItem.Data.Condition is null)) {
-                        label += " (" + logicItem.Data.Condition.Value + ")";
-                        ++howManyConditions;
-                        conditionValue = Parameter.GetValue<bool>(logicItem.Data.Condition.Value);
-                    }
-                    items.Add(label, logicItem);                   
+            //    // kterej connection chci, případně chci vytvořit novej
+            //    Dictionary<string, LogicItem> items = new Dictionary<string, LogicItem>();
+            //    foreach (LogicItem logicItem in Output.GetLogicItems()) {
+            //        Action start = ProjectManager.Instance.GetAction(logicItem.Data.Start);
+            //        Action end = ProjectManager.Instance.GetAction(logicItem.Data.End);
+            //        string label = start.Data.Name + " -> " + end.Data.Name;
+            //        if (!(logicItem.Data.Condition is null)) {
+            //            label += " (" + logicItem.Data.Condition.Value + ")";
+            //            ++howManyConditions;
+            //            conditionValue = Parameter.GetValue<bool>(logicItem.Data.Condition.Value);
+            //        }
+            //        items.Add(label, logicItem);                   
 
-                }
+            //    }
                 
-                if (howManyConditions == 2) {// both true and false are filled
-                    showNewConnectionButton = false;
-                } else if (items.Count == 1 && howManyConditions == 0) { // the "any" connection already exists
-                    await SelectedConnection(items.Values.First());
-                    return;
-                }
+            //    if (howManyConditions == 2) {// both true and false are filled
+            //        showNewConnectionButton = false;
+            //    } else if (items.Count == 1 && howManyConditions == 0) { // the "any" connection already exists
+            //        await SelectedConnection(items.Values.First());
+            //        return;
+            //    }
                 
-                //AREditorResources.Instance.ConnectionSelectorDialog.Open(items, showNewConnectionButton, this, () => WriteUnlock());
-            }
+            //    //AREditorResources.Instance.ConnectionSelectorDialog.Open(items, showNewConnectionButton, this, () => WriteUnlock());
+            //}
         }
 
         private void ShowOutputTypeDialog(UnityAction callback) {
-            if (Output.ConnectionCount() == 2) {
-                Notifications.Instance.ShowNotification("Failed", "Cannot create any other connection.");
-                return;
-            } else if (Output.ConnectionCount() == 1) {
-                List<LogicItem> items = Output.GetLogicItems();
-                Debug.Assert(items.Count == 1, "There must be exactly one valid logic item!");
-                LogicItem item = items[0];
-                if (item.Data.Condition is null) {
-                    Notifications.Instance.ShowNotification("Failed", "There is already connection which serves all results");
-                    return;
-                } else {
-                    bool condition = JsonConvert.DeserializeObject<bool>(item.Data.Condition.Value);
-                    //AREditorResources.Instance.OutputTypeDialog.Open(Output, callback, false, !condition, condition);
-                    return;
-                }
-            }
+            //if (Output.ConnectionCount() == 2) {
+            //    Notifications.Instance.ShowNotification("Failed", "Cannot create any other connection.");
+            //    return;
+            //} else if (Output.ConnectionCount() == 1) {
+            //    List<LogicItem> items = Output.GetLogicItems();
+            //    Debug.Assert(items.Count == 1, "There must be exactly one valid logic item!");
+            //    LogicItem item = items[0];
+            //    if (item.Data.Condition is null) {
+            //        Notifications.Instance.ShowNotification("Failed", "There is already connection which serves all results");
+            //        return;
+            //    } else {
+            //        bool condition = JsonConvert.DeserializeObject<bool>(item.Data.Condition.Value);
+            //        //AREditorResources.Instance.OutputTypeDialog.Open(Output, callback, false, !condition, condition);
+            //        return;
+            //    }
+            //}
             //AREditorResources.Instance.OutputTypeDialog.Open(Output, callback, true, true, true);
         }
 
@@ -235,12 +235,13 @@ namespace Base {
         //}
 
         private IO.Swagger.Model.ProjectLogicIf GetProjectLogicIf() {
-            if (Output.ifValue is null)
-                return null;
-            List<Flow> flows = GetFlows();
-            string flowName = flows[0].Type.GetValueOrDefault().ToString().ToLower();
-            IO.Swagger.Model.ProjectLogicIf projectLogicIf = new ProjectLogicIf(JsonConvert.SerializeObject(Output.ifValue), $"{GetId()}/{flowName}/0");
-            return projectLogicIf;
+            //if (Output.ifValue is null)
+            //    return null;
+            //List<Flow> flows = GetFlows();
+            //string flowName = flows[0].Type.GetValueOrDefault().ToString().ToLower();
+            //IO.Swagger.Model.ProjectLogicIf projectLogicIf = new ProjectLogicIf(JsonConvert.SerializeObject(Output.ifValue), $"{GetId()}/{flowName}/0");
+            //return projectLogicIf;
+            return null;
         }
 
         public async Task SelectedConnection(LogicItem logicItem) {
@@ -275,12 +276,12 @@ namespace Base {
         }
 
         public void UpdateRotation() {
-            if (Output.AnyConnection()) {
-                LogicItem c = Output.GetLogicItems()[0];
-                UpdateRotation(c.Input.Action);
-            } else {
-                UpdateRotation(null);
-            }                
+            //if (Output.AnyConnection()) {
+            //    LogicItem c = Output.GetLogicItems()[0];
+            //    UpdateRotation(c.Input.Action);
+            //} else {
+            //    UpdateRotation(null);
+            //}                
         }
 
         public void UpdateRotation(Base.Action otherAction) {

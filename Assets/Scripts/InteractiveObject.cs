@@ -30,7 +30,7 @@ public abstract class InteractiveObject : Clickable {
     private bool blocklisted;
 
     protected virtual void Start() {
-        LockingEventsCache.Instance.OnObjectLockingEvent += OnObjectLockingEvent;
+        //LockingEventsCache.Instance.OnObjectLockingEvent += OnObjectLockingEvent;
         //if (!offscreenIndicator) {
         //    offscreenIndicator = gameObject.GetComponent<Target>();
         //    DisplayOffscreenIndicator(false);
@@ -49,7 +49,7 @@ public abstract class InteractiveObject : Clickable {
     public virtual void DestroyObject() {
         //if (SelectorItem != null)
             //SelectorMenu.Instance.DestroySelectorItem(SelectorItem);
-        LockingEventsCache.Instance.OnObjectLockingEvent -= OnObjectLockingEvent;
+        //LockingEventsCache.Instance.OnObjectLockingEvent -= OnObjectLockingEvent;
     }
 
     protected string GetLockedText() {

@@ -8,17 +8,17 @@ public class LogicItem
 
     //private Connection connection;
 
-    private InputOutput input;
-    private PuckOutput output;
+    //private InputOutput input;
+    //private PuckOutput output;
 
-    public InputOutput Input {
-        get => input;
-        set => input = value;
-    }
-    public PuckOutput Output {
-        get => output;
-        set => output = value;
-    }
+    //public InputOutput Input {
+    //    get => input;
+    //    set => input = value;
+    //}
+    //public PuckOutput Output {
+    //    get => output;
+    //    set => output = value;
+    //}
 
     public LogicItem(IO.Swagger.Model.LogicItem logicItem) {
         Data = logicItem;
@@ -26,8 +26,8 @@ public class LogicItem
     }
 
     public void Remove() {
-        input.RemoveLogicItem(Data.Id);
-        output.RemoveLogicItem(Data.Id);
+        //input.RemoveLogicItem(Data.Id);
+        //output.RemoveLogicItem(Data.Id);
         //ConnectionManagerArcoro.Instance.DestroyConnection(connection);
         //connection = null;
     }

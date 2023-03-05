@@ -363,7 +363,7 @@ namespace Base {
             UpdateActionPoints(project);
             UpdateProjectParameters(project.Parameters);
             if (project.HasLogic) {
-                UpdateLogicItems(project.Logic);
+                //UpdateLogicItems(project.Logic);
             }
             if (project.Modified == System.DateTime.MinValue) { //new project, never saved
                 projectChanged = true;
@@ -373,7 +373,7 @@ namespace Base {
                 ProjectChanged = project.IntModified > project.Modified;
             }
             Valid = true;
-            OnLoadProject?.Invoke(this, EventArgs.Empty);
+            //OnLoadProject?.Invoke(this, EventArgs.Empty);
             //SetActionInputOutputVisibility(MainSettingsMenu.Instance.ConnectionsSwitch.IsOn());
             return true;
         }

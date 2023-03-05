@@ -753,54 +753,51 @@ namespace Base
 
 
 
-        private static void ValidateIntegerParameter(LabeledInput input, ParameterMetadata actionMetadata, int newValue)
-        {
-            if (actionMetadata.ParameterExtra == null)
-                return;
-            ARServer.Models.IntParameterExtra intParameterExtra = (ARServer.Models.IntParameterExtra)actionMetadata.ParameterExtra;
-            bool valid = true;
-            if (newValue < intParameterExtra.Minimum)
-            {
-                input.Input.text = intParameterExtra.Minimum.ToString();
-                valid = false;
-            }
-            else if (newValue > intParameterExtra.Maximum)
-            {
-                input.Input.text = intParameterExtra.Maximum.ToString();
-                valid = false;
-            }
-            if (!valid)
-            {
-                Notifications.Instance.ShowNotification("Not valid value", "Parameter " + actionMetadata.Name +
-                    " has to be between " + intParameterExtra.Minimum.ToString() + " and " + intParameterExtra.Maximum);
-            }
-        }
+        //private static void ValidateIntegerParameter(LabeledInput input, ParameterMetadata actionMetadata, int newValue)
+        //{
+        //    if (actionMetadata.ParameterExtra == null)
+        //        return;
+        //    ARServer.Models.IntParameterExtra intParameterExtra = (ARServer.Models.IntParameterExtra)actionMetadata.ParameterExtra;
+        //    bool valid = true;
+        //    if (newValue < intParameterExtra.Minimum)
+        //    {
+        //        input.Input.text = intParameterExtra.Minimum.ToString();
+        //        valid = false;
+        //    }
+        //    else if (newValue > intParameterExtra.Maximum)
+        //    {
+        //        input.Input.text = intParameterExtra.Maximum.ToString();
+        //        valid = false;
+        //    }
+        //    if (!valid)
+        //    {
+        //        Notifications.Instance.ShowNotification("Not valid value", "Parameter " + actionMetadata.Name +
+        //            " has to be between " + intParameterExtra.Minimum.ToString() + " and " + intParameterExtra.Maximum);
+        //    }
+        //}
 
-        private static void ValidateDoubleParameter(LabeledInput input, ParameterMetadata actionMetadata, double newValue)
-        {
-            if (actionMetadata.ParameterExtra == null)
-                return;
-            ARServer.Models.DoubleParameterExtra doubleParameterExtra = (ARServer.Models.DoubleParameterExtra)actionMetadata.ParameterExtra;
-            bool valid = true;
-            if (newValue < doubleParameterExtra.Minimum)
-            {
-                input.Input.text = doubleParameterExtra.Minimum.ToString();
-                valid = false;
-            }
-            else if (newValue > doubleParameterExtra.Maximum)
-            {
-                input.Input.text = doubleParameterExtra.Maximum.ToString();
-                valid = false;
-            }
-            if (!valid)
-            {
-                Notifications.Instance.ShowNotification("Not valid value", "Parameter " + actionMetadata.Name +
-                    " has to be between " + doubleParameterExtra.Minimum.ToString() + " and " + doubleParameterExtra.Maximum);
-            }
-        }
+        //private static void ValidateDoubleParameter(LabeledInput input, ParameterMetadata actionMetadata, double newValue)
+        //{
+        //    if (actionMetadata.ParameterExtra == null)
+        //        return;
+        //    ARServer.Models.DoubleParameterExtra doubleParameterExtra = (ARServer.Models.DoubleParameterExtra)actionMetadata.ParameterExtra;
+        //    bool valid = true;
+        //    if (newValue < doubleParameterExtra.Minimum)
+        //    {
+        //        input.Input.text = doubleParameterExtra.Minimum.ToString();
+        //        valid = false;
+        //    }
+        //    else if (newValue > doubleParameterExtra.Maximum)
+        //    {
+        //        input.Input.text = doubleParameterExtra.Maximum.ToString();
+        //        valid = false;
+        //    }
+        //    if (!valid)
+        //    {
+        //        Notifications.Instance.ShowNotification("Not valid value", "Parameter " + actionMetadata.Name +
+        //            " has to be between " + doubleParameterExtra.Minimum.ToString() + " and " + doubleParameterExtra.Maximum);
+        //    }
+        //}
 
     }
-
-
-
 }

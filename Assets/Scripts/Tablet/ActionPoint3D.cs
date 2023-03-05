@@ -15,30 +15,30 @@ public class ActionPoint3D : Base.ActionPoint {
     public Material BreakPointMaterial, SphereMaterial;
     [SerializeField]
     //private OutlineOnClick outlineOnClick;
-    public GameObject ActionsVisuals;
+    //public GameObject ActionsVisuals;
 
     private void LateUpdate() {
         // Fix of AP rotations - works on both PC and tablet
-        transform.rotation = Base.SceneManager.Instance.SceneOrigin.transform.rotation;
-        ActionsVisuals.transform.rotation = Base.SceneManager.Instance.SceneOrigin.transform.rotation;
-        if (Parent != null)
-            orientations.transform.rotation = Parent.GetTransform().rotation;
-        else
-            orientations.transform.rotation = Base.SceneManager.Instance.SceneOrigin.transform.rotation;
+        //transform.rotation = Base.SceneManager.Instance.SceneOrigin.transform.rotation;
+        //ActionsVisuals.transform.rotation = Base.SceneManager.Instance.SceneOrigin.transform.rotation;
+        //if (Parent != null)
+            //orientations.transform.rotation = Parent.GetTransform().rotation;
+        //else
+            //orientations.transform.rotation = Base.SceneManager.Instance.SceneOrigin.transform.rotation;
     }
 
     public override bool BreakPoint {
         get => base.BreakPoint;
         set {
             base.BreakPoint = value;
-            Renderer r = Sphere.GetComponent<Renderer>();
-            if (r.materials.Length == 3) {
-                Material[] materials = r.materials;
-                materials[1] = BreakPoint ? BreakPointMaterial : SphereMaterial;
-                r.materials = materials;
-            } else {
-                r.material = BreakPoint ? BreakPointMaterial : SphereMaterial;
-            }
+            //Renderer r = Sphere.GetComponent<Renderer>();
+            //if (r.materials.Length == 3) {
+            //    Material[] materials = r.materials;
+            //    materials[1] = BreakPoint ? BreakPointMaterial : SphereMaterial;
+            //    r.materials = materials;
+            //} else {
+            //    r.material = BreakPoint ? BreakPointMaterial : SphereMaterial;
+            //}
         }
     }
 
@@ -84,12 +84,12 @@ public class ActionPoint3D : Base.ActionPoint {
     /// </summary>
     /// <param name="size"><0; 1> - 0 means invisble, 1 means 10cm in diameter</param>
     public override void SetSize(float size) {
-        Visual.transform.localScale = new Vector3(size / 10, size / 10, size / 10);
+        //Visual.transform.localScale = new Vector3(size / 10, size / 10, size / 10);
     }
 
     public override (List<string>, Dictionary<string, string>) UpdateActionPoint(IO.Swagger.Model.ActionPoint projectActionPoint) {
         (List<string>, Dictionary<string, string>) result = base.UpdateActionPoint(projectActionPoint);
-        ActionPointName.text = projectActionPoint.Name;
+        //ActionPointName.text = projectActionPoint.Name;
         return result;
     }
 
@@ -128,7 +128,7 @@ public class ActionPoint3D : Base.ActionPoint {
         }
         
         HighlightAP(true);
-        ActionPointName.gameObject.SetActive(true);
+        //ActionPointName.gameObject.SetActive(true);
         //if (SelectorMenu.Instance.ManuallySelected) {
         //    DisplayOffscreenIndicator(true);
         //}
@@ -136,7 +136,7 @@ public class ActionPoint3D : Base.ActionPoint {
 
     public override void OnHoverEnd() {
         HighlightAP(false);
-        ActionPointName.gameObject.SetActive(false);
+        //ActionPointName.gameObject.SetActive(false);
         Lock.SetActive(false);
         DisplayOffscreenIndicator(false);
     }
@@ -144,12 +144,12 @@ public class ActionPoint3D : Base.ActionPoint {
 
     public override void ActionPointBaseUpdate(IO.Swagger.Model.BareActionPoint apData) {
         base.ActionPointBaseUpdate(apData);
-        ActionPointName.text = apData.Name;
+        //ActionPointName.text = apData.Name;
     }
 
     public override void InitAP(IO.Swagger.Model.ActionPoint apData, float size, IActionPointParent parent = null) {
         base.InitAP(apData, size, parent);
-        ActionPointName.text = apData.Name;
+        //ActionPointName.text = apData.Name;
     }
 
     public override void UpdateColor() {
@@ -219,13 +219,13 @@ public class ActionPoint3D : Base.ActionPoint {
 
     public override void OnObjectLocked(string owner) {
         base.OnObjectLocked(owner);
-        if (owner != LandingScreen.Instance.GetUsername())
-            ActionPointName.text = GetLockedText();
+        if (owner != LandingScreen.Instance.GetUsername());
+            //ActionPointName.text = GetLockedText();
     }
 
     public override void OnObjectUnlocked() {
         base.OnObjectUnlocked();
-        ActionPointName.text = GetName();
+        //ActionPointName.text = GetName();
     }
 
    

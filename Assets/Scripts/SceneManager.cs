@@ -202,7 +202,7 @@ namespace Base {
                 sceneChanged = scene.IntModified > scene.Modified;
             }
             Valid = true;
-            OnLoadScene?.Invoke(this, EventArgs.Empty);
+            //OnLoadScene?.Invoke(this, EventArgs.Empty);
             return true;
         }
 
@@ -582,22 +582,23 @@ namespace Base {
             }
             GameObject obj;
             if (aom.Robot) {
-                obj = Instantiate(RobotPrefab, ActionObjectsSpawn.transform);
+                //obj = Instantiate(RobotPrefab, ActionObjectsSpawn.transform);
             } else if (aom.CollisionObject) {
                 obj = Instantiate(CollisionObjectPrefab, ActionObjectsSpawn.transform);
             } else if (aom.HasPose) {
-                obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
+                //obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
             } else {
-                obj = Instantiate(ActionObjectNoPosePrefab, ActionObjectsSpawn.transform);
+                //obj = Instantiate(ActionObjectNoPosePrefab, ActionObjectsSpawn.transform);
             }
-            ActionObject actionObject = obj.GetComponent<ActionObject>();
-            actionObject.InitActionObject(sceneObject, obj.transform.localPosition, obj.transform.localRotation, aom, customCollisionModels);
-            
+            //ActionObject actionObject = obj.GetComponent<ActionObject>();
+            //actionObject.InitActionObject(sceneObject, obj.transform.localPosition, obj.transform.localRotation, aom, customCollisionModels);
+
             // Add the Action Object into scene reference
-            ActionObjects.Add(sceneObject.Id, actionObject);
-            actionObject.SetVisibility(ActionObjectsVisibility);
-            actionObject.ActionObjectUpdate(sceneObject);
-            return actionObject;
+            //ActionObjects.Add(sceneObject.Id, actionObject);
+            //actionObject.SetVisibility(ActionObjectsVisibility);
+            //actionObject.ActionObjectUpdate(sceneObject);
+            //return actionObject;
+            return null;
         }
 
         /// <summary>
@@ -819,7 +820,7 @@ namespace Base {
             List<string> currentAO = new List<string>();
             foreach (IO.Swagger.Model.SceneObject aoSwagger in scene.Objects) {
                 ActionObject actionObject = SpawnActionObject(aoSwagger, customCollisionModels);
-                actionObject.ActionObjectUpdate(aoSwagger);
+                //actionObject.ActionObjectUpdate(aoSwagger);
                 currentAO.Add(aoSwagger.Id);
             }
 

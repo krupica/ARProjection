@@ -12,22 +12,22 @@ public class RelPoseParam : MonoBehaviour, IParameter {
     private TMPro.TMP_Text label;
     //private TooltipContent tooltipContent;
 
-    [SerializeField]
-    private LabeledInput posX, posY, posZ, orX, orY, orZ, orW;
+    //[SerializeField]
+    //private LabeledInput posX, posY, posZ, orX, orY, orZ, orW;
 
     public PoseEvent OnValueChangedEvent = new PoseEvent();
 
     private IO.Swagger.Model.Pose pose = null;
 
     private void Awake() {
-        Debug.Assert(label != null);
-        Debug.Assert(posX != null);
-        Debug.Assert(posY != null);
-        Debug.Assert(posZ != null);
-        Debug.Assert(orX != null);
-        Debug.Assert(orY != null);
-        Debug.Assert(orZ != null);
-        Debug.Assert(orW != null);
+        //Debug.Assert(label != null);
+        //Debug.Assert(posX != null);
+        //Debug.Assert(posY != null);
+        //Debug.Assert(posZ != null);
+        //Debug.Assert(orX != null);
+        //Debug.Assert(orY != null);
+        //Debug.Assert(orZ != null);
+        //Debug.Assert(orW != null);
         //tooltipContent = label.GetComponent<TooltipContent>();
         //tooltipContent.tooltipRect = Base.GameManager.Instance.Tooltip;
         //tooltipContent.descriptionText = Base.GameManager.Instance.Text;
@@ -63,13 +63,13 @@ public class RelPoseParam : MonoBehaviour, IParameter {
     public void SetValue(object value) {
         IO.Swagger.Model.Pose pose = (IO.Swagger.Model.Pose) value;
         this.pose = pose;
-        posX.SetValue(pose.Position.X);
-        posY.SetValue(pose.Position.Y);
-        posZ.SetValue(pose.Position.Z);
-        orX.SetValue(pose.Orientation.X);
-        orY.SetValue(pose.Orientation.Y);
-        orZ.SetValue(pose.Orientation.Z);
-        orW.SetValue(pose.Orientation.W);
+        //posX.SetValue(pose.Position.X);
+        //posY.SetValue(pose.Position.Y);
+        //posZ.SetValue(pose.Position.Z);
+        //orX.SetValue(pose.Orientation.X);
+        //orY.SetValue(pose.Orientation.Y);
+        //orZ.SetValue(pose.Orientation.Z);
+        //orW.SetValue(pose.Orientation.W);
     }
 
 
@@ -77,40 +77,40 @@ public class RelPoseParam : MonoBehaviour, IParameter {
     public void OnValueChagned(string paramId) {
         if (pose == null)
             return;
-        switch (paramId) {
-            case "posX":
-                pose.Position.X = (decimal) (double) posX.GetValue();
-                break;
-            case "posY":
-                pose.Position.Y = (decimal) (double) posY.GetValue();
-                break;
-            case "posZ":
-                pose.Position.Z = (decimal) (double) posZ.GetValue();
-                break;
-            case "orX":
-                pose.Orientation.X = (decimal) (double) orX.GetValue();
-                break;
-            case "orY":
-                pose.Orientation.Y = (decimal) (double) orY.GetValue();
-                break;
-            case "orZ":
-                pose.Orientation.Z = (decimal) (double) orZ.GetValue();
-                break;
-            case "orW":
-                pose.Orientation.W = (decimal) (double) orW.GetValue();
-                break;
-        }
+        //switch (paramId) {
+        //    case "posX":
+        //        pose.Position.X = (decimal) (double) posX.GetValue();
+        //        break;
+        //    case "posY":
+        //        pose.Position.Y = (decimal) (double) posY.GetValue();
+        //        break;
+        //    case "posZ":
+        //        pose.Position.Z = (decimal) (double) posZ.GetValue();
+        //        break;
+        //    case "orX":
+        //        pose.Orientation.X = (decimal) (double) orX.GetValue();
+        //        break;
+        //    case "orY":
+        //        pose.Orientation.Y = (decimal) (double) orY.GetValue();
+        //        break;
+        //    case "orZ":
+        //        pose.Orientation.Z = (decimal) (double) orZ.GetValue();
+        //        break;
+        //    case "orW":
+        //        pose.Orientation.W = (decimal) (double) orW.GetValue();
+        //        break;
+        //}
         OnValueChangedEvent.Invoke(pose);
     }
 
     public void SetDarkMode(bool dark) {
-        posX.SetDarkMode(dark);
-        posY.SetDarkMode(dark);
-        posZ.SetDarkMode(dark);
-        orX.SetDarkMode(dark);
-        orY.SetDarkMode(dark);
-        orZ.SetDarkMode(dark);
-        orW.SetDarkMode(dark);
+        //posX.SetDarkMode(dark);
+        //posY.SetDarkMode(dark);
+        //posZ.SetDarkMode(dark);
+        //orX.SetDarkMode(dark);
+        //orY.SetDarkMode(dark);
+        //orZ.SetDarkMode(dark);
+        //orW.SetDarkMode(dark);
     }
 
     public string GetCurrentType() {
@@ -122,12 +122,12 @@ public class RelPoseParam : MonoBehaviour, IParameter {
     }
 
     public void SetInteractable(bool interactable) {
-        posX.SetInteractable(interactable);
-        posY.SetInteractable(interactable);
-        posZ.SetInteractable(interactable);
-        orX.SetInteractable(interactable);
-        orY.SetInteractable(interactable);
-        orZ.SetInteractable(interactable);
-        orW.SetInteractable(interactable);
+        //posX.SetInteractable(interactable);
+        //posY.SetInteractable(interactable);
+        //posZ.SetInteractable(interactable);
+        //orX.SetInteractable(interactable);
+        //orY.SetInteractable(interactable);
+        //orZ.SetInteractable(interactable);
+        //orW.SetInteractable(interactable);
     }
 }

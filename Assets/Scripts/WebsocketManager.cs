@@ -416,7 +416,6 @@ namespace Base {
         }
 
 
-
         /// <summary>
         /// Waits until response with selected ID is recieved.
         /// </summary>
@@ -982,8 +981,8 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleObjectUnlocked(string data) {
-            IO.Swagger.Model.ObjectsUnlocked objectsUnlockedEvent = JsonConvert.DeserializeObject<ObjectsUnlocked>(data);
-            LockingEventsCache.Instance.Add(new ObjectLockingEventArgs(objectsUnlockedEvent.Data.ObjectIds, false, objectsUnlockedEvent.Data.Owner));
+            //IO.Swagger.Model.ObjectsUnlocked objectsUnlockedEvent = JsonConvert.DeserializeObject<ObjectsUnlocked>(data);
+            //LockingEventsCache.Instance.Add(new ObjectLockingEventArgs(objectsUnlockedEvent.Data.ObjectIds, false, objectsUnlockedEvent.Data.Owner));
         }
 
         /// <summary>
@@ -991,8 +990,8 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleObjectLocked(string data) {
-            ObjectsLocked objectsLockedEvent = JsonConvert.DeserializeObject<ObjectsLocked>(data);
-            LockingEventsCache.Instance.Add(new ObjectLockingEventArgs(objectsLockedEvent.Data.ObjectIds, true, objectsLockedEvent.Data.Owner));
+            //ObjectsLocked objectsLockedEvent = JsonConvert.DeserializeObject<ObjectsLocked>(data);
+            //LockingEventsCache.Instance.Add(new ObjectLockingEventArgs(objectsLockedEvent.Data.ObjectIds, true, objectsLockedEvent.Data.Owner));
         }
 
         private void HandleProcessState(string data) {
