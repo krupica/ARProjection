@@ -9,6 +9,7 @@ using IO.Swagger.Model;
 using UnityEngine.Events;
 using System.Collections;
 using Newtonsoft.Json;
+using Assets.Scripts.AR_Classes;
 //using MiniJSON;
 
 namespace Base {
@@ -17,6 +18,15 @@ namespace Base {
     /// (landing screen, main screen, editor screens) and for management of application states.
     /// </summary>
     public class GameManager : Singleton<GameManager> {
+
+        /// <summary>
+        /// Calibration
+        /// </summary>
+        public CalibrationData calibrationData;
+
+        public string calibXmlPath = "calibration_result.xml";
+
+        #region fields
 
         /// <summary>
         /// Advanced mode of editor
@@ -201,7 +211,7 @@ namespace Base {
         /// <summary>
         /// Api version
         /// </summary>        
-        public const string ApiVersion = "0.20.0";
+        public const string ApiVersion = "1.0.0";
         /// <summary>
         /// List of projects metadata
         /// </summary>
@@ -284,16 +294,9 @@ namespace Base {
 
         private bool openPackageRunningScreenFlag = false;
 
+        #endregion
 
-        /// TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! is this still neccassarry? How to use it when there is no menumanager anymore?
-        /// <summary>
-        /// Checks whether scene is interactable
-        /// </summary>
-        public bool SceneInteractable {
-            get => true;
-        }
-
-
+        
 
         /// <summary>
         /// Determines whether the application is in correct state (scene or project editor) and
@@ -307,8 +310,6 @@ namespace Base {
             //    OnSceneNotInteractable?.Invoke(this, EventArgs.Empty);
             //}
         }
-
-
 
         /// <summary>
         /// Enum specifying connection states
@@ -506,11 +507,11 @@ namespace Base {
             switch (newState) {
                 // when normal state, enable main menu button and status panel
                 case EditorStateEnum.Normal:
-                    EditorHelper.EnableCanvasGroup(MainMenuBtnCG, true);
+                    //EditorHelper.EnableCanvasGroup(MainMenuBtnCG, true);
                     break;
                 // otherwise, disable main menu button and status panel
                 default:
-                    EditorHelper.EnableCanvasGroup(MainMenuBtnCG, false);
+                    //EditorHelper.EnableCanvasGroup(MainMenuBtnCG, false);
                     break;
             }
         }
@@ -715,6 +716,7 @@ namespace Base {
         /// Binds events and sets initial state of app
         /// </summary>
         private void Start() {
+            calibrationData = new CalibrationData(calibXmlPath);
             SetDefaultFramerate();
             updatingPackageState = false;
             nextPackageState = null;
@@ -1758,7 +1760,7 @@ namespace Base {
                 //MainMenu.Instance.Close();
                 SetGameState(GameStateEnum.PackageRunning);
                 SetEditorState(EditorStateEnum.InteractionDisabled);
-                EditorHelper.EnableCanvasGroup(MainMenuBtnCG, true);
+                //EditorHelper.EnableCanvasGroup(MainMenuBtnCG, true);
 #if (UNITY_ANDROID || UNITY_IOS) && AR_ON
                 ARSession.enabled = true;
                 if (CalibrationManager.Instance.Calibrated) {
@@ -1894,10 +1896,6 @@ namespace Base {
                     return scene.Name;
             }
             throw new ItemNotFoundException("Scene with id: " + sceneId + " not found");
-        }
-
-        public List<InteractiveObject> GetAllInteractiveObjects() {
-            return FindObjectsOfType<InteractiveObject>().OrderBy(o => o.GetName()).ToList();
         }
 
     }

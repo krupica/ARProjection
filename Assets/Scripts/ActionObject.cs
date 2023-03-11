@@ -5,7 +5,7 @@ using IO.Swagger.Model;
 using System;
 
 namespace Base {
-    public abstract class ActionObject : InteractiveObject, IActionProvider, IActionPointParent {
+    public abstract class ActionObject : MonoBehaviour, IActionProvider, IActionPointParent {
 
         public GameObject ActionPointsSpawn;
         [System.NonSerialized]
@@ -150,13 +150,13 @@ namespace Base {
             // Remove this ActionObject reference from the scene ActionObject list
             SceneManager.Instance.ActionObjects.Remove(this.Data.Id);
 
-            DestroyObject();
+            //DestroyObject();
             Destroy(gameObject);
         }
 
-        public override void DestroyObject() {
-            base.DestroyObject();
-        }
+        //public void DestroyObject() {
+        //    DestroyObject();
+        //}
 
         public void RemoveActionPoints() {
             // Remove all action points of this action object
@@ -202,7 +202,7 @@ namespace Base {
             return actionPoints;
         }
 
-        public override string GetName() {
+        public string GetName() {
             return Data.Name;
         }
 
@@ -228,11 +228,11 @@ namespace Base {
             return gameObject;
         }
 
-        public override string GetId() {
+        public string GetId() {
             return Data.Id;
         }
 
-        public async override Task<RequestResult> Movable() {
+        public async Task<RequestResult> Movable() {
             if (!ActionObjectMetadata.HasPose)
                 return new RequestResult(false, "Selected action object has no pose");
             else if (GameManager.Instance.GetGameState() != GameManager.GameStateEnum.SceneEditor) {
@@ -252,7 +252,7 @@ namespace Base {
         else
             return new IO.Swagger.Model.Pose(orientation: new IO.Swagger.Model.Orientation(), position: new IO.Swagger.Model.Position());
     }
-    public async override Task Rename(string name) {
+    public async Task Rename(string name) {
         try {
             await WebsocketManager.Instance.RenameObject(GetId(), name);
             Notifications.Instance.ShowToastMessage("Action object renamed");
@@ -261,7 +261,7 @@ namespace Base {
             throw;
         }
     }
-    public async override Task<RequestResult> Removable() {
+    public async Task<RequestResult> Removable() {
         if (GameManager.Instance.GetGameState() != GameManager.GameStateEnum.SceneEditor) {
             return new RequestResult(false, "Action object could be removed only in scene editor");
         } else if (SceneManager.Instance.SceneStarted) {
@@ -276,7 +276,7 @@ namespace Base {
     }
 
 
-    public async override void Remove() {
+    public async void Remove() {
             IO.Swagger.Model.RemoveFromSceneResponse response =
             await WebsocketManager.Instance.RemoveFromScene(GetId(), false, false);
         if (!response.Result) {

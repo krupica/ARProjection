@@ -7,7 +7,7 @@ using IO.Swagger.Model;
 //using WebSocketSharp;
 
 namespace Base {
-    public abstract class ActionPoint : InteractiveObject, IActionPointParent {
+    public abstract class ActionPoint : MonoBehaviour, IActionPointParent {
 
         // Key string is set to IO.Swagger.Model.ActionPoint Data.Uuid
         public Dictionary<string, Action> Actions = new Dictionary<string, Action>();
@@ -39,12 +39,6 @@ namespace Base {
             }
         }
 
-        protected override void Start() {
-            base.Start();
-        }
-
-        
-
         public virtual void ActionPointBaseUpdate(IO.Swagger.Model.BareActionPoint apData) {
             Data.Name = apData.Name;
             Data.Position = apData.Position;
@@ -55,7 +49,6 @@ namespace Base {
                 ConnectionToParent.UpdateLine();
         }
 
-        
         public virtual void InitAP(IO.Swagger.Model.ActionPoint apData, float size, IActionPointParent parent = null) {
             Debug.Assert(apData != null);
             SetParent(parent);
@@ -127,8 +120,6 @@ namespace Base {
 
             return freeName;
         }
-
-        public abstract void UpdatePositionsOfPucks();
 
         public Dictionary<string, IO.Swagger.Model.Pose> GetPoses() {
             Dictionary<string, IO.Swagger.Model.Pose> poses = new Dictionary<string, IO.Swagger.Model.Pose>();
@@ -294,9 +285,6 @@ namespace Base {
             return joints;
         }
 
-
-
-
         public void DeleteAP(bool removeFromList = true) {
             // Remove all actions of this action point
             RemoveActions();
@@ -311,8 +299,9 @@ namespace Base {
             Destroy(gameObject);
         }
 
-        public override void DestroyObject() {
-            base.DestroyObject();
+        public void DestroyObject() {
+            throw new NotImplementedException();
+            //base.DestroyObject();
         }
 
         private void RemoveConnectionToParent() {
@@ -352,10 +341,6 @@ namespace Base {
 
         public IActionPointParent GetParent() {
             return Parent;
-        }
-
-        public override string GetName() {
-            return Data.Name;
         }
 
         public bool IsActionObject() {
@@ -444,9 +429,6 @@ namespace Base {
                     Debug.LogError(ex);
                 }
             }
-            
-            
-            
         }
 
         public bool OrientationNameExist(string name) {
@@ -638,7 +620,7 @@ namespace Base {
             return false;
         }
 
-        public abstract void HighlightAP(bool highlight);
+        //public abstract void HighlightAP(bool highlight);
 
 
         public void ResetPosition() {
@@ -646,22 +628,12 @@ namespace Base {
             transform.localRotation = GetSceneOrientation();
         }
 
-        public async override Task<RequestResult> Movable() {
-
-            if (IsLocked && LockOwner != LandingScreen.Instance.GetUsername())
-                return new RequestResult(false, "Action point is locked");
-            else {
-                try {
-                    await WebsocketManager.Instance.UpdateActionPointPosition(GetId(), new Position(), true);
-                    return new RequestResult(true);
-                } catch (RequestFailedException e) {
-                    return new RequestResult(false, e.Message);
-                }
-
-            }
+        public string GetName()
+        {
+            return Data.Name;
         }
 
-        public override string GetId() {
+        public string GetId() {
             return Data.Id;
         }
 

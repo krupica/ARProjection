@@ -586,7 +586,7 @@ namespace Base {
             } else if (aom.CollisionObject) {
                 obj = Instantiate(CollisionObjectPrefab, ActionObjectsSpawn.transform);
             } else if (aom.HasPose) {
-                //obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
+                obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
             } else {
                 //obj = Instantiate(ActionObjectNoPosePrefab, ActionObjectsSpawn.transform);
             }
@@ -972,24 +972,6 @@ namespace Base {
             return false;
         }
 
-        /// <summary>
-        /// Enables all action objects
-        /// </summary>
-        public void EnableAllActionObjects(bool enable, bool includingRobots=true) {
-            foreach (ActionObject ao in ActionObjects.Values) {
-                if (!includingRobots && ao.IsRobot())
-                    continue;
-                ao.Enable(enable);
-            }
-        }
-
-        public void EnableAllRobots(bool enable) {
-            foreach (ActionObject ao in ActionObjects.Values) {
-                if (ao.IsRobot())
-                    ao.Enable(enable);
-            }
-        }
-
         public List<ActionObject> GetAllActionObjectsWithoutPose() {
             List<ActionObject> objects = new List<ActionObject>();
             foreach (ActionObject actionObject in ActionObjects.Values) {
@@ -1012,11 +994,8 @@ namespace Base {
         public List<ActionObject> GetAllObjectsOfType(string type) {
             return ActionObjects.Values.Where(obj => obj.ActionObjectMetadata.Type == type).ToList();
         }
-             
-        
 
         #endregion
-
     }
 }
 

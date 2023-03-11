@@ -41,12 +41,12 @@ namespace Base {
         }
 
         private void Start() {
-            Debug.Assert(LinkableParameterInputPrefab != null);
-            Debug.Assert(LinkableParameterDropdownPrefab != null);
-            Debug.Assert(LinkableParameterDropdownPosesPrefab != null);
-            Debug.Assert(ParameterDropdownJointsPrefab != null);
-            Debug.Assert(ParameterRelPosePrefab != null);
-            Debug.Assert(InteractiveObjects != null);
+            //Debug.Assert(LinkableParameterInputPrefab != null);
+            //Debug.Assert(LinkableParameterDropdownPrefab != null);
+            //Debug.Assert(LinkableParameterDropdownPosesPrefab != null);
+            //Debug.Assert(ParameterDropdownJointsPrefab != null);
+            //Debug.Assert(ParameterRelPosePrefab != null);
+            //Debug.Assert(InteractiveObjects != null);
             Init();
             WebsocketManager.Instance.OnDisconnectEvent += OnDisconnected;
             WebsocketManager.Instance.OnObjectTypeAdded += ObjectTypeAdded;

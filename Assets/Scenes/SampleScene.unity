@@ -854,7 +854,7 @@ MonoBehaviour:
   ActionObjectsSpawn: {fileID: 236444633}
   SceneOrigin: {fileID: 236444633}
   RobotPrefab: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}
-  ActionObjectPrefab: {fileID: 8799331447481118116, guid: 244c19b922641944e8d5f8c020089b5d, type: 3}
+  ActionObjectPrefab: {fileID: 886395293713347599, guid: 2062e7d704802df4a9ca9a74c460c82b, type: 3}
   ActionObjectNoPosePrefab: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}
   CollisionObjectPrefab: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}
   CurrentlySelectedObject: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}

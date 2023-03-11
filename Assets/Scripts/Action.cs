@@ -12,7 +12,7 @@ using TMPro;
 using System.Linq;
 
 namespace Base {
-    public abstract class Action : InteractiveObject {
+    public abstract class Action : MonoBehaviour {
         // Metadata of this Action
         private ActionMetadata metadata;
         // Dictionary of all action parameters for this Action
@@ -87,7 +87,7 @@ namespace Base {
 
         public void DeleteAction() {
             Destroy(gameObject);
-            DestroyObject();
+            //DestroyObject();
             ActionPoint.Actions.Remove(Data.Id);
         }
 
@@ -121,17 +121,17 @@ namespace Base {
             return Data.Flows;
         }
 
-        public override string GetId() {
+        public string GetId() {
             return Data.Id;
         }
 
-        public async override Task<RequestResult> Movable() {
+        public async Task<RequestResult> Movable() {
             return new RequestResult(false, "Actions could not be moved");
         }
 
-        public override void DestroyObject() {
-            base.DestroyObject();
-        }
+        //public void DestroyObject() {
+        //    base.DestroyObject();
+        //}
 
         public async void AddConnection() {
             //if (!Output.AnyConnection()) {
@@ -261,10 +261,7 @@ namespace Base {
                         otherAction = ProjectManager.Instance.GetAction(logicItem.Data.Start);
                     //GameManager.Instance.ShowLoadingScreen("Removing old connection...");
                     await WebsocketManager.Instance.RemoveLogicItem(logicItem.Data.Id);
-                    //GameManager.Instance.HideLoadingScreen();
-                    if (!await otherAction.WriteLock(false)) {
-                        return;
-                    }
+                    //GameManager.Instance.HideLoadingScreen();                    
                     AddConnection();
                     
                 } catch (RequestFailedException ex) {

@@ -18,11 +18,9 @@ public class ActionObject3D : ActionObject
     public GameObject CylinderPrefab, SpherePrefab;
 
 
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         transform.localScale = new Vector3(1f, 1f, 1f);
-
     }
 
 
@@ -56,13 +54,6 @@ public class ActionObject3D : ActionObject
         base.ActionObjectUpdate(actionObjectSwagger);
         ResetPosition();
     }
-
-
-    public override bool SceneInteractable()
-    {
-        return base.SceneInteractable() && GameManager.Instance.SceneInteractable;
-    }
-
 
     public override void SetVisibility(float value, bool forceShaderChange = false)
     {
@@ -167,11 +158,6 @@ public class ActionObject3D : ActionObject
         }
 
         gameObject.GetComponent<BindParentToChild>().ChildToBind = Model;
-        Collider = Model.GetComponent<Collider>();
-        Colliders.Add(Collider);
-        //Model.GetComponent<OnClickCollider>().Target = gameObject;
-
-        //outlineOnClick = gameObject.GetComponent<OutlineOnClick>();
     }
 
     public override GameObject GetModelCopy()
@@ -245,86 +231,9 @@ public class ActionObject3D : ActionObject
     //}
 
 
-
-
-    public override void OnHoverStart()
-    {
-        
-    }
-
-    public override void OnHoverEnd()
-    {
-    }
-
-    public override void UpdateColor()
-    {
-    }
-
-    /// <summary>
-    /// Sets grey color of AO model (indicates that model is not in position of real robot)
-    /// </summary>
-    /// <param name="grey">True for setting grey, false for standard state.</param>
-    public void SetGrey(bool grey, bool force = false)
-    {
-       
-    }
-
-    public override void Enable(bool enable, bool putOnBlocklist = false, bool removeFromBlocklist = false)
-    {
-        bool prevBlocklisted = Blocklisted;
-        base.Enable(enable, putOnBlocklist, removeFromBlocklist);
-        if (prevBlocklisted != Blocklisted)
-        {
-            if (Blocklisted)
-            {
-                SetVisibility(0);
-            }
-            else
-            {
-                //SetVisibility(MainSettingsMenu.Instance.GetVisibilityActionObjects());
-            }
-        }
-    }
-
-    public override void OpenMenu()
-    {
-        //_ = ActionObjectMenu.Instance.Show(this, false);
-    }
-
-    public override bool HasMenu()
-    {
-        return true;
-    }
-
-
-    public override string GetObjectTypeName()
+    public string GetObjectTypeName()
     {
         return "Action object";
-    }
-
-    public override void OnObjectLocked(string owner)
-    {
-        base.OnObjectLocked(owner);
-        if (owner != LandingScreen.Instance.GetUsername()) ;
-    }
-
-    public override void OnObjectUnlocked()
-    {
-        base.OnObjectUnlocked();
-    }
-
-    public override void StartManipulation()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void CloseMenu()
-    {
-        //_ = ActionObjectMenu.Instance.Hide();
-    }
-
-    public override void EnableVisual(bool enable)
-    {
     }
 
     public override void UpdateModel()
@@ -348,13 +257,5 @@ public class ActionObject3D : ActionObject
         if (dimensions != null)
             Model.transform.localScale = new Vector3(dimensions.Value.x, dimensions.Value.y, dimensions.Value.z);
 
-    }
-
-    public void Highlight()
-    {
-    }
-
-    public void UnHighlight()
-    {
     }
 }

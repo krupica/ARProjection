@@ -9,7 +9,7 @@ using NativeWebSocket;
 using IO.Swagger.Model;
 using UnityEditor;
 using UnityEngine.Events;
-
+using Assets.Scripts.AR_Classes;
 
 namespace Base {
 
@@ -157,6 +157,7 @@ namespace Base {
         public async void ConnectToServer(string domain, int port) {
             Debug.Log("connectToServer called");
 
+            //CalibrationData calib = new CalibrationData("calibration_result.xml");
             GameManager.Instance.ConnectionStatus = GameManager.ConnectionStatusEnum.Connecting;
             try {
                 APIDomainWS = GetWSURI(domain.Trim(), port);

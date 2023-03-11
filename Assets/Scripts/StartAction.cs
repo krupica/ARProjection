@@ -21,20 +21,7 @@ public class StartAction : StartEndAction
        // Output.SelectorItem = SelectorMenu.Instance.CreateSelectorItem(Output);
     }
 
-
-    public override void UpdateColor() {
-        Color color = Enabled ? Color.green : Color.gray;
-        //foreach (Renderer renderer in outlineOnClick.Renderers)
-            //renderer.material.color = color;
-    }
-
-    public override string GetObjectTypeName() {
+    public string GetObjectTypeName() {
         return "Start action";
     }
-
-    public override void CloseMenu() {
-        throw new NotImplementedException();
-    }
-
-
 }

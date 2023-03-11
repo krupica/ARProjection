@@ -349,15 +349,15 @@ namespace Base {
         }
     }
 
-    public class InteractiveObjectEventArgs : EventArgs {
-        public InteractiveObject InteractiveObject {
-            get; set;
-        }
+    //public class InteractiveObjectEventArgs : EventArgs {
+    //    public InteractiveObject InteractiveObject {
+    //        get; set;
+    //    }
 
-        public InteractiveObjectEventArgs(InteractiveObject interactiveObject) {
-            InteractiveObject = interactiveObject;
-        }
-    }
+    //    public InteractiveObjectEventArgs(InteractiveObject interactiveObject) {
+    //        InteractiveObject = interactiveObject;
+    //    }
+    //}
 
     public class ObjectTypeEventArgs : EventArgs {
         public ObjectTypeMeta ObjectType {
@@ -476,7 +476,7 @@ namespace Base {
         public delegate void ObjectTypeHandler(object sender, ObjectTypeEventArgs args);
         public delegate void ObjectTypesHandler(object sender, ObjectTypesEventArgs args);
         public delegate void GameObjectEventHandler(object sender, GameObjectEventArgs args);
-        public delegate void InteractiveObjectEventHandler(object sender, InteractiveObjectEventArgs args);
+        //public delegate void InteractiveObjectEventHandler(object sender, InteractiveObjectEventArgs args);
         public delegate void ObjectLockingEventHandler(object sender, ObjectLockingEventArgs args);
         public delegate void ProcessStateEventHandler(object sender, ProcessStateEventArgs args);
         public delegate void CalibrationEventHandler(object sender, CalibrationEventArgs args);

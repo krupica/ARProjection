@@ -28,7 +28,7 @@ public abstract class StartEndAction : Base.Action {
         PlayerPrefsHelper.SaveVector3(playerPrefsKey, transform.localPosition);
     }
 
-    public override void OnHoverStart() {
+    public void OnHoverStart() {
         if (GameManager.Instance.GetEditorState() != GameManager.EditorStateEnum.Normal &&
             GameManager.Instance.GetEditorState() != GameManager.EditorStateEnum.SelectingAction) {
             if (GameManager.Instance.GetEditorState() == GameManager.EditorStateEnum.InteractionDisabled) {
@@ -45,65 +45,59 @@ public abstract class StartEndAction : Base.Action {
         //outlineOnClick.Highlight();
         NameText.gameObject.SetActive(true);
         //if (SelectorMenu.Instance.ManuallySelected) {
-            DisplayOffscreenIndicator(true);
         //}
     }
 
-    public override void OnHoverEnd() {
-        //outlineOnClick.UnHighlight();
-        NameText.gameObject.SetActive(false);
-        DisplayOffscreenIndicator(false);
-    }
 
-    public async override Task<RequestResult> Movable() {
+    public async Task<RequestResult> Movable() {
         return new RequestResult(true);
     }
 
-    public override bool HasMenu() {
+    public bool HasMenu() {
         return false;
     }
 
-    public override void StartManipulation() {
+    public void StartManipulation() {
         throw new NotImplementedException();
     }
 
-    public override async Task<bool> WriteUnlock() {
+    public async Task<bool> WriteUnlock() {
         return true;
     }
 
-    public override async Task<bool> WriteLock(bool lockTree) {
+    public async Task<bool> WriteLock(bool lockTree) {
         return true;
     }
 
-    protected override void OnObjectLockingEvent(object sender, ObjectLockingEventArgs args) {
+    protected void OnObjectLockingEvent(object sender, ObjectLockingEventArgs args) {
         return;
     }
 
-    public override void OnObjectLocked(string owner) {
+    public void OnObjectLocked(string owner) {
         return;
     }
 
-    public override void OnObjectUnlocked() {
+    public void OnObjectUnlocked() {
         return;
     }
 
-    public override string GetName() {
+    public string GetName() {
         return Data.Name;
     }    
 
-    public override void OpenMenu() {
+    public void OpenMenu() {
         throw new NotImplementedException();
     }
 
-    public async override Task<RequestResult> Removable() {
-        return new RequestResult(false, GetObjectTypeName() + " could not be removed");
-    }
+    //public async Task<RequestResult> Removable() {
+    //    return new RequestResult(false, GetObjectTypeName() + " could not be removed");
+    //}
 
-    public override void Remove() {
+    public void Remove() {
         throw new NotImplementedException();
     }
 
-    public override Task Rename(string name) {
+    public Task Rename(string name) {
         throw new NotImplementedException();
     }
 
@@ -111,7 +105,7 @@ public abstract class StartEndAction : Base.Action {
         return Instantiate(ModelPrefab);
     }
 
-    public override void EnableVisual(bool enable) {
+    public void EnableVisual(bool enable) {
         VisualRoot.SetActive(enable);
     }
 }

@@ -297,7 +297,6 @@ namespace Base {
                 return;
             }
         }
-        
 
         private void OnActionPointAdded(object sender, ProjectActionPointEventArgs data) {
             ActionPoint ap = null;
@@ -706,7 +705,7 @@ namespace Base {
                         (List<string>, Dictionary<string, string>) updateActionsResult = actionPoint.UpdateActionPoint(projectActionPoint);
                         currentActions.AddRange(updateActionsResult.Item1);
 
-                        actionPoint.UpdatePositionsOfPucks();
+                        //actionPoint.UpdatePositionsOfPucks();
 
                         currentAP.Add(actionPoint.Data.Id);
 
@@ -936,22 +935,10 @@ namespace Base {
             if (!Valid)
                 return;
             foreach (ActionPoint ap in ActionPoints.Values) {
-                ap.Enable(enable);
+                //ap.Enable(enable);
             }
         }
 
-        /// <summary>
-        /// Disables all orientation visuals
-        /// </summary>
-        public void EnableAllOrientations(bool enable) {
-            if (!Valid)
-                return;
-            foreach (ActionPoint ap in ActionPoints.Values) {
-                //foreach (APOrientation orietationVisual in ap.GetOrientationsVisuals()) {
-                    //orietationVisual.Enable(enable);
-                //}
-            }
-        }
 
         /// <summary>
         /// Disables all orientation visuals
@@ -963,25 +950,6 @@ namespace Base {
                 //}
             }
         }
-
-
-        /// <summary>
-        /// Disables all actions
-        /// </summary>
-        public void EnableAllActions(bool enable) {
-            if (!Valid)
-                return;
-            foreach (ActionPoint ap in ActionPoints.Values) {
-                foreach (Action action in ap.Actions.Values)
-                    action.Enable(enable);
-            }
-            if (StartAction != null)
-                StartAction.Enable(enable);
-            if (EndAction != null)
-                EndAction.Enable(enable);
-        }
-
-        
 
 
         #region ACTIONS
@@ -1020,7 +988,7 @@ namespace Base {
 
             // Add new action into scene reference
             ActionPoints[ap.Data.Id].Actions.Add(action.Data.Id, action);
-            ap.UpdatePositionsOfPucks();
+            //ap.UpdatePositionsOfPucks();
             puck.SetActive(true);
 
             return action;
