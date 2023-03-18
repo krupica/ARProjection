@@ -797,6 +797,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbf610b6f4978774981cfdc1b10e91ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  calibXmlPath: calibration_result.xml
+  kinect: {fileID: 0}
   ExpertMode: 1
   GizmoPrefab: {fileID: 0}
   MainMenuBtnCG: {fileID: 0}
@@ -828,7 +830,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPointsOrigin: {fileID: 236444633}
   ConnectionPrefab: {fileID: 0}
-  ActionPointPrefab: {fileID: 8799331447481118116, guid: 244c19b922641944e8d5f8c020089b5d, type: 3}
+  ActionPointPrefab: {fileID: 361958019179128258, guid: 5e8cd9e6a1959104ead25e695e066261, type: 3}
   PuckPrefab: {fileID: 0}
   StartPrefab: {fileID: 2114904411120870232, guid: 06c760160c28f2d4b902d23070629a7b, type: 3}
   EndPrefab: {fileID: 5767670319277044569, guid: 7dd960350584cc749b51c27d24318208, type: 3}

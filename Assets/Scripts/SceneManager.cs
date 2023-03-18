@@ -582,23 +582,27 @@ namespace Base {
             }
             GameObject obj;
             if (aom.Robot) {
-                //obj = Instantiate(RobotPrefab, ActionObjectsSpawn.transform);
+                obj = Instantiate(RobotPrefab, ActionObjectsSpawn.transform);
             } else if (aom.CollisionObject) {
                 obj = Instantiate(CollisionObjectPrefab, ActionObjectsSpawn.transform);
             } else if (aom.HasPose) {
                 obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
+                //Získání reference na Kinect
+                if (aom.Type == "KinectAzure")
+                {
+                    GameManager.Instance.kinect = obj;
+                }
             } else {
-                //obj = Instantiate(ActionObjectNoPosePrefab, ActionObjectsSpawn.transform);
+                obj = Instantiate(ActionObjectNoPosePrefab, ActionObjectsSpawn.transform);
             }
-            //ActionObject actionObject = obj.GetComponent<ActionObject>();
-            //actionObject.InitActionObject(sceneObject, obj.transform.localPosition, obj.transform.localRotation, aom, customCollisionModels);
+            ActionObject actionObject = obj.GetComponent<ActionObject>();
+            actionObject.InitActionObject(sceneObject, obj.transform.localPosition, obj.transform.localRotation, aom, customCollisionModels);
 
             // Add the Action Object into scene reference
-            //ActionObjects.Add(sceneObject.Id, actionObject);
-            //actionObject.SetVisibility(ActionObjectsVisibility);
-            //actionObject.ActionObjectUpdate(sceneObject);
-            //return actionObject;
-            return null;
+            ActionObjects.Add(sceneObject.Id, actionObject);
+            actionObject.SetVisibility(ActionObjectsVisibility);
+            actionObject.ActionObjectUpdate(sceneObject);
+            return actionObject;
         }
 
         /// <summary>

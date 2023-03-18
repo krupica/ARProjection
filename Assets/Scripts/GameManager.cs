@@ -26,6 +26,9 @@ namespace Base {
 
         public string calibXmlPath = "calibration_result.xml";
 
+        public GameObject kinect;
+        Matrix4x4 cameraMatrix = new Matrix4x4();
+
         #region fields
 
         /// <summary>

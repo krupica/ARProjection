@@ -7,27 +7,46 @@ namespace Assets.Scripts.AR_Classes
 {
     public class CalibrationData
     {
-        //public double[,] camInt;
-        //public double[,] projInt;
-        //public double[] camDist;
-        //public double[] projDist;
+        public int[] imgShape;
+        public float[] camInt;
+        public float[] projInt;
+        public float[] camDist;
+        public float[] projDist;
         public Matrix4x4 rotation;
         public Vector3 translation;
 
         public CalibrationData (string xmlPath)
-        {
-            //FillMatrix();
-            //return;
-
+        {           
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlPath);
 
             XmlElement rootNode = xmlDoc.DocumentElement;
             XmlNode rotationNode = rootNode.SelectSingleNode("rotation");
             XmlNode translationNode = rootNode.SelectSingleNode("translation");
+            XmlNode imgShapeNode = rootNode.SelectSingleNode("img_shape");
+            XmlNode camIntNode = rootNode.SelectSingleNode("cam_int");
+            XmlNode projIntNode = rootNode.SelectSingleNode("cam_dist");
+            XmlNode camDistNode = rootNode.SelectSingleNode("proj_int");
+            XmlNode projDistNode = rootNode.SelectSingleNode("proj_dist");
 
-            double[] rotationData = ReadMatrixData(rotationNode.InnerText);
-            double[] translationData = ReadMatrixData(translationNode.InnerText);
+            float[] imgShapeData = ReadMatrixData(imgShapeNode.InnerText);
+            float[] rotationData = ReadMatrixData(rotationNode.InnerText);
+            float[] translationData = ReadMatrixData(translationNode.InnerText);
+            float[] camIntData = ReadMatrixData(camIntNode.InnerText);
+            float[] projIntData = ReadMatrixData(projIntNode.InnerText);
+            float[] camDistData = ReadMatrixData(camDistNode.InnerText);
+            float[] projDistData = ReadMatrixData(projDistNode.InnerText);
+
+            imgShape = new int[] { (int)imgShapeData[0], (int)imgShapeData[1] };
+            camInt = new float[9] { camIntData[0], camIntData[1], camIntData[2] ,
+                 camIntData[3], camIntData[4], camIntData[5],
+                camIntData[6], camIntData[7], camIntData[8]};
+            camDist = new float[5] { camDistData[0], camDistData[1], camDistData[2], camDistData[3], camDistData[4] };
+            projInt = new float[9] { projIntData[0], projIntData[1], projIntData[2] ,
+                 projIntData[3], projIntData[4], projIntData[5],
+                projIntData[6], projIntData[7], projIntData[8] };
+            projDist = new float[5] { projDistData[0], projDistData[1], projDistData[2], projDistData[3], projDistData[4] };
+
 
             rotation = new Matrix4x4(
                 new Vector4((float)rotationData[0], (float)rotationData[1], (float)rotationData[2], 0f),
@@ -43,6 +62,23 @@ namespace Assets.Scripts.AR_Classes
             );
         }
 
+        private float[] ReadMatrixData(string matrixData)
+        {
+            int count = 0;
+            string[] values = matrixData.Split(' ', '\n');
+            float[] matrix = new float[values.Length];
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (float.TryParse(values[i], out float value))
+                {
+                    matrix[count]= value;
+                    count++;
+                }
+                    
+            }
+            return matrix;
+        }
+
         public void FillMatrix()
         {
             rotation = new Matrix4x4();
@@ -52,21 +88,6 @@ namespace Assets.Scripts.AR_Classes
             rotation.SetRow(3, new Vector4(0, 0, 0, 1));
 
             translation = new Vector3((float)8.5737214348908466e+01, (float)-6.3045718819563251e+02, (float)-1.0084398390544085e+02);
-        }
-
-        private double[] ReadMatrixData(string matrixData)
-        {
-            string[] values = matrixData.Split(' ', '\n');
-            double[] matrix = new double[values.Length];
-            for (int i = 0; i < values.Length; i++)
-            {
-                if (double.TryParse(values[i], out double value))
-                {
-                    matrix[i]= value;
-                }
-                    
-            }
-            return matrix;
         }
     }    
 }

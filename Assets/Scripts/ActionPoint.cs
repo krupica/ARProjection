@@ -42,7 +42,6 @@ namespace Base {
         public virtual void ActionPointBaseUpdate(IO.Swagger.Model.BareActionPoint apData) {
             Data.Name = apData.Name;
             Data.Position = apData.Position;
-            //SelectorItem.SetText(apData.Name);
             // update position and rotation based on received data from swagger
             transform.localPosition = GetScenePosition();
             if (Parent != null)

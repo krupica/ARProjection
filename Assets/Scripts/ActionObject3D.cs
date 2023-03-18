@@ -12,11 +12,8 @@ using static UnityEngine.GraphicsBuffer;
 public class ActionObject3D : ActionObject
 {
     [SerializeField]
-    public GameObject CubePrefab;
+    public GameObject CubePrefab, CylinderPrefab, SpherePrefab, CapsulePrefab;
     public GameObject Model;
-
-    public GameObject CylinderPrefab, SpherePrefab;
-
 
     protected void Start()
     {
@@ -78,11 +75,10 @@ public class ActionObject3D : ActionObject
 
     public override void CreateModel(CollisionModels customCollisionModels = null)
     {
-
         if (ActionObjectMetadata.ObjectModel == null || ActionObjectMetadata.ObjectModel.Type == IO.Swagger.Model.ObjectModel.TypeEnum.None)
         {
-            //Model = Instantiate(CubePrefab, Visual.transform);
-            //Model.transform.localScale = new Vector3(0.05f, 0.01f, 0.05f);
+            Model = Instantiate(CubePrefab, transform);
+            Model.transform.localScale = new Vector3(0.05f, 0.01f, 0.05f);
         }
         else
         {
@@ -147,16 +143,15 @@ public class ActionObject3D : ActionObject
                     //MeshImporter.Instance.OnMeshImported += OnModelLoaded;
                     //MeshImporter.Instance.LoadModel(ActionObjectMetadata.ObjectModel.Mesh, GetId());
 
-                    Model = Instantiate(CubePrefab, transform);
-                    Model.transform.localScale = new Vector3(0.05f, 0.01f, 0.05f);
+                    Model = Instantiate(CapsulePrefab, transform);
+                    Model.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
                     break;
                 default:
                     Model = Instantiate(CubePrefab, transform);
-                    Model.transform.localScale = new Vector3(0.05f, 0.01f, 0.05f);
+                    Model.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
                     break;
             }
         }
-
         gameObject.GetComponent<BindParentToChild>().ChildToBind = Model;
     }
 
