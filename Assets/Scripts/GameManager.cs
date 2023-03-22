@@ -23,11 +23,11 @@ namespace Base {
         /// Calibration
         /// </summary>
         public CalibrationData calibrationData;
-
         public string calibXmlPath = "calibration_result.xml";
-
         public GameObject kinect;
-        Matrix4x4 cameraMatrix = new Matrix4x4();
+        public GameObject projector;
+        public GameObject canvas;
+        public GameObject actionPointPrefab;
 
         #region fields
 

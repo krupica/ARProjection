@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using System.Globalization;
 using UnityEngine.UI;
 using UnityEngine.Events;
-//using Michsky.UI.ModernUIPack;
 using IO.Swagger.Model;
 using TMPro;
 using System.Linq;

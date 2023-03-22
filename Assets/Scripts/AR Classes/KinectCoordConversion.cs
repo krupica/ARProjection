@@ -1,51 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml;
-using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 using Base;
-using UnityEditorInternal;
-using Packages.Rider.Editor.UnitTesting;
 
 namespace Assets.Scripts.AR_Classes
 {
-    public class KinectCoordConversion
+    public static class KinectCoordConversion
     {
-        //    public static Vector2 LocaltToScreenSpace(Vector3 point, float[] camInt, float[]camDist)
-        //    {
-        //        testx();
-        //        Mat cameraMatrix = ArrayToMat(camInt, 3, 3);
-        //        Mat distortionCoefficients = ArrayToMat(camDist, 1, 5);
-        //        // convert the 3D point from Unity coordinates to OpenCV coordinates
-        //        Point3f[] points = new Point3f[1];
-        //        points[0] = new Point3f(point.x, point.y, point.z);
+        public static void SetProjectorTransform(GameObject projector)
+        {           
+            CalibrationData calib = GameManager.Instance.calibrationData;
+            Camera cam = GameManager.Instance.kinect.GetComponent<Camera>();
 
+            // Compute the projector-to-world matrix P
+            Matrix4x4 P = cam.cameraToWorldMatrix * calib.Rotation * Matrix4x4.Translate(calib.Translation);
 
-                //        // initialize the rotation and translation vectors to zero
-                //        var rvec = new Mat();
-                //        var tvec = new Mat();
+            // Compute the world-to-projector matrix Pinv
+            Matrix4x4 Pinv = P.inverse;
 
-                //        // project the 3D point onto the 2D image plane using the camera matrix and distortion coefficients
-                //        var imagePoints = new Mat();
-                //        InputArray inputPoint = InputArray.Create(points);
-                //        Cv2.ProjectPoints(inputPoint, rvec, tvec, cameraMatrix, distortionCoefficients, imagePoints);
+            // Compute the projector transform
+            projector.transform.position = Pinv.MultiplyPoint(Vector3.zero);
+            projector.transform.rotation = Quaternion.LookRotation(-Pinv.GetColumn(2), Pinv.GetColumn(1));
+        }
+        public static Vector3 ManualWorldToScreenPoint(Vector3 wp)
+        {
+            CalibrationData calib = GameManager.Instance.calibrationData;
+            Camera cam = GameManager.Instance.kinect.GetComponent<Camera>();
+            // calculate view-projection matrix
+            Matrix4x4 mat;
+            mat = cam.projectionMatrix * cam.worldToCameraMatrix;
+            mat = calib.CamMatrix.inverse * cam.worldToCameraMatrix;
+            
 
-                //        // get the pixel location of the projected point
-                //        var pixelLocation = new Vector2(imagePoints.Get<float>(0, 0), imagePoints.Get<float>(0, 1));
-                //        return pixelLocation;
-                //    }
+            // multiply world point by VP matrix
+            Vector4 temp = mat * new Vector4(wp.x, wp.y, wp.z, 1f);
 
-                //    public static Mat ArrayToMat(float[] data, int height, int width)
-                //    {
-                //        Mat cameraMatrix = new Mat(height, width, MatType.CV_32F);
-                //        for (int i = 0; i < height; i++)
-                //        {
-                //            for (int j = 0; j < width; j++)
-                //            {
-                //                cameraMatrix.Set(i, j, data[i * width + j]);
-                //            }
-                //        }
-                //        return cameraMatrix;
-                //    }            
+            if (temp.w == 0f)
+            {
+                // point is exactly on camera focus point, screen point is undefined
+                return Vector3.zero;
+            }
+            else
+            {
+                // convert x and y from clip space to window coordinates
+                //temp.x = (temp.x / temp.w + 1f) * .5f * calib.Width;
+                //temp.y = (temp.y / temp.w + 1f) * .5f * calib.Height;
+                temp.x = (temp.x / temp.w + 1f) * .5f * cam.pixelWidth;
+                temp.y = (temp.y / temp.w + 1f) * .5f * cam.pixelHeight;
+                return new Vector3(temp.x, temp.y, wp.z);
+            }
+        }
     }
 }

@@ -1,19 +1,65 @@
-﻿using System;
+﻿using Base;
+using IO.Swagger.Model;
+using System;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Assets.Scripts.AR_Classes
 {
     public class CalibrationData
     {
-        public int[] imgShape;
-        public float[] camInt;
-        public float[] projInt;
-        public float[] camDist;
-        public float[] projDist;
-        public Matrix4x4 rotation;
-        public Vector3 translation;
+        public float CamFx
+        {
+            get { return CamMatrix[0]; }
+            set { CamMatrix[0] = value;}
+        }
+
+        public float CamFy
+        {
+            get { return CamMatrix[4]; }
+            set { CamMatrix[4] = value;}
+        }
+
+        public float CamCx
+        {
+            get { return CamMatrix[2]; }
+            set { CamMatrix[2] = value; }
+        }
+
+        public float CamCy
+        {
+            get { return CamMatrix[5]; }
+            set { CamMatrix[5] = value;}            
+        }
+
+        public Matrix4x4 CamMatrix;
+
+        public int Width
+        {
+            get { return imgShape[0]; }
+            set { imgShape[0] = value;}
+        }
+
+        public int Height
+        {
+            get { return imgShape[1]; }
+            set { imgShape[1] = value;}
+        }
+
+        public Transform KinectPosition { get; set; }
+
+        public Matrix4x4 Rotation { get; private set; }
+
+        public Vector3 Translation { get; private set; }
+
+        private int[] imgShape;
+        private float[] projInt;
+        private float[] camDist;
+        private float[] projDist;
+        
+        private Matrix4x4 extrinsic;
 
         public CalibrationData (string xmlPath)
         {           
@@ -24,7 +70,6 @@ namespace Assets.Scripts.AR_Classes
             XmlNode rotationNode = rootNode.SelectSingleNode("rotation");
             XmlNode translationNode = rootNode.SelectSingleNode("translation");
             XmlNode imgShapeNode = rootNode.SelectSingleNode("img_shape");
-            XmlNode camIntNode = rootNode.SelectSingleNode("cam_int");
             XmlNode projIntNode = rootNode.SelectSingleNode("cam_dist");
             XmlNode camDistNode = rootNode.SelectSingleNode("proj_int");
             XmlNode projDistNode = rootNode.SelectSingleNode("proj_dist");
@@ -32,34 +77,55 @@ namespace Assets.Scripts.AR_Classes
             float[] imgShapeData = ReadMatrixData(imgShapeNode.InnerText);
             float[] rotationData = ReadMatrixData(rotationNode.InnerText);
             float[] translationData = ReadMatrixData(translationNode.InnerText);
-            float[] camIntData = ReadMatrixData(camIntNode.InnerText);
             float[] projIntData = ReadMatrixData(projIntNode.InnerText);
             float[] camDistData = ReadMatrixData(camDistNode.InnerText);
             float[] projDistData = ReadMatrixData(projDistNode.InnerText);
 
-            imgShape = new int[] { (int)imgShapeData[0], (int)imgShapeData[1] };
-            camInt = new float[9] { camIntData[0], camIntData[1], camIntData[2] ,
-                 camIntData[3], camIntData[4], camIntData[5],
-                camIntData[6], camIntData[7], camIntData[8]};
+            imgShape = new int[] { (int)imgShapeData[1], (int)imgShapeData[0] };
             camDist = new float[5] { camDistData[0], camDistData[1], camDistData[2], camDistData[3], camDistData[4] };
             projInt = new float[9] { projIntData[0], projIntData[1], projIntData[2] ,
                  projIntData[3], projIntData[4], projIntData[5],
                 projIntData[6], projIntData[7], projIntData[8] };
             projDist = new float[5] { projDistData[0], projDistData[1], projDistData[2], projDistData[3], projDistData[4] };
 
+            CamMatrix = Matrix4x4.identity;
 
-            rotation = new Matrix4x4(
-                new Vector4((float)rotationData[0], (float)rotationData[1], (float)rotationData[2], 0f),
-                new Vector4((float)rotationData[3], (float)rotationData[4], (float)rotationData[5], 0f),
-                new Vector4((float)rotationData[6], (float)rotationData[7], (float)rotationData[8], 0f),
+            Rotation = new Matrix4x4(
+                new Vector4(rotationData[0], rotationData[1], rotationData[2], 0f),
+                new Vector4(rotationData[3], rotationData[4], rotationData[5], 0f),
+                new Vector4(rotationData[6], rotationData[7], rotationData[8], 0f),
                 new Vector4(0f, 0f, 0f, 1f)
             );
 
-            translation = new Vector3(
-                (float)translationData[0],
-                (float)translationData[1],
-                (float)translationData[2]
+            Translation = new Vector3(
+                translationData[0],
+                translationData[1],
+                translationData[2]
             );
+
+            extrinsic = Matrix4x4.identity;
+            extrinsic.SetRow(0, new Vector4(Rotation[0, 0], Rotation[0, 1], Rotation[0, 2], Translation[0]));
+            extrinsic.SetRow(1, new Vector4(Rotation[1, 0], Rotation[1, 1], Rotation[1, 2], Translation[1]));
+            extrinsic.SetRow(2, new Vector4(Rotation[2, 0], Rotation[2, 1], Rotation[2, 2], Translation[2]));
+        }
+
+        public void SetCamCalibFromParams(CameraParameters camParams)
+        {
+            CamCx = (float)camParams.Cx;
+            CamCy = (float)camParams.Cy;
+            CamFx = (float)camParams.Fx;
+            CamFy = (float)camParams.Fy;
+        }
+
+        public async void GetCameraParameters()
+        {
+            string id = GameManager.Instance.kinect.GetComponent<ActionObject>().Data.Id;
+
+            WebsocketManager.Instance.WriteLock(id, false);
+            CameraParameters camParams = await WebsocketManager.Instance.GetCameraColorParameters(id);
+            WebsocketManager.Instance.WriteUnlock(id);
+
+            SetCamCalibFromParams(camParams);
         }
 
         private float[] ReadMatrixData(string matrixData)
@@ -79,15 +145,15 @@ namespace Assets.Scripts.AR_Classes
             return matrix;
         }
 
-        public void FillMatrix()
-        {
-            rotation = new Matrix4x4();
-            rotation.SetRow(0, new Vector4((float)9.9995961310770576e-01, (float)8.9872990011441688e-03, (float)2.4701242572249633e-05, 0));
-            rotation.SetRow(1, new Vector4((float)-8.9613393813132575e-03, (float)9.9685483491258131e-01, (float)7.8740920161649047e-02, 0));
-            rotation.SetRow(2, new Vector4((float)6.8304464003145823e-04, (float)-7.8737961416805169e-02, (float)9.9689511328020131e-01, 0));
-            rotation.SetRow(3, new Vector4(0, 0, 0, 1));
+        //public void FillMatrix()
+        //{
+        //    rotation = new Matrix4x4();
+        //    rotation.SetRow(0, new Vector4(9.9995961310770576e-01, 8.9872990011441688e-03, 2.4701242572249633e-05, 0));
+        //    rotation.SetRow(1, new Vector4(-8.9613393813132575e-03, 9.9685483491258131e-01, 7.8740920161649047e-02, 0));
+        //    rotation.SetRow(2, new Vector4(6.8304464003145823e-04, -7.8737961416805169e-02, 9.9689511328020131e-01, 0));
+        //    rotation.SetRow(3, new Vector4(0, 0, 0, 1));
 
-            translation = new Vector3((float)8.5737214348908466e+01, (float)-6.3045718819563251e+02, (float)-1.0084398390544085e+02);
-        }
+        //    translation = new Vector3(8.5737214348908466e+01, -6.3045718819563251e+02, -1.0084398390544085e+02);
+        //}
     }    
 }

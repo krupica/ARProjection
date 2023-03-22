@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Assets.Scripts.AR_Classes;
 using IO.Swagger.Model;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -141,11 +142,6 @@ namespace Base {
 
         //private RobotEE selectedEndEffector;
 
-        public string SelectCreatedActionObject;
-        public bool OpenTransformMenuOnCreatedObject;
-
-        
-
         public bool Valid = false;
         /// <summary>
         /// Public setter for sceneChanged property. Invokes OnSceneChanged event with each change and
@@ -187,7 +183,6 @@ namespace Base {
             Debug.Assert(ActionsManager.Instance.ActionsReady);
             if (SceneMeta != null)
                 return false;
-            //SelectorMenu.Instance.Clear();
             SetSceneMeta(DataHelper.SceneToBareScene(scene));            
             this.loadResources = loadResources;
             LoadSettings();
@@ -580,6 +575,7 @@ namespace Base {
             if (!ActionsManager.Instance.ActionObjectsMetadata.TryGetValue(sceneObject.Type, out ActionObjectMetadata aom)) {
                 return null;
             }
+            bool isKinect = false;
             GameObject obj;
             if (aom.Robot) {
                 obj = Instantiate(RobotPrefab, ActionObjectsSpawn.transform);
@@ -587,10 +583,19 @@ namespace Base {
                 obj = Instantiate(CollisionObjectPrefab, ActionObjectsSpawn.transform);
             } else if (aom.HasPose) {
                 obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
-                //Získání reference na Kinect
+                //Získání reference na Kinect a projector
                 if (aom.Type == "KinectAzure")
                 {
+                    isKinect = true;
+                    if (Camera.main)
+                    {
+                        Camera.main.enabled = false;
+                    }
                     GameManager.Instance.kinect = obj;
+                    GameManager.Instance.calibrationData.KinectPosition = obj.transform;
+                    obj.AddComponent<Camera>();
+
+                    GameManager.Instance.projector = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);                    
                 }
             } else {
                 obj = Instantiate(ActionObjectNoPosePrefab, ActionObjectsSpawn.transform);
@@ -602,6 +607,14 @@ namespace Base {
             ActionObjects.Add(sceneObject.Id, actionObject);
             actionObject.SetVisibility(ActionObjectsVisibility);
             actionObject.ActionObjectUpdate(sceneObject);
+
+            //TODO move
+            if (isKinect)
+            {
+                GameManager.Instance.calibrationData.GetCameraParameters();
+                KinectCoordConversion.SetProjectorTransform(GameManager.Instance.projector);
+            }
+
             return actionObject;
         }
 
@@ -783,19 +796,6 @@ namespace Base {
         /// <returns></returns>
         public void SceneObjectAdded(SceneObject sceneObject) {
             ActionObject actionObject = SpawnActionObject(sceneObject);
-            if (!string.IsNullOrEmpty(SelectCreatedActionObject) && sceneObject.Name.Contains(SelectCreatedActionObject)) {
-                //if (ActionObjectPickerMenu.Instance.IsVisible())
-                //    AREditorResources.Instance.LeftMenuScene.AddButtonClick();
-                //SelectorMenu.Instance.SetSelectedObject(actionObject.SelectorItem, true);
-                //if (!actionObject.ActionObjectMetadata.HasPose)
-                //    SelectorMenu.Instance.BottomButtons.SelectButton(SelectorMenu.Instance.BottomButtons.Buttons[2], true);
-            }
-            if (OpenTransformMenuOnCreatedObject) {
-                //AREditorResources.Instance.LeftMenuScene.SetActiveSubmenu(LeftMenuSelection.Utility);
-                //AREditorResources.Instance.LeftMenuScene.MoveClick();
-            }
-            SelectCreatedActionObject = "";
-            OpenTransformMenuOnCreatedObject = false;
             updateScene = true;
         }
 
@@ -827,7 +827,6 @@ namespace Base {
                 //actionObject.ActionObjectUpdate(aoSwagger);
                 currentAO.Add(aoSwagger.Id);
             }
-
         }
 
         /// <summary>

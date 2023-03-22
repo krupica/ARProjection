@@ -31,18 +31,7 @@ namespace Base {
                 SetSceneOrientation(orientation);
             }
             CreateModel(customCollisionModels);
-            enabled = true;
-            //SelectorItem = SelectorMenu.Instance.CreateSelectorItem(this);
-            //if (VRModeManager.Instance.VRModeON) {
-            //    SetVisibility(PlayerPrefsHelper.LoadFloat("AOVisibilityVR", 1f));
-            //} else {
-            //    SetVisibility(PlayerPrefsHelper.LoadFloat("AOVisibilityAR", 0f));
-            //}
-
-            //if (PlayerPrefsHelper.LoadBool($"ActionObject/{GetId()}/blocklisted", false)) {
-            //    Enable(false, true, false);
-            //}
-
+            enabled = true;           
         }
         
         public virtual void UpdateObjectName(string newUserId) {

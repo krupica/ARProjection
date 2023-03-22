@@ -2451,6 +2451,24 @@ namespace Base {
             }
         }
 
+        public async Task<CameraParameters> GetCameraColorParameters(string cameraId)
+        {
+            int r_id = Interlocked.Increment(ref requestID);
+            IO.Swagger.Model.CameraColorParametersRequestArgs args = new CameraColorParametersRequestArgs(id: cameraId);
+
+            IO.Swagger.Model.CameraColorParametersRequest request = new IO.Swagger.Model.CameraColorParametersRequest(r_id, "CameraColorParameters", args: args);
+            SendDataToServer(request.ToJson(), r_id, true);
+            IO.Swagger.Model.CameraColorParametersResponse response = await WaitForResult<IO.Swagger.Model.CameraColorParametersResponse>(r_id);
+            if (response == null || !response.Result)
+            {
+                throw new RequestFailedException(response == null ? new List<string>() { "Failed to get parameters from camera " + cameraId } : response.Messages);
+            }
+            else
+            {
+                return response.Data;
+            }
+        }
+
         public async Task<string> GetCameraColorImage(string cameraId) {
             int r_id = Interlocked.Increment(ref requestID);
             IO.Swagger.Model.CameraColorImageRequestArgs args = new CameraColorImageRequestArgs(id: cameraId);

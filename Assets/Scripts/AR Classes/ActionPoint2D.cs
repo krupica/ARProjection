@@ -24,17 +24,25 @@ public class ActionPoint2D : Base.ActionPoint {
 
     public override Vector3 GetScenePosition() {
         Vector3 newPos = TransformConvertor.ROSToUnity(DataHelper.PositionToVector3(Data.Position));
-        //if (GameManager.Instance.kinect!=null)
-        //{
-        //    Matrix4x4 kinectToWorld = GameManager.Instance.kinect.transform.worldToLocalMatrix;
-        //    CalibrationData calibData = GameManager.Instance.calibrationData;
-        //    Vector3 kinectPoint = kinectToWorld.MultiplyPoint(newPos);
-        //    //var x = KinectCoordConversion.LocaltToScreenSpace(kinectPoint, GameManager.Instance.calibrationData.camInt, GameManager.Instance.calibrationData.camDist);
-        //    return kinectPoint;
-        //    //Vector3 rotatedPoint = GameManager.Instance.calibrationData.rotation.MultiplyPoint(kinectPoint);
-        //    //Vector3 transformedPoint = rotatedPoint + GameManager.Instance.calibrationData.translation;
-        //    //return transformedPoint;
-        //}
+        
+        if (GameManager.Instance.kinect!=null)
+        {
+            GameObject kinect = GameManager.Instance.kinect;
+            Matrix4x4 kinectToWorld = kinect.transform.worldToLocalMatrix;
+            Vector3 localPoint = kinectToWorld.MultiplyPoint(newPos);
+
+            //Vector3 Point2D = kinect.GetComponent<Camera>().WorldToScreenPoint(newPos);
+            //Vector2 Point2D = KinectCoordConversion.LocaltToScreenSpace(localPoint);
+            Vector2 Point2D = KinectCoordConversion.ManualWorldToScreenPoint(newPos);
+            GameObject go = Instantiate(GameManager.Instance.actionPointPrefab, Point2D, Quaternion.identity, GameManager.Instance.canvas.transform);
+
+            return newPos;
+            //projection
+            //Vector3 rotatedPoint = GameManager.Instance.calibrationData.rotation.MultiplyPoint(kinectPoint);
+            //Vector3 transformedPoint = rotatedPoint + GameManager.Instance.calibrationData.translation;
+
+            //return transformedPoint;
+        }
 
         return newPos;
     }
