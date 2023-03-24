@@ -179,7 +179,7 @@ namespace Base {
         /// <param name="customCollisionModels">Allows to override collision models with different ones. Usable e.g. for
         /// project running screen.</param>
         /// <returns>True if scene successfully created, false otherwise</returns>
-        public async Task<bool> CreateScene(IO.Swagger.Model.Scene scene, bool loadResources, CollisionModels customCollisionModels = null) {
+        public async Task<bool> CreateScene(IO.Swagger.Model.Scene scene, CollisionModels customCollisionModels = null) {
             Debug.Assert(ActionsManager.Instance.ActionsReady);
             if (SceneMeta != null)
                 return false;
@@ -297,12 +297,10 @@ namespace Base {
         private async void OnSceneState(object sender, SceneStateEventArgs args) {
             switch (args.Event.State) {
                 case SceneStateData.StateEnum.Starting:
-                    //GameManager.Instance.ShowLoadingScreen("Going online...");
                     OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
                     break;
                 case SceneStateData.StateEnum.Stopping:
                     SceneStarted = false;
-                    //GameManager.Instance.ShowLoadingScreen("Going offline...");
                     if (!string.IsNullOrEmpty(args.Event.Message)) {
                         Notifications.Instance.ShowNotification("Scene service failed", args.Event.Message);
                     }
@@ -313,7 +311,6 @@ namespace Base {
                     break;
                 case SceneStateData.StateEnum.Stopped:
                     SceneStarted = false;
-                    //GameManager.Instance.HideLoadingScreen();
                     SelectedRobot = null;
                     SelectedArmId = null;
                     //SelectedEndEffector = null;
@@ -452,7 +449,6 @@ namespace Base {
                 } catch (ItemNotFoundException) {
                     continue;
                 }
-                
             }
         }
 
@@ -500,69 +496,6 @@ namespace Base {
             RobotsEEVisible = PlayerPrefsHelper.LoadBool("scene/" + SceneMeta.Id + "/RobotsEEVisibility", true);
         }
 
-
-        /// <summary>
-        /// Deactivates or activates all action objects in scene for gizmo interaction.
-        /// </summary>
-        /// <param name="activate"></param>
-        private void ActivateActionObjectsForGizmo(bool activate) {
-            if (activate) {
-                gameObject.layer = LayerMask.NameToLayer("GizmoRuntime");
-                foreach (ActionObject actionObject in ActionObjects.Values) {
-                    actionObject.ActivateForGizmo("GizmoRuntime");
-                }
-            } else {
-                gameObject.layer = LayerMask.NameToLayer("Default");
-                foreach (ActionObject actionObject in ActionObjects.Values) {
-                    actionObject.ActivateForGizmo("Default");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets selected object
-        /// </summary>
-        /// <param name="obj">Object which is currently selected</param>
-        public void SetSelectedObject(GameObject obj) {
-            if (CurrentlySelectedObject != null) {
-                CurrentlySelectedObject.SendMessage("Deselect");
-            }
-            if (obj != null) {
-                obj.SendMessage("OnSelected", SendMessageOptions.DontRequireReceiver);
-            }
-            CurrentlySelectedObject = obj;
-        }
-
-      
-        /// <summary>
-        /// Computes point above selected transform which is collision free
-        /// </summary>
-        /// <param name="transform">Original pose</param>
-        /// <param name="bbSize">Size of box where no collision is allowed</param>
-        /// <param name="orientation">Orientation of box where no collision is allowed</param>
-        /// <returns>Offset from original transform in world coordinates (relative to scene origin)</returns>
-        public Vector3 GetCollisionFreePointAbove(Transform transform, Vector3 bbSize, Quaternion orientation) {
-            GameObject tmpGo = new GameObject();
-            tmpGo.transform.parent = transform;
-            tmpGo.transform.localPosition = Vector3.zero;
-            tmpGo.transform.localRotation = Quaternion.identity;
-
-            Collider[] colliders = Physics.OverlapBox(transform.position, bbSize, orientation);   //OverlapSphere(tmpGo.transform.position, 0.025f);
-            
-            // to avoid infinite loop
-            int i = 0;
-            while (colliders.Length > 0 && i < 40) {
-                Collider collider = colliders[0];
-                // TODO - depends on the rotation between detected marker and original position of camera, height of collision free point above will be slightly different
-                // How to solve this?
-                tmpGo.transform.Translate(new Vector3(0, collider.bounds.extents.y, 0), SceneOrigin.transform);
-                colliders = Physics.OverlapBox(tmpGo.transform.position, bbSize / 2, orientation);
-                ++i;
-            }
-            return tmpGo.transform.localPosition;
-        }
-
-
         #region ACTION_OBJECTS
         /// <summary>
         /// Spawns new action object
@@ -575,7 +508,6 @@ namespace Base {
             if (!ActionsManager.Instance.ActionObjectsMetadata.TryGetValue(sceneObject.Type, out ActionObjectMetadata aom)) {
                 return null;
             }
-            bool isKinect = false;
             GameObject obj;
             if (aom.Robot) {
                 obj = Instantiate(RobotPrefab, ActionObjectsSpawn.transform);
@@ -586,7 +518,6 @@ namespace Base {
                 //Získání reference na Kinect a projector
                 if (aom.Type == "KinectAzure")
                 {
-                    isKinect = true;
                     if (Camera.main)
                     {
                         Camera.main.enabled = false;
@@ -595,7 +526,10 @@ namespace Base {
                     GameManager.Instance.calibrationData.KinectPosition = obj.transform;
                     obj.AddComponent<Camera>();
 
-                    GameManager.Instance.projector = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);                    
+                    GameManager.Instance.calibrationData.GetCameraParameters(sceneObject.Id);
+
+                    GameManager.Instance.projector = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
+                    KinectCoordConversion.SetProjectorTransform(GameManager.Instance.projector);
                 }
             } else {
                 obj = Instantiate(ActionObjectNoPosePrefab, ActionObjectsSpawn.transform);
@@ -605,15 +539,7 @@ namespace Base {
 
             // Add the Action Object into scene reference
             ActionObjects.Add(sceneObject.Id, actionObject);
-            actionObject.SetVisibility(ActionObjectsVisibility);
             actionObject.ActionObjectUpdate(sceneObject);
-
-            //TODO move
-            if (isKinect)
-            {
-                GameManager.Instance.calibrationData.GetCameraParameters();
-                KinectCoordConversion.SetProjectorTransform(GameManager.Instance.projector);
-            }
 
             return actionObject;
         }
@@ -889,27 +815,6 @@ namespace Base {
             return ActionObjects.First().Value;
         }
 
-        public void SetVisibilityActionObjects(float value) {
-            foreach (ActionObject actionObject in ActionObjects.Values) {
-                actionObject.SetVisibility(value);
-            }
-            //PlayerPrefsHelper.SaveFloat("AOVisibility" + (VRModeManager.Instance.VRModeON ? "VR" : "AR"), value);
-            ActionObjectsVisibility = value;
-        }
-
-        /// <summary>
-        /// Sets whether action objects should react to user inputs (i.e. enables/disables colliders)
-        /// </summary>
-        public void SetActionObjectsInteractivity(bool interactivity) {
-            foreach (ActionObject actionObject in ActionObjects.Values) {
-                if (actionObject != null)
-                    actionObject.SetInteractivity(interactivity);
-            }
-            PlayerPrefsHelper.SaveBool("scene/" + SceneMeta.Id + "/AOInteractivity", interactivity);
-            ActionObjectsInteractive = interactivity;
-        }
-
-
         /// <summary>
         /// Destroys and removes references to all action objects in the scene.
         /// </summary>
@@ -1001,4 +906,3 @@ namespace Base {
         #endregion
     }
 }
-

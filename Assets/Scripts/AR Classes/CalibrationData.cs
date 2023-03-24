@@ -2,6 +2,8 @@
 using IO.Swagger.Model;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -10,6 +12,7 @@ namespace Assets.Scripts.AR_Classes
 {
     public class CalibrationData
     {
+        public bool Calibrated { get; set; }
         public float CamFx
         {
             get { return CamMatrix[0]; }
@@ -54,15 +57,17 @@ namespace Assets.Scripts.AR_Classes
 
         public Vector3 Translation { get; private set; }
 
+        public IEnumerable<decimal> CamDist {  get; private set; }
+
         private int[] imgShape;
         private float[] projInt;
-        private float[] camDist;
         private float[] projDist;
         
         private Matrix4x4 extrinsic;
 
         public CalibrationData (string xmlPath)
-        {           
+        {
+            Calibrated = false;
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlPath);
 
@@ -72,21 +77,17 @@ namespace Assets.Scripts.AR_Classes
             XmlNode imgShapeNode = rootNode.SelectSingleNode("img_shape");
             XmlNode projIntNode = rootNode.SelectSingleNode("cam_dist");
             XmlNode camDistNode = rootNode.SelectSingleNode("proj_int");
-            XmlNode projDistNode = rootNode.SelectSingleNode("proj_dist");
 
             float[] imgShapeData = ReadMatrixData(imgShapeNode.InnerText);
             float[] rotationData = ReadMatrixData(rotationNode.InnerText);
             float[] translationData = ReadMatrixData(translationNode.InnerText);
             float[] projIntData = ReadMatrixData(projIntNode.InnerText);
             float[] camDistData = ReadMatrixData(camDistNode.InnerText);
-            float[] projDistData = ReadMatrixData(projDistNode.InnerText);
 
             imgShape = new int[] { (int)imgShapeData[1], (int)imgShapeData[0] };
-            camDist = new float[5] { camDistData[0], camDistData[1], camDistData[2], camDistData[3], camDistData[4] };
             projInt = new float[9] { projIntData[0], projIntData[1], projIntData[2] ,
                  projIntData[3], projIntData[4], projIntData[5],
                 projIntData[6], projIntData[7], projIntData[8] };
-            projDist = new float[5] { projDistData[0], projDistData[1], projDistData[2], projDistData[3], projDistData[4] };
 
             CamMatrix = Matrix4x4.identity;
 
@@ -111,19 +112,29 @@ namespace Assets.Scripts.AR_Classes
 
         public void SetCamCalibFromParams(CameraParameters camParams)
         {
+            Debug.Log(camParams.ToString());
+            var x = camParams.ToString();
             CamCx = (float)camParams.Cx;
             CamCy = (float)camParams.Cy;
             CamFx = (float)camParams.Fx;
             CamFy = (float)camParams.Fy;
+            CamDist = camParams.DistCoefs;
+            Calibrated = true;
         }
 
-        public async void GetCameraParameters()
+        public async Task GetCameraParameters(string kinectId)
         {
-            string id = GameManager.Instance.kinect.GetComponent<ActionObject>().Data.Id;
-
-            WebsocketManager.Instance.WriteLock(id, false);
-            CameraParameters camParams = await WebsocketManager.Instance.GetCameraColorParameters(id);
-            WebsocketManager.Instance.WriteUnlock(id);
+            try
+            {
+                await WebsocketManager.Instance.WriteLock(kinectId, false);
+            }
+            catch(RequestFailedException e)
+            {
+                await WebsocketManager.Instance.WriteUnlock(kinectId);
+                await WebsocketManager.Instance.WriteLock(kinectId, false);
+            }
+            CameraParameters camParams = await WebsocketManager.Instance.GetCameraColorParameters(kinectId);
+            await WebsocketManager.Instance.WriteUnlock(kinectId);
 
             SetCamCalibFromParams(camParams);
         }

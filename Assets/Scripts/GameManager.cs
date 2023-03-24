@@ -299,20 +299,6 @@ namespace Base {
 
         #endregion
 
-        
-
-        /// <summary>
-        /// Determines whether the application is in correct state (scene or project editor) and
-        /// invokes events saying if the sceen is interactable or not, based on provided parameter
-        /// </summary>
-        /// <param name="interactable"></param>
-        public void InvokeSceneInteractable(bool interactable) {
-            //if (interactable && (gameState == GameStateEnum.SceneEditor || gameState == GameStateEnum.ProjectEditor)) {
-            //    OnSceneInteractable?.Invoke(this, EventArgs.Empty);
-            //} else {
-            //    OnSceneNotInteractable?.Invoke(this, EventArgs.Empty);
-            //}
-        }
 
         /// <summary>
         /// Enum specifying connection states
@@ -413,6 +399,7 @@ namespace Base {
         /// </summary>
         private ConnectionStatusEnum connectionStatus;
 
+        //NEMAZAT
         /// <summary>
         /// When connected to server, checks for requests for delayd scene, project, package or main screen openning
         /// </summary>
@@ -420,7 +407,6 @@ namespace Base {
             // Only when connected to server
             if (ConnectionStatus != ConnectionStatusEnum.Connected)
                 return;
-
             // request for delayed openning of scene to allow loading of action objects and their actions
             if (openScene) {
                 openScene = false;
@@ -472,14 +458,6 @@ namespace Base {
                     OnConnectionStatusChanged(value);
                 }
             }
-        }
-
-        public bool UpdatingPackageState => updatingPackageState;        
-
-
-        //TODO: use onvalidate in all scripts to check if everything sets correctly - it allows to check in editor
-        private void OnValidate() {
-            //Debug.Assert(LoadingScreen != null);
         }
 
         /// <summary>
@@ -624,67 +602,6 @@ namespace Base {
         //    }
         //}
 
-        /// <summary>
-        /// Method called to cancel selection process. Calls selection callback with null to inform
-        /// that nothing was selected
-        /// </summary>
-        //public void CancelSelection() {
-        //    if (ObjectCallback != null) {
-        //        // invoke selection callbeck with null to inform "caller" that nothing was selected
-        //        ObjectCallback.Invoke(null);
-        //        ObjectCallback = null;
-        //    }
-        //    SelectorMenu.Instance.PointsToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.ActionsToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.IOToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.OthersToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
-        //    SetEditorState(EditorStateEnum.Normal);
-        //    SelectObjectInfo.gameObject.SetActive(false);
-        //    RestoreFilters();
-        //}
-
-        /// <summary>
-        /// Enables / disables interactive objects which are not part of scene or project
-        /// </summary>
-        /// <param name="enable"></param>
-//        public void EnableServiceInteractiveObjects(bool enable) {
-//#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
-//            VRModeManager.Instance.ARCameraVis.GetComponent<InteractiveObject>().Enable(enable);
-//#endif
-//        }
-
-        /// <summary>
-        /// The object which was selected calls this method to inform game manager about it.
-        /// Validation and potentionally selection callbacks are called and editor is set to normal state.
-        /// </summary>
-        /// <param name="selectedObject"></param>
-        //public async void ObjectSelected(object selectedObject) {
-        //    // if validation callbeck is specified, check if this object is valid
-        //    if (ObjectValidationCallback != null) {
-        //        RequestResult result = await ObjectValidationCallback.Invoke(selectedObject);
-        //        if (!result.Success) {
-        //            Notifications.Instance.ShowNotification(result.Message, "");
-        //            return;
-        //        }
-                
-        //    }
-        //    SelectorMenu.Instance.PointsToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.ActionsToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.IOToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.ObjectsToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.OthersToggle.SetInteractivity(true);
-        //    SelectorMenu.Instance.RobotsToggle.SetInteractivity(true);
-        //    SetEditorState(EditorStateEnum.Normal);
-        //    // hide selection info 
-        //    SelectObjectInfo.gameObject.SetActive(false);
-        //    RestoreFilters();
-        //    // invoke selection callback
-        //    if (ObjectCallback != null)
-        //        ObjectCallback.Invoke(selectedObject);
-        //    ObjectCallback = null;
-        //}
 
         /// <summary>
         /// Enables all visual elements (objects, actions etc.)
@@ -723,10 +640,6 @@ namespace Base {
             SetDefaultFramerate();
             updatingPackageState = false;
             nextPackageState = null;
-#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
-            ARSession.enabled = false;
-#endif
-            //Scene.SetActive(false);
             if (Application.isEditor || Debug.isDebugBuild) {
                 //TrilleonAutomation.AutomationMaster.Initialize();
             }
@@ -750,24 +663,6 @@ namespace Base {
             callback();
         }
 
-#if (UNITY_ANDROID || UNITY_IOS)
-
-        /// <summary>
-        /// Manages connection to server when app is paused or gains focus again
-        /// </summary>
-        /// <param name="pause"></param>
-        private void OnApplicationPause(bool pause) {
-            if (pause) {
-                if (connectionStatus == ConnectionStatusEnum.Connected) {
-                    WebsocketManager.Instance.DisconnectFromSever();
-                }
-            } else { //automatically connect again
-                StartCoroutine(WaitUntilWebsocketFullyDisconnected(() => LandingScreen.Instance.ConnectToServer(false)));
-            }
-        }
-#endif
-
-        
         private void OnSceneBaseUpdated(object sender, BareSceneEventArgs args) {
             foreach (ListScenesResponseData s in Scenes) {
                 if (s.Id == args.Scene.Id) {
@@ -777,7 +672,6 @@ namespace Base {
                 }
             }
         }
-
 
         private void OnSceneRemoved(object sender, StringEventArgs args) {
             int i = 0;
@@ -789,7 +683,6 @@ namespace Base {
                 i++;
             }
         }
-
 
         private void OnProjectBaseUpdated(object sender, BareProjectEventArgs args) {
             foreach (ListProjectsResponseData p in Projects) {
@@ -831,7 +724,6 @@ namespace Base {
                 openMainScreenRequest = true;
                 openMainScreenData = args.Data;
             }
-                
         }
 
         /// <summary>
@@ -1037,9 +929,7 @@ namespace Base {
                 // Stop previously running action (change its color to default)
                 if (ActionsManager.Instance.CurrentlyRunningAction != null)
                     ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-
             }
-
         }
 
         /// <summary>
@@ -1071,7 +961,7 @@ namespace Base {
                 return;
             }
             try {
-                if (await SceneManager.Instance.CreateScene(scene, true)) {                    
+                if (await SceneManager.Instance.CreateScene(scene)) {                    
                     OpenSceneEditor();                    
                 } else {
                     Notifications.Instance.SaveLogs(scene, null, "Failed to initialize scene");
@@ -1105,7 +995,7 @@ namespace Base {
             }
             SetGameState(GameStateEnum.LoadingProject);
             try {
-                if (!await SceneManager.Instance.CreateScene(scene, true)) {
+                if (!await SceneManager.Instance.CreateScene(scene)) {
                     Notifications.Instance.SaveLogs(scene, project, "Failed to initialize scene");
                     Debug.LogError("wft");
                     //HideLoadingScreen();
@@ -1159,7 +1049,7 @@ namespace Base {
                             updatingPackageState = false;
                             return;
                         }
-                        if (!await SceneManager.Instance.CreateScene(PackageInfo.Scene, false, PackageInfo.CollisionModels)) {
+                        if (!await SceneManager.Instance.CreateScene(PackageInfo.Scene, PackageInfo.CollisionModels)) {
                             Notifications.Instance.SaveLogs(PackageInfo.Scene, PackageInfo.Project, "Failed to initialize scene");
                             updatingPackageState = false;
                             return;
@@ -1342,137 +1232,6 @@ namespace Base {
         }
             
         /// <summary>
-        /// Asks server to open project
-        /// </summary>
-        /// <param name="id">Project id</param>
-        public async void OpenProject(string id) {
-            //ShowLoadingScreen();
-            try {
-                await WebsocketManager.Instance.OpenProject(id);
-                await Task.Run(() => WaitForProjectReady(5000));
-            } catch (RequestFailedException ex) {
-                Notifications.Instance.ShowNotification("Failed to open project", ex.Message);
-                //HideLoadingScreen();
-            } catch (TimeoutException e) {
-                Notifications.Instance.ShowNotification("Open project failed", "Failed to load project");
-                //HideLoadingScreen();
-            } 
-        }
-
-        /// <summary>
-        /// Asks server to open scene
-        /// </summary>
-        /// <param name="id">Scene id</param>
-        public async Task OpenScene(string id) {
-            //ShowLoadingScreen();
-            try {
-                await WebsocketManager.Instance.OpenScene(id);
-            } catch (RequestFailedException e) {
-                Notifications.Instance.ShowNotification("Open scene failed", e.Message);
-                //HideLoadingScreen();
-                return;
-            }    
-            try {
-                await Task.Run(() => WaitForSceneReady(5000));
-                return;
-            } catch (TimeoutException e) {
-                Notifications.Instance.ShowNotification("Open scene failed", "Failed to open selected scene");
-                //HideLoadingScreen();
-            }
-           
-        }
-
-        /// <summary>
-        /// Asks server to run package
-        /// </summary>
-        /// <param name="id">Project id</param>
-        public async Task<bool> RunPackage(string packageId) {
-            //ShowLoadingScreen();
-            try {
-                await WebsocketManager.Instance.RunPackage(packageId);
-                return true;
-            } catch (RequestFailedException ex) {
-                Notifications.Instance.ShowNotification("Failed to run project", ex.Message);
-                //HideLoadingScreen();
-                return false;
-            } 
-        }
-
-        /// <summary>
-        /// Builds package from currently opened project
-        /// </summary>
-        /// <param name="name">Name of the new package</param>
-        /// <returns></returns>
-        public async Task<string> BuildPackage(string name) {
-            //ShowLoadingScreen();
-            Debug.Assert(Base.ProjectManager.Instance.ProjectMeta != null);
-            if (ProjectManager.Instance.ProjectChanged) {
-                Notifications.Instance.ShowNotification("Unsaved changes", "There are some unsaved changes in project. Save it before build the package.");
-                //HideLoadingScreen();
-                throw new RequestFailedException("Unsaved changes");
-            }
-            try {
-                return await WebsocketManager.Instance.BuildPackage(Base.ProjectManager.Instance.ProjectMeta.Id, name);
-            } catch (RequestFailedException ex) {
-                Notifications.Instance.ShowNotification("Failed to build package", ex.Message);
-                throw;
-            } finally {
-                //HideLoadingScreen();
-            }
-        }
-
-        
-
-        /// <summary>
-        /// Asks server to pause running package
-        /// </summary>
-        public async Task<bool> PausePackage() {
-            //ShowLoadingScreen();
-            try {
-                await WebsocketManager.Instance.PausePackage();
-                return true;
-            } catch (RequestFailedException ex) {
-                Notifications.Instance.ShowNotification("Failed to pause project", ex.Message);
-                //HideLoadingScreen();
-                return false;
-            }
-        }
-
-
-        /// <summary>
-        /// Asks server to resume paused package
-        /// </summary>
-        public async Task<bool> ResumePackage() {
-            //ShowLoadingScreen();
-            try {
-                await WebsocketManager.Instance.ResumePackage();
-                return true;
-            } catch (RequestFailedException ex) {
-                Notifications.Instance.ShowNotification("Failed to resume project", ex.Message);
-                //HideLoadingScreen();
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Asks server to create new object type
-        /// </summary>
-        /// <param name="objectType">Description of object type</param>
-        /// <returns></returns>
-        public async Task<bool> CreateNewObjectType(IO.Swagger.Model.ObjectTypeMeta objectType) {
-            //ShowLoadingScreen();
-            try {
-                await WebsocketManager.Instance.CreateNewObjectType(objectType, false);
-                return true;
-            } catch (RequestFailedException ex) {
-                Notifications.Instance.ShowNotification("Failed to create new object type", ex.Message);
-                return false;
-            } finally {
-                //HideLoadingScreen();
-            }
-        }
-
-        /// <summary>
         /// Will quit the app
         /// </summary>
         public void ExitApp() => Application.Quit();
@@ -1484,111 +1243,6 @@ namespace Base {
             } catch (RequestFailedException ex) {
                 Notifications.Instance.ShowNotification("Failed to update action point", ex.Message);
             }
-        }
-
-        /// <summary>
-        /// Asks server to create new project
-        /// </summary>
-        /// <param name="name">Name of the new project</param>
-        /// <param name="sceneId">Id of scene (UUID)</param>
-        /// <param name="hasLogic">Whether or not to allow user to define connections of actions in editor
-        /// and thus define logical flow of the progeam
-        /// <returns></returns>
-        public async Task NewProject(string name, string sceneId, bool hasLogic) {
-            //ShowLoadingScreen("Creating new project...");
-            Debug.Assert(sceneId != null && sceneId != "");
-            Debug.Assert(name != null && name != "");
-            
-            try {
-                await WebsocketManager.Instance.CreateProject(name, sceneId, "", hasLogic, false);
-            } catch (RequestFailedException e) {
-                Notifications.Instance.ShowNotification("Failed to create project", e.Message);
-                //HideLoadingScreen();
-            } finally {
-            }        
-        }
-
-        /// <summary>
-        /// Asks server to create new scene
-        /// </summary>
-        /// <param name="name">Name of the scene</param>
-        /// <returns>True if scene was successfully created, false otherwise</returns>
-        public async Task<bool> NewScene(string name) {
-            //ShowLoadingScreen("Creating new scene...");
-
-            if (name == "") {
-                Notifications.Instance.ShowNotification("Failed to create new scene", "Scene name not defined");
-                //HideLoadingScreen();
-                return false;
-            }
-            try {
-                await WebsocketManager.Instance.CreateScene(name, "");
-            } catch (RequestFailedException e) {
-                Notifications.Instance.ShowNotification("Failed to create new scene", e.Message);
-                //HideLoadingScreen();
-            }
-            return true;
-        }
-        /// <summary>
-        /// Asks server to close currently opened scene
-        /// </summary>
-        /// <param name="force">True if the server should close scene with unsaved changes</param>
-        /// <param name="dryRun">Only check if the scene could be closed without forcing</param>
-        /// <returns>True if request was successfull. If not, message describing error is attached</returns>
-        public async Task<RequestResult> CloseScene(bool force, bool dryRun = false) {
-            if (!dryRun)
-            {
-                //ShowLoadingScreen();
-            }
-            try {
-                await WebsocketManager.Instance.CloseScene(force, dryRun);
-                return (true, "");
-            } catch (RequestFailedException ex) {
-                if (!dryRun && force) {
-                    Notifications.Instance.ShowNotification("Failed to close scene", ex.Message);
-                    //HideLoadingScreen();                   
-                }
-                return (false, ex.Message);
-            }          
-            
-        }
-
-        /// <summary>
-        /// Asks server to close currently opened project
-        /// </summary>
-        /// <param name="force">True if the server should close project with unsaved changes</param>
-        /// <param name="dryRun">Only check if the project could be closed without forcing</param>
-        /// <returns></returns>
-        public async Task<RequestResult> CloseProject(bool force, bool dryRun = false) {
-            if (!dryRun)
-            {
-                //ShowLoadingScreen("Closing project");
-            }
-            try {
-                await WebsocketManager.Instance.CloseProject(force, dryRun: dryRun);
-                return (true, "");
-            } catch (RequestFailedException ex) {
-                if (!dryRun && force) {
-                    Notifications.Instance.ShowNotification("Failed to close project", ex.Message);
-                    //HideLoadingScreen();
-                }                
-                return (false, ex.Message);
-            }           
-            
-        }
-
-        /// <summary>
-        /// Asks server to cancel exection of action
-        /// </summary>
-        /// <returns>True if request successfull</returns>
-        public async Task<bool> CancelExecution() {
-            try {
-                await WebsocketManager.Instance.CancelExecution();
-            } catch (RequestFailedException ex) {
-                Notifications.Instance.ShowNotification("Failed to cancel action", ex.Message);
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
@@ -1681,40 +1335,6 @@ namespace Base {
         }
 
         /// <summary>
-        /// Opens main screen
-        /// </summary>
-        /// <param name="what">Defines what list should be displayed (scenes/projects/packages)</param>
-        /// <param name="highlight">ID of element to highlight (e.g. when scene is closed, it is highlighted for a few seconds</param>
-        /// <returns></returns>
-//        public async Task OpenMainScreen(ShowMainScreenData.WhatEnum what, string highlight) {
-
-//#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
-//            ARSession.enabled = false;
-//#endif
-//            Scene.SetActive(false);
-//            MainMenu.Instance.Close();
-//            switch (what) {
-//                case ShowMainScreenData.WhatEnum.PackagesList:
-//                    MainScreen.Instance.SwitchToPackages();
-                    
-//                    break;
-//                case ShowMainScreenData.WhatEnum.ScenesList:
-//                    MainScreen.Instance.SwitchToScenes();
-//                    break;
-//                case ShowMainScreenData.WhatEnum.ProjectsList:
-//                    MainScreen.Instance.SwitchToProjects();
-//                    break;
-//            }
-//            if (!string.IsNullOrEmpty(highlight)) {
-//                MainScreen.Instance.HighlightTile(highlight);
-//            }
-//            SetGameState(GameStateEnum.MainScreen);
-//            OnOpenMainScreen?.Invoke(this, EventArgs.Empty);
-//            SetEditorState(EditorStateEnum.Closed);
-//            //HideLoadingScreen();
-//        }
-
-        /// <summary>
         /// Opens scene editor
         /// </summary>
         public void OpenSceneEditor() {
@@ -1802,13 +1422,9 @@ namespace Base {
         /// Opens disconnected screen
         /// </summary>
         public void OpenDisconnectedScreen() {
-#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
-            ARSession.enabled = false;
-#endif
-            //MainMenu.Instance.Close();
+
             //Scene.SetActive(false);
             //SetGameState(GameStateEnum.Disconnected);
-            //HideLoadingScreen(true);
         }
 
         /// <summary>
@@ -1817,62 +1433,6 @@ namespace Base {
         /// <param name="active"></param>
         public void SceneSetActive(bool active) {
             Scene.SetActive(active);
-        }
-
-        /// <summary>
-        /// Helper method to create button
-        /// </summary>
-        /// <param name="parent">Parent GUI element</param>
-        /// <param name="label">Label of the button</param>
-        /// <returns>Created button</returns>
-        public Button CreateButton(Transform parent, string label) {
-            GameObject btnGO = Instantiate(Base.GameManager.Instance.ButtonPrefab, parent);
-            btnGO.transform.localScale = new Vector3(1, 1, 1);
-            Button btn = btnGO.GetComponent<Button>();
-            btn.GetComponentInChildren<TMPro.TMP_Text>().text = label;
-            return btn;
-        }
-
-        /// <summary>
-        /// Adds action point to the project
-        /// </summary>
-        /// <param name="name">Name of new action point</param>
-        /// <param name="parent">Parent object (global AP if parent is null)</param>
-        /// <returns></returns>
-        public async Task<bool> AddActionPoint(string name, IActionPointParent parent) {
-            try {
-                Vector3 point;
-                Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0f));
-                if (parent == null) {
-                    point = TransformConvertor.UnityToROS(Scene.transform.InverseTransformPoint(ray.GetPoint(0.5f)));
-                } else {
-                    point = TransformConvertor.UnityToROS(parent.GetTransform().InverseTransformPoint(ray.GetPoint(0.5f)));
-                }                
-                Position position = DataHelper.Vector3ToPosition(point);
-                await WebsocketManager.Instance.AddActionPoint(name, parent == null ? "" : parent.GetId(), position);
-                
-                
-                return true;
-            } catch (RequestFailedException e) {
-                Notifications.Instance.ShowNotification("Failed to add action point", e.Message);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Updates parent of action point
-        /// </summary>
-        /// <param name="actionPoint">Action point to be updated</param>
-        /// <param name="parentId">ID of new parent</param>
-        /// <returns>True if renamed, false otherwise</returns>
-        public async Task<bool> UpdateActionPointParent(ActionPoint actionPoint, string parentId) {
-            try {
-                await WebsocketManager.Instance.UpdateActionPointParent(actionPoint.Data.Id, parentId);
-                return true;
-            } catch (RequestFailedException e) {
-                Notifications.Instance.ShowNotification("Failed to update action point parent", e.Message);
-                return false;
-            }
         }
 
         /// <summary>
@@ -1900,7 +1460,6 @@ namespace Base {
             }
             throw new ItemNotFoundException("Scene with id: " + sceneId + " not found");
         }
-
     }
 
     /// <summary>

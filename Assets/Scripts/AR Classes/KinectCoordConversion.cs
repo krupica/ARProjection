@@ -29,7 +29,6 @@ namespace Assets.Scripts.AR_Classes
             mat = cam.projectionMatrix * cam.worldToCameraMatrix;
             mat = calib.CamMatrix.inverse * cam.worldToCameraMatrix;
             
-
             // multiply world point by VP matrix
             Vector4 temp = mat * new Vector4(wp.x, wp.y, wp.z, 1f);
 

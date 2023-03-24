@@ -12,6 +12,8 @@ namespace Base {
     /// Takes care of currently opened project. Provides methods for manipuation with project.
     /// </summary>
     public class ProjectManager : Base.Singleton<ProjectManager> {
+
+        #region fields
         /// <summary>
         /// Opened project metadata
         /// </summary>
@@ -45,13 +47,9 @@ namespace Base {
         /// </summary>
         public EndAction EndAction;
         /// <summary>
-        /// ??? Dan?
-        /// </summary>
-        private bool projectActive = true;
-        /// <summary>
         /// Indicates if action point orientations should be visible for given project
         /// </summary>
-        public bool APOrientationsVisible;
+        //public bool APOrientationsVisible;
         /// <summary>
         /// Holds current diameter of action points
         /// </summary>
@@ -63,7 +61,7 @@ namespace Base {
         /// <summary>
         /// Indicates if editation of project is allowed.
         /// </summary>
-        public bool AllowEdit = false;
+        //public bool AllowEdit = false;
         /// <summary>
         /// Indicates if project was changed since last save
         /// </summary>
@@ -120,6 +118,8 @@ namespace Base {
         public event AREditorEventArgs.ActionPointOrientationEventHandler OnActionPointOrientationUpdated;
         public event AREditorEventArgs.ActionPointOrientationEventHandler OnActionPointOrientationBaseUpdated;
         public event AREditorEventArgs.StringEventHandler OnActionPointOrientationRemoved;
+
+        #endregion
 
         /// <summary>
         /// Initialization of projet manager
@@ -334,7 +334,7 @@ namespace Base {
                 return false;
 
             SetProjectMeta(DataHelper.ProjectToBareProject(project));
-            AllowEdit = allowEdit;
+            //AllowEdit = allowEdit;
             LoadSettings();
             AnyAvailableAction = false;
             foreach (ActionObject obj in SceneManager.Instance.ActionObjects.Values)
@@ -413,16 +413,16 @@ namespace Base {
         /// Updates logic items
         /// </summary>
         /// <param name="logic">List of logic items</param>
-        private void UpdateLogicItems(List<IO.Swagger.Model.LogicItem> logic) {
-            foreach (IO.Swagger.Model.LogicItem projectLogicItem in logic) {
-                if (!LogicItems.TryGetValue(projectLogicItem.Id, out LogicItem logicItem)) {
-                    logicItem = new LogicItem(projectLogicItem);
-                    LogicItems.Add(logicItem.Data.Id, logicItem);
-                } else {
-                    logicItem.UpdateConnection(projectLogicItem);
-                }
-            }
-        }
+        //private void UpdateLogicItems(List<IO.Swagger.Model.LogicItem> logic) {
+        //    foreach (IO.Swagger.Model.LogicItem projectLogicItem in logic) {
+        //        if (!LogicItems.TryGetValue(projectLogicItem.Id, out LogicItem logicItem)) {
+        //            logicItem = new LogicItem(projectLogicItem);
+        //            LogicItems.Add(logicItem.Data.Id, logicItem);
+        //        } else {
+        //            logicItem.UpdateConnection(projectLogicItem);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Updates logic item
@@ -515,7 +515,6 @@ namespace Base {
             return actions;
         }
 
-
         private void Update() {
             
             if (updateProject) {
@@ -547,7 +546,7 @@ namespace Base {
         /// Loads project settings from persistant storage
         /// </summary>
         public void LoadSettings() {
-            APOrientationsVisible = PlayerPrefsHelper.LoadBool("project/" + ProjectMeta.Id + "/APOrientationsVisibility", true);
+            //APOrientationsVisible = PlayerPrefsHelper.LoadBool("project/" + ProjectMeta.Id + "/APOrientationsVisibility", true);
             APSize = PlayerPrefsHelper.LoadFloat("project/" + ProjectMeta.Id + "/APSize", 0.2f);
         }
 
@@ -578,76 +577,75 @@ namespace Base {
         /// </summary>
         /// <param name="apDefaultName">Name of parent or "globalAP"</param>
         /// <returns></returns>
-        public string GetFreeAPName(string apDefaultName) {
-            int i = 2;
-            bool hasFreeName;
-            string freeName = apDefaultName + "_ap";
-            do {
-                hasFreeName = true;
-                if (ActionPointsContainsName(freeName)) {
-                    hasFreeName = false;
-                }
-                if (!hasFreeName)
-                    freeName = apDefaultName + "_ap_" + i++.ToString();
-            } while (!hasFreeName);
+        //public string GetFreeAPName(string apDefaultName) {
+        //    int i = 2;
+        //    bool hasFreeName;
+        //    string freeName = apDefaultName + "_ap";
+        //    do {
+        //        hasFreeName = true;
+        //        if (ActionPointsContainsName(freeName)) {
+        //            hasFreeName = false;
+        //        }
+        //        if (!hasFreeName)
+        //            freeName = apDefaultName + "_ap_" + i++.ToString();
+        //    } while (!hasFreeName);
 
-            return freeName;
-        }
+        //    return freeName;
+        //}
 
+        //public string GetFreeProjectName(string projectName) {
+        //    int i = 1;
+        //    bool hasFreeName;
+        //    string freeName = projectName;
+        //    do {
+        //        hasFreeName = true;
+        //        try {
+        //            GameManager.Instance.GetProjectId(freeName);
+        //            hasFreeName = false;
+        //            freeName = projectName + "_" + i++.ToString();
+        //        } catch (RequestFailedException) {
+        //            // there is no project called "freeName" -> that is our new name
+        //        }
 
-        public string GetFreeProjectName(string projectName) {
-            int i = 1;
-            bool hasFreeName;
-            string freeName = projectName;
-            do {
-                hasFreeName = true;
-                try {
-                    GameManager.Instance.GetProjectId(freeName);
-                    hasFreeName = false;
-                    freeName = projectName + "_" + i++.ToString();
-                } catch (RequestFailedException) {
-                    // there is no project called "freeName" -> that is our new name
-                }
+        //    } while (!hasFreeName);
 
-            } while (!hasFreeName);
-
-            return freeName;
-        }
+        //    return freeName;
+        //}
 
         /// <summary>
         /// Checks if action point with given name exists
         /// </summary>
         /// <param name="name">Human readable action point name</param>
         /// <returns></returns>
-        public bool ActionPointsContainsName(string name) {
-            foreach (ActionPoint ap in GetAllActionPoints()) {
-                if (ap.Data.Name == name)
-                    return true;
-            }
-            return false;
-        }
+        //public bool ActionPointsContainsName(string name) {
+        //    foreach (ActionPoint ap in GetAllActionPoints()) {
+        //        if (ap.Data.Name == name)
+        //            return true;
+        //    }
+        //    return false;
+        //}
 
         /// <summary>
         /// Hides all arrows representing action point orientations
         /// </summary>
-        internal void HideAPOrientations() {
-            APOrientationsVisible = false;
-            foreach (ActionPoint actionPoint in GetAllActionPoints()) {
-                actionPoint.UpdateOrientationsVisuals(false);
-            }
-            PlayerPrefsHelper.SaveBool("scene/" + ProjectMeta.Id + "/APOrientationsVisibility", false);
-        }
+        //internal void HideAPOrientations() {
+        //    //APOrientationsVisible = false;
+        //    foreach (ActionPoint actionPoint in GetAllActionPoints()) {
+        //        actionPoint.UpdateOrientationsVisuals(false);
+        //    }
+        //    PlayerPrefsHelper.SaveBool("scene/" + ProjectMeta.Id + "/APOrientationsVisibility", false);
+        //}
 
         /// <summary>
         /// Shows all arrows representing action point orientations
         /// </summary>
-        internal void ShowAPOrientations() {
-            APOrientationsVisible = true;
-            foreach (ActionPoint actionPoint in GetAllActionPoints()) {
-                actionPoint.UpdateOrientationsVisuals(true);
-            }
-            PlayerPrefsHelper.SaveBool("scene/" + ProjectMeta.Id + "/APOrientationsVisibility", true);
-        }
+        //internal void ShowAPOrientations() {
+        //    APOrientationsVisible = true;
+        //    foreach (ActionPoint actionPoint in GetAllActionPoints()) {
+        //        actionPoint.UpdateOrientationsVisuals(true);
+        //    }
+        //    PlayerPrefsHelper.SaveBool("scene/" + ProjectMeta.Id + "/APOrientationsVisibility", true);
+        //}
 
 
         /// <summary>

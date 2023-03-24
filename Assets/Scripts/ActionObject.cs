@@ -7,12 +7,8 @@ using System;
 namespace Base {
     public abstract class ActionObject : MonoBehaviour, IActionProvider, IActionPointParent {
 
-        public GameObject ActionPointsSpawn;
         [System.NonSerialized]
         public int CounterAP = 0;
-        protected float visibility;
-
-        public Collider Collider;
 
         public IO.Swagger.Model.SceneObject Data = new IO.Swagger.Model.SceneObject(id: "", name: "", pose: DataHelper.CreatePose(new Vector3(), new Quaternion()), type: "");
         public ActionObjectMetadata ActionObjectMetadata;
@@ -63,9 +59,7 @@ namespace Base {
                 } else {
                     ObjectParameters[p.Name].Value = p.Value;
                 }
-                
             }
-            
         }
 
         public void ResetPosition() {
@@ -143,9 +137,9 @@ namespace Base {
             Destroy(gameObject);
         }
 
-        //public void DestroyObject() {
-        //    DestroyObject();
-        //}
+        public void DestroyObject() {
+            DestroyObject();
+        }
 
         public void RemoveActionPoints() {
             // Remove all action points of this action object
@@ -153,26 +147,6 @@ namespace Base {
             foreach (ActionPoint actionPoint in actionPoints) {
                 actionPoint.DeleteAP();
             }
-        }
-
-
-        public virtual void SetVisibility(float value, bool forceShaderChange = false) {
-            visibility = value;
-        }
-
-        public float GetVisibility() {
-            return visibility;
-        }
-
-        public abstract void Show();
-
-        public abstract void Hide();
-
-        public abstract void SetInteractivity(bool interactive);
-
-
-        public virtual void ActivateForGizmo(string layer) {
-            gameObject.layer = LayerMask.NameToLayer(layer);
         }
 
         public string GetProviderId() {
@@ -221,63 +195,18 @@ namespace Base {
             return Data.Id;
         }
 
-        public async Task<RequestResult> Movable() {
-            if (!ActionObjectMetadata.HasPose)
-                return new RequestResult(false, "Selected action object has no pose");
-            else if (GameManager.Instance.GetGameState() != GameManager.GameStateEnum.SceneEditor) {
-                return new RequestResult(false, "Action object could be moved only in scene editor");
-            } else {
-                return new RequestResult(true);
-            }
-        }
-
         public abstract void CreateModel(IO.Swagger.Model.CollisionModels customCollisionModels = null);
-        public abstract GameObject GetModelCopy();
 
-    public IO.Swagger.Model.Pose GetPose() {
-        if (ActionObjectMetadata.HasPose)
-            return new IO.Swagger.Model.Pose(position: DataHelper.Vector3ToPosition(TransformConvertor.UnityToROS(transform.localPosition)),
-                orientation: DataHelper.QuaternionToOrientation(TransformConvertor.UnityToROS(transform.localRotation)));
-        else
-            return new IO.Swagger.Model.Pose(orientation: new IO.Swagger.Model.Orientation(), position: new IO.Swagger.Model.Position());
-    }
-    public async Task Rename(string name) {
-        try {
-            await WebsocketManager.Instance.RenameObject(GetId(), name);
-            Notifications.Instance.ShowToastMessage("Action object renamed");
-        } catch (RequestFailedException e) {
-            Notifications.Instance.ShowNotification("Failed to rename action object", e.Message);
-            throw;
-        }
-    }
-    public async Task<RequestResult> Removable() {
-        if (GameManager.Instance.GetGameState() != GameManager.GameStateEnum.SceneEditor) {
-            return new RequestResult(false, "Action object could be removed only in scene editor");
-        } else if (SceneManager.Instance.SceneStarted) {
-            return new RequestResult(false, "Scene online");
-        } else {
-                IO.Swagger.Model.RemoveFromSceneResponse response = await WebsocketManager.Instance.RemoveFromScene(GetId(), false, true);
-            if (response.Result)
-                return new RequestResult(true);
+        public IO.Swagger.Model.Pose GetPose() {
+            if (ActionObjectMetadata.HasPose)
+                return new IO.Swagger.Model.Pose(position: DataHelper.Vector3ToPosition(TransformConvertor.UnityToROS(transform.localPosition)),
+                    orientation: DataHelper.QuaternionToOrientation(TransformConvertor.UnityToROS(transform.localRotation)));
             else
-                return new RequestResult(false, response.Messages[0]);
+                return new IO.Swagger.Model.Pose(orientation: new IO.Swagger.Model.Orientation(), position: new IO.Swagger.Model.Position());
         }
-    }
-
-
-    public async void Remove() {
-            IO.Swagger.Model.RemoveFromSceneResponse response =
-            await WebsocketManager.Instance.RemoveFromScene(GetId(), false, false);
-        if (!response.Result) {
-            Notifications.Instance.ShowNotification("Failed to remove object " + GetName(), response.Messages[0]);
-            return;
-        }
-    }
 
         public Transform GetSpawnPoint() {
             return transform;
         }
     }
-
-
 }

@@ -94,8 +94,6 @@ namespace Base {
             }
         }
 
-
-
         public void ObjectTypeRemoved(object sender, StringListEventArgs type) {
             List<string> removed = new List<string>();
             foreach (string item in type.Data) {

@@ -8,18 +8,11 @@ using System;
 using System.Threading.Tasks;
 using static UnityEngine.GraphicsBuffer;
 
-[RequireComponent(typeof(Target))]
 public class ActionObject3D : ActionObject
 {
     [SerializeField]
     public GameObject CubePrefab, CylinderPrefab, SpherePrefab, CapsulePrefab;
     public GameObject Model;
-
-    protected void Start()
-    {
-        transform.localScale = new Vector3(1f, 1f, 1f);
-    }
-
 
     public override Vector3 GetScenePosition()
     {
@@ -50,27 +43,6 @@ public class ActionObject3D : ActionObject
     {
         base.ActionObjectUpdate(actionObjectSwagger);
         ResetPosition();
-    }
-
-    public override void SetVisibility(float value, bool forceShaderChange = false)
-    {
-        
-    }
-
-    public override void Show()
-    {
-    }
-
-    public override void Hide()
-    {
-    }
-
-    public override void SetInteractivity(bool interactivity)
-    {
-    }
-
-    public override void ActivateForGizmo(string layer)
-    {
     }
 
     public override void CreateModel(CollisionModels customCollisionModels = null)
@@ -155,12 +127,6 @@ public class ActionObject3D : ActionObject
         gameObject.GetComponent<BindParentToChild>().ChildToBind = Model;
     }
 
-    public override GameObject GetModelCopy()
-    {
-        GameObject model = Instantiate(Model);
-        model.transform.localScale = Model.transform.localScale;
-        return model;
-    }
 
     /// <summary>
     /// For meshes...
@@ -225,7 +191,6 @@ public class ActionObject3D : ActionObject
     //    Notifications.Instance.ShowNotification("Unable to show mesh " + this.GetName(), obj.GetInnerException().Message);
     //}
 
-
     public string GetObjectTypeName()
     {
         return "Action object";
@@ -251,6 +216,5 @@ public class ActionObject3D : ActionObject
         }
         if (dimensions != null)
             Model.transform.localScale = new Vector3(dimensions.Value.x, dimensions.Value.y, dimensions.Value.z);
-
     }
 }
