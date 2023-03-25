@@ -304,7 +304,7 @@ namespace Base {
                         HandleSceneState(data);
                         break;
                     case "SceneObjectChanged":
-                        HandleSceneObjectChanged(data);
+                        await HandleSceneObjectChanged(data);
                         break;
                     case "ActionPointChanged":
                         HandleActionPointChanged(data);
@@ -898,11 +898,11 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         /// <returns></returns>
-        private void HandleSceneObjectChanged(string data) {
+        private async Task HandleSceneObjectChanged(string data) {
             IO.Swagger.Model.SceneObjectChanged sceneObjectChanged = JsonConvert.DeserializeObject<IO.Swagger.Model.SceneObjectChanged>(data);
             switch (sceneObjectChanged.ChangeType) {
                 case IO.Swagger.Model.SceneObjectChanged.ChangeTypeEnum.Add:
-                    SceneManager.Instance.SceneObjectAdded(sceneObjectChanged.Data);
+                    await SceneManager.Instance.SceneObjectAdded(sceneObjectChanged.Data);
                     break;
                 case IO.Swagger.Model.SceneObjectChanged.ChangeTypeEnum.Remove:
                     SceneManager.Instance.SceneObjectRemoved(sceneObjectChanged.Data);

@@ -6,28 +6,30 @@ namespace Assets.Scripts.AR_Classes
     public static class KinectCoordConversion
     {
         public static void SetProjectorTransform(GameObject projector)
-        {           
+        {
             CalibrationData calib = GameManager.Instance.calibrationData;
             Camera cam = GameManager.Instance.kinect.GetComponent<Camera>();
 
             // Compute the projector-to-world matrix P
-            Matrix4x4 P = cam.cameraToWorldMatrix * calib.Rotation * Matrix4x4.Translate(calib.Translation);
+            Matrix4x4 P;
+            P = cam.cameraToWorldMatrix * calib.Rotation * Matrix4x4.Translate(calib.Translation);
+            //P = cam.cameraToWorldMatrix;
 
             // Compute the world-to-projector matrix Pinv
             Matrix4x4 Pinv = P.inverse;
+            Pinv = P;
 
             // Compute the projector transform
             projector.transform.position = Pinv.MultiplyPoint(Vector3.zero);
             projector.transform.rotation = Quaternion.LookRotation(-Pinv.GetColumn(2), Pinv.GetColumn(1));
         }
+
         public static Vector3 ManualWorldToScreenPoint(Vector3 wp)
         {
-            CalibrationData calib = GameManager.Instance.calibrationData;
             Camera cam = GameManager.Instance.kinect.GetComponent<Camera>();
             // calculate view-projection matrix
             Matrix4x4 mat;
             mat = cam.projectionMatrix * cam.worldToCameraMatrix;
-            mat = calib.CamMatrix.inverse * cam.worldToCameraMatrix;
             
             // multiply world point by VP matrix
             Vector4 temp = mat * new Vector4(wp.x, wp.y, wp.z, 1f);
@@ -40,8 +42,6 @@ namespace Assets.Scripts.AR_Classes
             else
             {
                 // convert x and y from clip space to window coordinates
-                //temp.x = (temp.x / temp.w + 1f) * .5f * calib.Width;
-                //temp.y = (temp.y / temp.w + 1f) * .5f * calib.Height;
                 temp.x = (temp.x / temp.w + 1f) * .5f * cam.pixelWidth;
                 temp.y = (temp.y / temp.w + 1f) * .5f * cam.pixelHeight;
                 return new Vector3(temp.x, temp.y, wp.z);

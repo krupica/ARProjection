@@ -27,13 +27,13 @@ public class ActionPoint2D : Base.ActionPoint {
         
         if (GameManager.Instance.kinect!=null)
         {
-            GameObject kinect = GameManager.Instance.kinect;
-            Matrix4x4 kinectToWorld = kinect.transform.worldToLocalMatrix;
-            Vector3 localPoint = kinectToWorld.MultiplyPoint(newPos);
+            GameObject projector = GameManager.Instance.projector;
+            //Matrix4x4 kinectToWorld = kinect.transform.worldToLocalMatrix;
+            //Vector3 localPoint = kinectToWorld.MultiplyPoint(newPos);
 
-            //Vector3 Point2D = kinect.GetComponent<Camera>().WorldToScreenPoint(newPos);
+            Vector3 Point2D = projector.GetComponent<Camera>().WorldToScreenPoint(newPos);
             //Vector2 Point2D = KinectCoordConversion.LocaltToScreenSpace(localPoint);
-            Vector2 Point2D = KinectCoordConversion.ManualWorldToScreenPoint(newPos);
+            //Vector2 Point2D = KinectCoordConversion.ManualWorldToScreenPoint(newPos);
             GameObject go = Instantiate(GameManager.Instance.actionPointPrefab, Point2D, Quaternion.identity, GameManager.Instance.canvas.transform);
 
             return newPos;

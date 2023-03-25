@@ -64,6 +64,14 @@ namespace Base {
         /// </summary>
         public GameObject SceneOrigin;
         /// <summary>
+        /// Prefab for Kinect
+        /// </summary>        
+        public GameObject KinectPrefab;
+        /// <summary>
+        /// Prefab for Projector
+        /// </summary>        
+        public GameObject ProjectorPrefab;
+        /// <summary>
         /// Prefab for robot action object
         /// </summary>        
         public GameObject RobotPrefab;
@@ -184,10 +192,9 @@ namespace Base {
             if (SceneMeta != null)
                 return false;
             SetSceneMeta(DataHelper.SceneToBareScene(scene));            
-            this.loadResources = loadResources;
             LoadSettings();
 
-            UpdateActionObjects(scene, customCollisionModels);
+            await UpdateActionObjects(scene, customCollisionModels);
 
             if (scene.Modified == System.DateTime.MinValue) { //new scene, never saved
                 sceneChanged = true;
@@ -504,7 +511,7 @@ namespace Base {
         /// <param name="type">Action object type</param>
         /// <param name="customCollisionModels">Allows to override collision model of spawned action objects</param>
         /// <returns>Spawned action object</returns>
-        public ActionObject SpawnActionObject(IO.Swagger.Model.SceneObject sceneObject, CollisionModels customCollisionModels = null) {
+        public async Task<ActionObject> SpawnActionObject(IO.Swagger.Model.SceneObject sceneObject, CollisionModels customCollisionModels = null) {
             if (!ActionsManager.Instance.ActionObjectsMetadata.TryGetValue(sceneObject.Type, out ActionObjectMetadata aom)) {
                 return null;
             }
@@ -514,7 +521,7 @@ namespace Base {
             } else if (aom.CollisionObject) {
                 obj = Instantiate(CollisionObjectPrefab, ActionObjectsSpawn.transform);
             } else if (aom.HasPose) {
-                obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
+                obj = Instantiate(KinectPrefab, ActionObjectsSpawn.transform);
                 //Získání reference na Kinect a projector
                 if (aom.Type == "KinectAzure")
                 {
@@ -524,12 +531,16 @@ namespace Base {
                     }
                     GameManager.Instance.kinect = obj;
                     GameManager.Instance.calibrationData.KinectPosition = obj.transform;
-                    obj.AddComponent<Camera>();
 
-                    GameManager.Instance.calibrationData.GetCameraParameters(sceneObject.Id);
+                    await GameManager.Instance.calibrationData.GetCameraParameters(sceneObject.Id);
 
-                    GameManager.Instance.projector = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
+                    GameManager.Instance.projector = Instantiate(ProjectorPrefab, ActionObjectsSpawn.transform);
                     KinectCoordConversion.SetProjectorTransform(GameManager.Instance.projector);
+                    GameManager.Instance.projector.name = "Projector";
+                }
+                else
+                {
+                    obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
                 }
             } else {
                 obj = Instantiate(ActionObjectNoPosePrefab, ActionObjectsSpawn.transform);
@@ -720,8 +731,8 @@ namespace Base {
         /// </summary>
         /// <param name="sceneObject">Description of action object</param>
         /// <returns></returns>
-        public void SceneObjectAdded(SceneObject sceneObject) {
-            ActionObject actionObject = SpawnActionObject(sceneObject);
+        public async Task SceneObjectAdded(SceneObject sceneObject) {
+            ActionObject actionObject = await SpawnActionObject(sceneObject);
             updateScene = true;
         }
 
@@ -746,10 +757,10 @@ namespace Base {
         /// <param name="scene">Scene description</param>
         /// <param name="customCollisionModels">Allows to override action object collision model</param>
         /// <returns></returns>
-        public void UpdateActionObjects(Scene scene, CollisionModels customCollisionModels = null) {
+        public async Task UpdateActionObjects(Scene scene, CollisionModels customCollisionModels = null) {
             List<string> currentAO = new List<string>();
             foreach (IO.Swagger.Model.SceneObject aoSwagger in scene.Objects) {
-                ActionObject actionObject = SpawnActionObject(aoSwagger, customCollisionModels);
+                ActionObject actionObject = await SpawnActionObject(aoSwagger, customCollisionModels);
                 //actionObject.ActionObjectUpdate(aoSwagger);
                 currentAO.Add(aoSwagger.Id);
             }
