@@ -299,8 +299,7 @@ namespace Base {
         }
 
         public void DestroyObject() {
-            throw new NotImplementedException();
-            //base.DestroyObject();
+            Destroy(gameObject);
         }
 
         private void RemoveConnectionToParent() {

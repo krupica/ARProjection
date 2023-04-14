@@ -11,7 +11,7 @@ using TMPro;
 using System.Linq;
 
 namespace Base {
-    public abstract class Action : MonoBehaviour {
+    public class Action : MonoBehaviour {
         // Metadata of this Action
         private ActionMetadata metadata;
         // Dictionary of all action parameters for this Action
@@ -285,8 +285,8 @@ namespace Base {
                 transform.rotation = Quaternion.LookRotation(otherAction.transform.position - transform.position);
                 transform.localRotation = Quaternion.Euler(0, transform.localRotation.eulerAngles.y, 0);
             } else {
-                transform.rotation = GameManager.Instance.Scene.transform.rotation;
-                transform.Rotate(-90 * GameManager.Instance.Scene.transform.up);
+                //transform.rotation = GameManager.Instance.Scene.transform.rotation;
+                //transform.Rotate(-90 * GameManager.Instance.Scene.transform.up);
             }
         }
 

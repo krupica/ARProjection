@@ -635,7 +635,7 @@ Camera:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -652,18 +652,18 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
-  m_TargetEye: 0
+  m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 0
+  m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 0
@@ -676,14 +676,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
+  m_LocalPosition: {x: 0, y: 0.5, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: 0, z: 0}
 --- !u!1 &731234075
 GameObject:
   m_ObjectHideFlags: 0
@@ -747,6 +747,7 @@ GameObject:
   m_Component:
   - component: {fileID: 736006833}
   - component: {fileID: 736006832}
+  - component: {fileID: 736006837}
   - component: {fileID: 736006834}
   - component: {fileID: 736006836}
   - component: {fileID: 736006835}
@@ -797,11 +798,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbf610b6f4978774981cfdc1b10e91ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  calibXmlPath: calibration_result.xml
-  kinect: {fileID: 0}
-  projector: {fileID: 0}
-  canvas: {fileID: 1295279321}
-  actionPointPrefab: {fileID: 8455981592208975781, guid: e262b9ff850d7224b869723ffe32c26a, type: 3}
   ExpertMode: 1
   GizmoPrefab: {fileID: 0}
   MainMenuBtnCG: {fileID: 0}
@@ -816,7 +812,6 @@ MonoBehaviour:
   ConnectionInfo: {fileID: 0}
   ServerVersion: {fileID: 0}
   ObjectWithGizmo: {fileID: 0}
-  Scene: {fileID: 0}
   headUpCanvas: {fileID: 0}
   SelectObjectInfo: {fileID: 0}
 --- !u!114 &736006835
@@ -834,7 +829,7 @@ MonoBehaviour:
   ActionPointsOrigin: {fileID: 236444633}
   ConnectionPrefab: {fileID: 0}
   ActionPointPrefab: {fileID: 361958019179128258, guid: 5e8cd9e6a1959104ead25e695e066261, type: 3}
-  PuckPrefab: {fileID: 0}
+  PuckPrefab: {fileID: 6417292780430755493, guid: 95ac9ebcf9bac6045bc0198ac650dd9c, type: 3}
   StartPrefab: {fileID: 2114904411120870232, guid: 06c760160c28f2d4b902d23070629a7b, type: 3}
   EndPrefab: {fileID: 5767670319277044569, guid: 7dd960350584cc749b51c27d24318208, type: 3}
   StartAction: {fileID: 3189732798780276477, guid: 06c760160c28f2d4b902d23070629a7b, type: 3}
@@ -857,7 +852,6 @@ MonoBehaviour:
   ActionObjectsSpawn: {fileID: 236444633}
   SceneOrigin: {fileID: 236444633}
   KinectPrefab: {fileID: 3732759439335168376, guid: fd3faeac0d414a7438c63ebfd2ed7ba3, type: 3}
-  ProjectorPrefab: {fileID: 6855664508726926502, guid: 4cdb11681686dcb4e92053e79d97416f, type: 3}
   RobotPrefab: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}
   ActionObjectPrefab: {fileID: 886395293713347599, guid: 2062e7d704802df4a9ca9a74c460c82b, type: 3}
   ActionObjectNoPosePrefab: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}
@@ -870,6 +864,26 @@ MonoBehaviour:
   ActionObjectsVisibility: 0
   SelectedArmId: 
   Valid: 0
+--- !u!114 &736006837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736006831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8399cdc8ce39a94cada09d3e2f597f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  calibXmlPath: calibration_result.xml
+  kinect: {fileID: 0}
+  projector: {fileID: 0}
+  canvas: {fileID: 1295279321}
+  canvasScene: {fileID: 1503916253}
+  actionPointPrefab: {fileID: 8455981592208975781, guid: e262b9ff850d7224b869723ffe32c26a, type: 3}
+  mainCamera: {fileID: 0}
+  ProjectorPrefab: {fileID: 6855664508726926502, guid: 4cdb11681686dcb4e92053e79d97416f, type: 3}
 --- !u!1 &912439359
 GameObject:
   m_ObjectHideFlags: 0
@@ -1367,6 +1381,7 @@ RectTransform:
   - {fileID: 912439360}
   - {fileID: 238117747}
   - {fileID: 1364982271}
+  - {fileID: 1503916254}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1524,6 +1539,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1364982270}
   m_CullTransparentMesh: 1
+--- !u!1 &1503916253
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1503916254}
+  m_Layer: 5
+  m_Name: Scene
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1503916254
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503916253}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1295279325}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1542021979
 GameObject:
   m_ObjectHideFlags: 0

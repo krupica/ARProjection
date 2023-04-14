@@ -9,10 +9,8 @@ using NativeWebSocket;
 using IO.Swagger.Model;
 using UnityEditor;
 using UnityEngine.Events;
-using Assets.Scripts.AR_Classes;
 
 namespace Base {
-
     public class WebsocketManager : Singleton<WebsocketManager> {
         /// <summary>
         /// ARServer URI

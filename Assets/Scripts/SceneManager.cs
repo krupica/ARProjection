@@ -6,7 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Assets.Scripts.AR_Classes;
+using Assets.Scripts.ARClasses;
 using IO.Swagger.Model;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -67,10 +67,6 @@ namespace Base {
         /// Prefab for Kinect
         /// </summary>        
         public GameObject KinectPrefab;
-        /// <summary>
-        /// Prefab for Projector
-        /// </summary>        
-        public GameObject ProjectorPrefab;
         /// <summary>
         /// Prefab for robot action object
         /// </summary>        
@@ -216,6 +212,7 @@ namespace Base {
             SceneStarted = false;
             Valid = false;
             RemoveActionObjects();
+            ProjectionManager.Instance.DestroyProjection();
             //SelectorMenu.Instance.SelectorItems.Clear();
             SceneMeta = null;
             return true;
@@ -525,18 +522,7 @@ namespace Base {
                 //Získání reference na Kinect a projector
                 if (aom.Type == "KinectAzure")
                 {
-                    if (Camera.main)
-                    {
-                        Camera.main.enabled = false;
-                    }
-                    GameManager.Instance.kinect = obj;
-                    GameManager.Instance.calibrationData.KinectPosition = obj.transform;
-
-                    await GameManager.Instance.calibrationData.GetCameraParameters(sceneObject.Id);
-
-                    GameManager.Instance.projector = Instantiate(ProjectorPrefab, ActionObjectsSpawn.transform);
-                    KinectCoordConversion.SetProjectorTransform(GameManager.Instance.projector);
-                    GameManager.Instance.projector.name = "Projector";
+                    await ProjectionManager.Instance.SetupProjection(obj, sceneObject);
                 }
                 else
                 {

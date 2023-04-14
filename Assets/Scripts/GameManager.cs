@@ -9,7 +9,6 @@ using IO.Swagger.Model;
 using UnityEngine.Events;
 using System.Collections;
 using Newtonsoft.Json;
-using Assets.Scripts.AR_Classes;
 //using MiniJSON;
 
 namespace Base {
@@ -18,17 +17,6 @@ namespace Base {
     /// (landing screen, main screen, editor screens) and for management of application states.
     /// </summary>
     public class GameManager : Singleton<GameManager> {
-
-        /// <summary>
-        /// Calibration
-        /// </summary>
-        public CalibrationData calibrationData;
-        public string calibXmlPath = "calibration_result.xml";
-        public GameObject kinect;
-        public GameObject projector;
-        public GameObject canvas;
-        public GameObject actionPointPrefab;
-
         #region fields
 
         /// <summary>
@@ -244,10 +232,6 @@ namespace Base {
         /// GameObject which is currently manipulated by gizmo
         /// </summary>
         public GameObject ObjectWithGizmo;
-        /// <summary>
-        /// GameObject of scene
-        /// </summary>
-        public GameObject Scene;
 
         /// <summary>
         /// Canvas for headUp info (notifications, tooltip, loading screen etc.
@@ -636,7 +620,6 @@ namespace Base {
         /// Binds events and sets initial state of app
         /// </summary>
         private void Start() {
-            calibrationData = new CalibrationData(calibXmlPath);
             SetDefaultFramerate();
             updatingPackageState = false;
             nextPackageState = null;
@@ -1344,7 +1327,7 @@ namespace Base {
                 Scene.SetActive(true);
             }
 #else
-            Scene.SetActive(true);
+            //Scene.SetActive(true);
 #endif
             //AREditorResources.Instance.LeftMenuScene.DeactivateAllSubmenus();
             //MainMenu.Instance.Close();
@@ -1390,7 +1373,7 @@ namespace Base {
                     Scene.SetActive(true);
                 }
 #else
-                Scene.SetActive(true);
+                //Scene.SetActive(true);
 #endif
 
                 if (PackageInfo == null)
@@ -1425,14 +1408,6 @@ namespace Base {
 
             //Scene.SetActive(false);
             //SetGameState(GameStateEnum.Disconnected);
-        }
-
-        /// <summary>
-        /// Activates/Disactivates the Scene and calls all necessary methods (Selector menu update).
-        /// </summary>
-        /// <param name="active"></param>
-        public void SceneSetActive(bool active) {
-            Scene.SetActive(active);
         }
 
         /// <summary>
@@ -1510,7 +1485,5 @@ namespace Base {
         public static implicit operator RequestResult((bool success, string message) value) {
             return new RequestResult(value.success, value.message);
         }
-
-        
     }
 }

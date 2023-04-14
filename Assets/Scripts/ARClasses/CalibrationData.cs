@@ -9,7 +9,7 @@ using System.Xml;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Assets.Scripts.AR_Classes
+namespace Assets.Scripts.ARClasses
 {
     public class CalibrationData
     {
@@ -132,10 +132,17 @@ namespace Assets.Scripts.AR_Classes
                 await WebsocketManager.Instance.WriteUnlock(kinectId);
                 await WebsocketManager.Instance.WriteLock(kinectId, false);
             }
-            CameraParameters camParams = await WebsocketManager.Instance.GetCameraColorParameters(kinectId);
-            WebsocketManager.Instance.WriteUnlock(kinectId);
 
-            SetCamCalibFromParams(camParams);
+            try
+            {
+                CameraParameters camParams = await WebsocketManager.Instance.GetCameraColorParameters(kinectId);
+                SetCamCalibFromParams(camParams);
+                await WebsocketManager.Instance.WriteUnlock(kinectId);
+            }
+            catch (RequestFailedException e)
+            {
+                await WebsocketManager.Instance.WriteUnlock(kinectId);
+            }
         }
 
         private float[] ReadMatrixData(string matrixData)

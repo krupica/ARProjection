@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using Base;
 
-namespace Assets.Scripts.AR_Classes
+namespace Assets.Scripts.ARClasses
 {
     public static class KinectCoordConversion
     {
         public static void SetProjectorTransform(GameObject projector)
         {
-            CalibrationData calib = GameManager.Instance.calibrationData;
-            Camera cam = GameManager.Instance.kinect.GetComponent<Camera>();
+            CalibrationData calib = ProjectionManager.Instance.calibrationData;
+            Camera cam = ProjectionManager.Instance.kinect.GetComponent<Camera>();
 
             // Compute the projector-to-world matrix P
             Matrix4x4 P;
@@ -26,7 +26,7 @@ namespace Assets.Scripts.AR_Classes
 
         public static Vector3 ManualWorldToScreenPoint(Vector3 wp)
         {
-            Camera cam = GameManager.Instance.kinect.GetComponent<Camera>();
+            Camera cam = ProjectionManager.Instance.kinect.GetComponent<Camera>();
             // calculate view-projection matrix
             Matrix4x4 mat;
             mat = cam.projectionMatrix * cam.worldToCameraMatrix;

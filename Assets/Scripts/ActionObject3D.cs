@@ -112,10 +112,8 @@ public class ActionObject3D : ActionObject
                     }
                     break;
                 case ObjectModel.TypeEnum.Mesh:
-                    //MeshImporter.Instance.OnMeshImported += OnModelLoaded;
-                    //MeshImporter.Instance.LoadModel(ActionObjectMetadata.ObjectModel.Mesh, GetId());
 
-                    Model = Instantiate(CapsulePrefab, transform);
+                    Model = Instantiate(CubePrefab, transform);
                     Model.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
                     break;
                 default:

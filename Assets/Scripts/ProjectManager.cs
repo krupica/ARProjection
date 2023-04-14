@@ -975,7 +975,7 @@ namespace Base {
                 Debug.LogError("Actions not ready");
                 return null; //TODO: throw exception
             }
-            GameObject puck = Instantiate(PuckPrefab, ap.ActionsSpawn.transform);
+            GameObject puck = Instantiate(PuckPrefab, ap.gameObject.transform);
             puck.SetActive(false);
 
             puck.GetComponent<Action>().Init(projectAction, actionMetadata, ap, actionProvider);
