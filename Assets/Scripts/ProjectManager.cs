@@ -6,6 +6,7 @@ using System;
 
 using IO.Swagger.Model;
 using System.Linq;
+using Assets.Scripts.ARClasses;
 
 namespace Base {
     /// <summary>
@@ -406,6 +407,7 @@ namespace Base {
             //ConnectionManagerArcoro.Instance.Clear();
             LogicItems.Clear();
             ProjectParameters.Clear();
+            ProjectionManager.Instance.DestroyProjection();
             return true;
         }
 

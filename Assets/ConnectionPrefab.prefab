@@ -150,20 +150,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5806945198085100239}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f93ed614cdf640fba75a1a701c98c39, type: 3}
+  m_Script: {fileID: 11500000, guid: b99dec4462bac5347b2faf2cbca0b9d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target:
+  targets:
   - {fileID: 0}
   - {fileID: 0}
-  points:
-  - color: {r: 1, g: 1, b: 1, a: 1}
-    direction: 0
-    position: 0
-    weight: 0
-  - color: {r: 1, g: 1, b: 1, a: 1}
-    direction: 0
-    position: 0
-    weight: 0
-  resolution: 20
-  _line: {fileID: 5806945198096296325}
+  ClickMaterial: {fileID: 0}

@@ -302,7 +302,7 @@ namespace Base {
                         HandleSceneState(data);
                         break;
                     case "SceneObjectChanged":
-                        await HandleSceneObjectChanged(data);
+                        HandleSceneObjectChanged(data);
                         break;
                     case "ActionPointChanged":
                         HandleActionPointChanged(data);
@@ -374,10 +374,10 @@ namespace Base {
                         HandleRobotJoints(data);
                         break;
                     case "OpenScene":
-                        await HandleOpenScene(data);
+                        HandleOpenScene(data);
                         break;
                     case "OpenProject":
-                        HandleOpenProject(data);
+                        await HandleOpenProject(data);
                         break;
                     case "SceneClosed":
                         HandleCloseScene(data);
@@ -896,11 +896,11 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         /// <returns></returns>
-        private async Task HandleSceneObjectChanged(string data) {
+        private void HandleSceneObjectChanged(string data) {
             IO.Swagger.Model.SceneObjectChanged sceneObjectChanged = JsonConvert.DeserializeObject<IO.Swagger.Model.SceneObjectChanged>(data);
             switch (sceneObjectChanged.ChangeType) {
                 case IO.Swagger.Model.SceneObjectChanged.ChangeTypeEnum.Add:
-                    await SceneManager.Instance.SceneObjectAdded(sceneObjectChanged.Data);
+                    SceneManager.Instance.SceneObjectAdded(sceneObjectChanged.Data);
                     break;
                 case IO.Swagger.Model.SceneObjectChanged.ChangeTypeEnum.Remove:
                     SceneManager.Instance.SceneObjectRemoved(sceneObjectChanged.Data);
@@ -920,9 +920,9 @@ namespace Base {
         /// Invoked when openning of project is requested
         /// </summary>
         /// <param name="data">Message from server</param>
-        private async void HandleOpenProject(string data) {
+        private async Task HandleOpenProject(string data) {
             IO.Swagger.Model.OpenProject openProjectEvent = JsonConvert.DeserializeObject<IO.Swagger.Model.OpenProject>(data);
-            GameManager.Instance.ProjectOpened(openProjectEvent.Data.Scene, openProjectEvent.Data.Project);
+            await GameManager.Instance.ProjectOpened(openProjectEvent.Data.Scene, openProjectEvent.Data.Project);
         }
 
         /// <summary>
@@ -930,9 +930,9 @@ namespace Base {
         /// </summary>
         /// <param name="data"Message from server></param>
         /// <returns></returns>
-        private async Task HandleOpenScene(string data) {
+        private void HandleOpenScene(string data) {
             IO.Swagger.Model.OpenScene openSceneEvent = JsonConvert.DeserializeObject<IO.Swagger.Model.OpenScene>(data);
-            await GameManager.Instance.SceneOpened(openSceneEvent.Data.Scene);
+            GameManager.Instance.SceneOpened(openSceneEvent.Data.Scene);
         }
 
         /// <summary>

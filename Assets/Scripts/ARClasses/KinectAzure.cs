@@ -7,11 +7,12 @@ using IO.Swagger.Model;
 using System;
 using System.Threading.Tasks;
 using static UnityEngine.GraphicsBuffer;
+using Assets.Scripts.ARClasses;
 
-public class ActionObject3D : ActionObject
+public class KinectAzure : ActionObject
 {
     [SerializeField]
-    public GameObject CubePrefab, CylinderPrefab, SpherePrefab, CapsulePrefab;
+    public GameObject Square, Circle;
     public GameObject Model;
 
     public override Vector3 GetScenePosition()
@@ -43,13 +44,15 @@ public class ActionObject3D : ActionObject
     {
         base.ActionObjectUpdate(actionObjectSwagger);
         ResetPosition();
+        ProjectionManager.Instance.UpdateProjectorTransform();
+
     }
 
     public override void CreateModel(CollisionModels customCollisionModels = null)
     {
         if (ActionObjectMetadata.ObjectModel == null || ActionObjectMetadata.ObjectModel.Type == IO.Swagger.Model.ObjectModel.TypeEnum.None)
         {
-            Model = Instantiate(CubePrefab, transform);
+            Model = Instantiate(Square, transform);
             Model.transform.localScale = new Vector3(0.05f, 0.01f, 0.05f);
         }
         else
@@ -57,7 +60,7 @@ public class ActionObject3D : ActionObject
             switch (ActionObjectMetadata.ObjectModel.Type)
             {
                 case IO.Swagger.Model.ObjectModel.TypeEnum.Box:
-                    Model = Instantiate(CubePrefab, transform);
+                    Model = Instantiate(Square, transform);
 
                     if (customCollisionModels == null)
                     {
@@ -76,7 +79,7 @@ public class ActionObject3D : ActionObject
                     }
                     break;
                 case IO.Swagger.Model.ObjectModel.TypeEnum.Cylinder:
-                    Model = Instantiate(CylinderPrefab, transform);
+                    Model = Instantiate(Circle, transform);
                     if (customCollisionModels == null)
                     {
                         Model.transform.localScale = new Vector3((float)ActionObjectMetadata.ObjectModel.Cylinder.Radius, (float)ActionObjectMetadata.ObjectModel.Cylinder.Height / 2, (float)ActionObjectMetadata.ObjectModel.Cylinder.Radius);
@@ -94,7 +97,7 @@ public class ActionObject3D : ActionObject
                     }
                     break;
                 case IO.Swagger.Model.ObjectModel.TypeEnum.Sphere:
-                    Model = Instantiate(SpherePrefab, transform);
+                    Model = Instantiate(Circle, transform);
                     if (customCollisionModels == null)
                     {
                         Model.transform.localScale = new Vector3((float)ActionObjectMetadata.ObjectModel.Sphere.Radius, (float)ActionObjectMetadata.ObjectModel.Sphere.Radius, (float)ActionObjectMetadata.ObjectModel.Sphere.Radius);
@@ -113,81 +116,17 @@ public class ActionObject3D : ActionObject
                     break;
                 case ObjectModel.TypeEnum.Mesh:
 
-                    Model = Instantiate(CubePrefab, transform);
+                    Model = Instantiate(Square, transform);
                     Model.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
                     break;
                 default:
-                    Model = Instantiate(CubePrefab, transform);
+                    Model = Instantiate(Square, transform);
                     Model.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
                     break;
             }
         }
         gameObject.GetComponent<BindParentToChild>().ChildToBind = Model;
     }
-
-
-    /// <summary>
-    /// For meshes...
-    /// </summary>
-    /// <param name="assetLoaderContext"></param>
-    //public void OnModelLoaded(object sender, ImportedMeshEventArgs args)
-    //{
-    //    if (args.Name != this.GetId())
-    //        return;
-
-    //    bool outlineWasHighlighted = outlineOnClick.Highlighted;
-
-    //    if (Model != null)
-    //    {
-    //        outlineOnClick.UnHighlight();
-    //        outlineOnClick.ClearRenderers();
-
-    //        Model.SetActive(false);
-    //        Destroy(Model);
-    //    }
-
-    //    Model = args.RootGameObject;
-
-    //    Model.gameObject.transform.parent = Visual.transform;
-    //    Model.gameObject.transform.localPosition = Vector3.zero;
-    //    Model.gameObject.transform.localRotation = Quaternion.identity;
-
-    //    gameObject.GetComponent<BindParentToChild>().ChildToBind = Model;
-
-    //    foreach (Renderer child in Model.GetComponentsInChildren<Renderer>(true))
-    //    {
-    //        //child.gameObject.AddComponent<OnClickCollider>().Target = gameObject;
-    //        //child.gameObject.AddComponent<MeshCollider>();
-    //    }
-
-    //    aoRenderers.Clear();
-    //    Colliders.Clear();
-    //    aoRenderers.AddRange(Model.GetComponentsInChildren<Renderer>(true));
-    //    Colliders.AddRange(Model.GetComponentsInChildren<MeshCollider>(true));
-    //    outlineOnClick.InitRenderers(aoRenderers);
-    //    outlineOnClick.InitMaterials();
-    //    SetVisibility(visibility, forceShaderChange: true);
-
-    //    if (outlineWasHighlighted)
-    //    {
-    //        outlineOnClick.Highlight();
-    //        //if (SelectorMenu.Instance.ManuallySelected)
-    //        //{
-    //        //    DisplayOffscreenIndicator(true);
-    //        //}
-    //    }
-
-    //    //MeshImporter.Instance.OnMeshImported -= OnModelLoaded;
-    //}
-
-    /// <summary>
-    /// For meshes...
-    /// </summary>
-    /// <param name="obj"></param>
-    //private void OnModelLoadError(IContextualizedError obj)
-    //{
-    //    Notifications.Instance.ShowNotification("Unable to show mesh " + this.GetName(), obj.GetInnerException().Message);
-    //}
 
     public string GetObjectTypeName()
     {

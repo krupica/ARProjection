@@ -39,20 +39,25 @@ namespace Assets.Scripts.ARClasses
             }
         }
 
-        public async Task SetupProjection(GameObject kinectObj, IO.Swagger.Model.SceneObject sceneObject)
+        public void SetupProjection(GameObject kinectObj)
         {
             if (mainCamera)
             {
                 mainCamera.enabled = false;
             }
             kinect = kinectObj;
-            calibrationData.KinectPosition = kinectObj.transform;
-
-            await calibrationData.GetCameraParameters(sceneObject.Id);
 
             projector = Instantiate(ProjectorPrefab, SceneManager.Instance.ActionObjectsSpawn.transform);
-            KinectCoordConversion.SetProjectorTransform(ProjectionManager.Instance.projector);
+            UpdateProjectorTransform();
             projector.name = "Projector";
+        }
+
+        public void UpdateProjectorTransform()
+        {
+            projector.transform.position = kinect.transform.position + calibrationData.Translation;
+            Matrix4x4 rotation = calibrationData.Rotation.inverse;
+            Quaternion rotationQuaternion = Quaternion.LookRotation(rotation.GetColumn(2), rotation.GetColumn(1));
+            projector.transform.rotation = kinect.transform.rotation * rotationQuaternion;
         }
 
         public void DestroyProjection()
@@ -61,7 +66,10 @@ namespace Assets.Scripts.ARClasses
             {
                 mainCamera.enabled = true;
             }
-            Destroy(projector);
+            if (projector)
+            {
+                Destroy(projector);
+            }
             foreach (Transform child in canvasScene.transform)
             {
                 Destroy(child.gameObject);

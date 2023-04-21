@@ -21,25 +21,18 @@ namespace Assets.Scripts.ARClasses
 
         public override Vector3 GetScenePosition()
         {
-            Vector3 newPos = TransformConvertor.ROSToUnity(DataHelper.PositionToVector3(Data.Position));
-
+            Vector3 newPos = ProjectionCoordConversion.ROSToUnityY0(DataHelper.PositionToVector3(Data.Position));
             if (ProjectionManager.Instance.kinect != null)
             {
                 GameObject projector = ProjectionManager.Instance.projector;
                 //Matrix4x4 kinectToWorld = kinect.transform.worldToLocalMatrix;
                 //Vector3 localPoint = kinectToWorld.MultiplyPoint(newPos);
 
-                Vector3 Point2D = projector.GetComponent<Camera>().WorldToScreenPoint(newPos);
-                //Vector2 Point2D = KinectCoordConversion.LocaltToScreenSpace(localPoint);
-                //Vector2 Point2D = KinectCoordConversion.ManualWorldToScreenPoint(newPos);
+                //Vector3 Point2D = projector.GetComponent<Camera>().WorldToScreenPoint(newPos);
+                Vector2 Point2D = ProjectionCoordConversion.ManualWorldToScreenPoint(newPos);
                 GameObject go = Instantiate(ProjectionManager.Instance.actionPointPrefab, Point2D, Quaternion.identity, ProjectionManager.Instance.canvasScene.transform);
 
-                return newPos;
-                //projection
-                //Vector3 rotatedPoint = GameManager.Instance.calibrationData.rotation.MultiplyPoint(kinectPoint);
-                //Vector3 transformedPoint = rotatedPoint + GameManager.Instance.calibrationData.translation;
-
-                //return transformedPoint;
+                return newPos;                
             }
 
             return newPos;

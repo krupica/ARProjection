@@ -2,6 +2,7 @@
 using IO.Swagger.Model;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace Assets.Scripts.ARClasses
 
         public Matrix4x4 CamMatrix;
 
+        //TODO nastavit šířku projektoru podle kalibračních dat
         public int Width
         {
             get { return imgShape[0]; }
@@ -50,10 +52,13 @@ namespace Assets.Scripts.ARClasses
             get { return imgShape[1]; }
             set { imgShape[1] = value;}
         }
+        public Matrix4x4 Extrinsic
+        {
+            get { return extrinsic; }
+            set { extrinsic = value;}
+        }
 
-        public Transform KinectPosition { get; set; }
-
-        public Matrix4x4 Rotation { get; private set; }
+        public Matrix4x4 Rotation { get; set; }
 
         public Vector3 Translation { get; private set; }
 
@@ -62,8 +67,8 @@ namespace Assets.Scripts.ARClasses
         public Matrix4x4 ProjInt { get; private set; }
 
         private int[] imgShape;
-        private float[] projDist;
         private Matrix4x4 extrinsic;
+        
 
         public CalibrationData (string xmlPath)
         {
@@ -84,11 +89,12 @@ namespace Assets.Scripts.ARClasses
             imgShape = new int[] { (int)imgShapeData[1], (int)imgShapeData[0] };
 
             ProjInt = new Matrix4x4(
-                new Vector4(projIntData[0], projIntData[1], projIntData[2], 0f),
-                new Vector4(projIntData[3], projIntData[4], projIntData[5], 0f),
-                new Vector4(projIntData[6], projIntData[7], projIntData[8], 0f),
+                new Vector4(projIntData[0], projIntData[1], projIntData[2], 0f) * 0.001f,
+                new Vector4(projIntData[3], projIntData[4], projIntData[5], 0f) * 0.001f,
+                new Vector4(projIntData[6], projIntData[7], projIntData[8], 0f) * 0.001f,
                 new Vector4(0f, 0f, 0f, 1f)
                 );
+            ProjInt = ProjInt ;
 
             Rotation = new Matrix4x4(
                 new Vector4(rotationData[0], rotationData[1], rotationData[2], 0f),
@@ -99,10 +105,11 @@ namespace Assets.Scripts.ARClasses
 
             Translation = new Vector3(
                 translationData[0],
-                translationData[1],
-                translationData[2]
+                translationData[2],
+                translationData[1]
             );
             Translation = Translation * 0.001f;
+
 
             extrinsic = Matrix4x4.identity;
             extrinsic.SetRow(0, new Vector4(Rotation[0, 0], Rotation[0, 1], Rotation[0, 2], Translation[0]));
@@ -112,7 +119,7 @@ namespace Assets.Scripts.ARClasses
 
         public void SetCamCalibFromParams(CameraParameters camParams)
         {
-            File.WriteAllText("KinectCamData.json", camParams.ToJson());
+            //File.WriteAllText("KinectCamData.json", camParams.ToJson());
             CamMatrix = Matrix4x4.identity;
             CamCx = (float)camParams.Cx;
             CamCy = (float)camParams.Cy;
@@ -148,29 +155,20 @@ namespace Assets.Scripts.ARClasses
         private float[] ReadMatrixData(string matrixData)
         {
             int count = 0;
-            string[] values = matrixData.Split(' ', '\n');
+            string[] values = matrixData.Split(' ', '\n', System.StringSplitOptions.RemoveEmptyEntries);
             float[] matrix = new float[values.Length];
             for (int i = 0; i < values.Length; i++)
             {
-                if (float.TryParse(values[i], out float value))
+                //převzato z https://stackoverflow.com/questions/64639/convert-from-scientific-notation-string-to-float-in-c-sharp
+                string curentValue = values[i].TrimEnd('.');
+                if (float.TryParse(curentValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
                 {
-                    matrix[count]= value;
+                    matrix[count]= (float)value;
                     count++;
                 }
                     
             }
             return matrix;
         }
-
-        //public void FillMatrix()
-        //{
-        //    rotation = new Matrix4x4();
-        //    rotation.SetRow(0, new Vector4(9.9995961310770576e-01, 8.9872990011441688e-03, 2.4701242572249633e-05, 0));
-        //    rotation.SetRow(1, new Vector4(-8.9613393813132575e-03, 9.9685483491258131e-01, 7.8740920161649047e-02, 0));
-        //    rotation.SetRow(2, new Vector4(6.8304464003145823e-04, -7.8737961416805169e-02, 9.9689511328020131e-01, 0));
-        //    rotation.SetRow(3, new Vector4(0, 0, 0, 1));
-
-        //    translation = new Vector3(8.5737214348908466e+01, -6.3045718819563251e+02, -1.0084398390544085e+02);
-        //}
     }    
 }

@@ -146,10 +146,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8f853c557cee4478a6cab6843d10d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CubePrefab: {fileID: 0}
-  CylinderPrefab: {fileID: 0}
-  SpherePrefab: {fileID: 0}
-  CapsulePrefab: {fileID: 0}
+  Square: {fileID: 1429862277040400757, guid: bddfe2aa04d290e43abecbd3885ab2b1, type: 3}
+  Circle: {fileID: 6078801240473815496, guid: fa97684a02e87434f89f54e5ee8b5ff9, type: 3}
   Model: {fileID: 0}
 --- !u!114 &8672789235379422526
 MonoBehaviour:
@@ -171,7 +169,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6855664508726926502}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -220,8 +218,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AssetsPPU: 100
-  m_RefResolutionX: 1280
-  m_RefResolutionY: 800
+  m_RefResolutionX: 1920
+  m_RefResolutionY: 1080
   m_UpscaleRT: 0
   m_PixelSnapping: 0
   m_CropFrameX: 0

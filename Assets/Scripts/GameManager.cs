@@ -387,7 +387,7 @@ namespace Base {
         /// <summary>
         /// When connected to server, checks for requests for delayd scene, project, package or main screen openning
         /// </summary>
-        private async Task Update() {
+        private void Update() {
             // Only when connected to server
             if (ConnectionStatus != ConnectionStatusEnum.Connected)
                 return;
@@ -397,7 +397,7 @@ namespace Base {
                 if (newScene != null) {
                     Scene scene = newScene;
                     newScene = null;
-                    await SceneOpened(scene);
+                    SceneOpened(scene);
                 }
                 // request for delayed openning of project to allow loading of action objects and their actions
             } else if (openProject) {
@@ -936,7 +936,7 @@ namespace Base {
         /// </summary>
         /// <param name="scene">Scene desription from the server</param>
         /// <returns></returns>
-        internal async Task SceneOpened(Scene scene) {
+        internal void SceneOpened(Scene scene) {
             SetGameState(GameStateEnum.LoadingScene);
             if (!ActionsManager.Instance.ActionsReady) {
                 newScene = scene;
@@ -944,7 +944,7 @@ namespace Base {
                 return;
             }
             try {
-                if (await SceneManager.Instance.CreateScene(scene)) {                    
+                if (SceneManager.Instance.CreateScene(scene)) {                    
                     OpenSceneEditor();                    
                 } else {
                     Notifications.Instance.SaveLogs(scene, null, "Failed to initialize scene");
@@ -964,7 +964,7 @@ namespace Base {
         /// </summary>
         /// <param name="project">Project desription from the server</param>
         /// <returns></returns>
-        internal async void ProjectOpened(Scene scene, Project project) {
+        internal async Task ProjectOpened(Scene scene, Project project) {
             var state = GetGameState();
             if (!ActionsManager.Instance.ActionsReady) {
                 newProject = project;
@@ -978,7 +978,7 @@ namespace Base {
             }
             SetGameState(GameStateEnum.LoadingProject);
             try {
-                if (!await SceneManager.Instance.CreateScene(scene)) {
+                if (!SceneManager.Instance.CreateScene(scene)) {
                     Notifications.Instance.SaveLogs(scene, project, "Failed to initialize scene");
                     Debug.LogError("wft");
                     //HideLoadingScreen();
@@ -1032,7 +1032,7 @@ namespace Base {
                             updatingPackageState = false;
                             return;
                         }
-                        if (!await SceneManager.Instance.CreateScene(PackageInfo.Scene, PackageInfo.CollisionModels)) {
+                        if (!SceneManager.Instance.CreateScene(PackageInfo.Scene, PackageInfo.CollisionModels)) {
                             Notifications.Instance.SaveLogs(PackageInfo.Scene, PackageInfo.Project, "Failed to initialize scene");
                             updatingPackageState = false;
                             return;

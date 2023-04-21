@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1283878440016341787
+--- !u!1 &886395293713347599
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7253791975263745624}
-  - component: {fileID: 2814819885278975977}
-  - component: {fileID: 4503211930637571507}
+  - component: {fileID: 6307510119187651307}
+  - component: {fileID: 5160324381482028341}
+  - component: {fileID: 5095419011355691082}
   m_Layer: 0
-  m_Name: ColisionObject
+  m_Name: CollisionObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7253791975263745624
+--- !u!4 &6307510119187651307
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1283878440016341787}
+  m_GameObject: {fileID: 886395293713347599}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -33,32 +33,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2814819885278975977
+--- !u!114 &5160324381482028341
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1283878440016341787}
+  m_GameObject: {fileID: 886395293713347599}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c8f853c557cee4478a6cab6843d10d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointsSpawn: {fileID: 0}
-  Collider: {fileID: 0}
-  CubePrefab: {fileID: 7684568490206204516, guid: b082d159009405c4ebf96174fbdef1b5, type: 3}
-  CylinderPrefab: {fileID: 6279024768879098896, guid: 8278af65cdcc27442b9b2deeb5d0a459, type: 3}
-  SpherePrefab: {fileID: 6183912061961067962, guid: b3cd6252d0871ce4b83cba7855ba60ba, type: 3}
-  CapsulePrefab: {fileID: 2191048939985621456, guid: bdf0a35ed1ee30341b95da0cccd93d9d, type: 3}
+  Square: {fileID: 1429862277040400757, guid: bddfe2aa04d290e43abecbd3885ab2b1, type: 3}
+  Circle: {fileID: 6078801240473815496, guid: fa97684a02e87434f89f54e5ee8b5ff9, type: 3}
   Model: {fileID: 0}
---- !u!114 &4503211930637571507
+--- !u!114 &5095419011355691082
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1283878440016341787}
+  m_GameObject: {fileID: 886395293713347599}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9074aedeb737ce4c8129fb757fbad47, type: 3}
