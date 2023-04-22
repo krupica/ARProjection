@@ -20,10 +20,6 @@ namespace Base {
     /// </summary>
     public class SceneManager : Singleton<SceneManager> {
         /// <summary>
-        /// Contains metainfo about scene (id, name, modified etc) without info about objects and services
-        /// </summary>
-        public Scene SceneMeta = null;
-        /// <summary>
         /// Holds all action objects in scene
         /// </summary>
         public Dictionary<string, ActionObject> ActionObjects = new Dictionary<string, ActionObject>();
@@ -49,41 +45,10 @@ namespace Base {
         public GameObject CollisionObjectPrefab;
 
         /// <summary>
-        /// Indicates if resources (e.g. end effectors for robot) should be loaded when scene created.
-        /// </summary>
-        private bool loadResources = false;
-
-        /// <summary>
         /// Defines if scene was started on server - e.g. if all robots and other action objects
         /// are instantioned and are ready
         /// </summary>
         private bool sceneStarted = false;
-
-        /// <summary>
-        /// Flag which indicates whether scene update event should be trigered during update
-        /// </summary>
-        private bool updateScene = false;
-
-        public event AREditorEventArgs.SceneStateHandler OnSceneStateEvent;
-
-        public string SelectedArmId;
-
-        //private RobotEE selectedEndEffector;
-
-        public bool Valid = false;
-        /// <summary>
-        /// Public setter for sceneChanged property. Invokes OnSceneChanged event with each change and
-        /// OnSceneSavedStatusChanged when sceneChanged value differs from original value (i.e. when scene
-        /// was not changed and now it is and vice versa)
-        /// </summary>
-        public bool SceneStarted {
-            get => sceneStarted;
-            private set => sceneStarted = value;
-        }
-        //public RobotEE SelectedEndEffector {
-        //    get => selectedEndEffector;
-        //    set => selectedEndEffector = value;
-        //}
 
         /// <summary>
         /// Creates scene from given json
@@ -95,14 +60,7 @@ namespace Base {
         /// <returns>True if scene successfully created, false otherwise</returns>
         public bool CreateScene(IO.Swagger.Model.Scene scene, CollisionModels customCollisionModels = null) {
             Debug.Assert(ActionsManager.Instance.ActionsReady);
-            if (SceneMeta != null)
-                return false;
-            SetSceneMeta(DataHelper.SceneToBareScene(scene));            
-            LoadSettings();
-
             UpdateActionObjects(scene, customCollisionModels);
-
-            Valid = true;
             return true;
         }
 
@@ -111,138 +69,18 @@ namespace Base {
         /// </summary>
         /// <returns>True if scene successfully destroyed, false otherwise</returns>
         public bool DestroyScene() {
-            SceneStarted = false;
-            Valid = false;
             RemoveActionObjects();
             ProjectionManager.Instance.DestroyProjection();
             //SelectorMenu.Instance.SelectorItems.Clear();
-            SceneMeta = null;
+            //SceneMeta = null;
             return true;
         }
 
         /// <summary>
-        /// Sets scene metadata
-        /// </summary>
-        /// <param name="scene">Scene metadata</param>
-        public void SetSceneMeta(BareScene scene) {
-            if (SceneMeta == null) {
-                SceneMeta = new Scene(id: "", name: "");
-            }
-            SceneMeta.Id = scene.Id;
-            SceneMeta.Description = scene.Description;
-            SceneMeta.IntModified = scene.IntModified;
-            SceneMeta.Modified = scene.Modified;
-            SceneMeta.Name = scene.Name;
-        }
-
-        /// <summary>
-        /// Gets scene metadata.
-        /// </summary>
-        /// <returns></returns>
-        public IO.Swagger.Model.Scene GetScene() {
-            if (SceneMeta == null)
-                return null;
-            Scene scene = SceneMeta;
-            scene.Objects = new List<SceneObject>();
-            foreach (ActionObject o in ActionObjects.Values) {
-                scene.Objects.Add(o.Data);
-            }
-            return scene;
-        }
-        
-        /// <summary>
         /// Initialization of scene manager
         /// </summary>
         private void Start() {
-            WebsocketManager.Instance.OnSceneBaseUpdated += OnSceneBaseUpdated;
-            WebsocketManager.Instance.OnSceneStateEvent += OnSceneState;
-            WebsocketManager.Instance.OnOverrideAdded += OnOverrideAddedOrUpdated;
-            WebsocketManager.Instance.OnOverrideUpdated += OnOverrideAddedOrUpdated;
-            WebsocketManager.Instance.OnOverrideBaseUpdated += OnOverrideAddedOrUpdated;
-            WebsocketManager.Instance.OnOverrideRemoved += OnOverrideRemoved;
         }
-
-        private void OnOverrideRemoved(object sender, ParameterEventArgs args) {
-            try {
-                ActionObject actionObject = GetActionObject(args.ObjectId);
-                actionObject.Overrides.Remove(args.Parameter.Name);
-            } catch (KeyNotFoundException ex) {
-                Debug.LogError(ex);
-
-            }
-        }
-
-        private void OnOverrideAddedOrUpdated(object sender, ParameterEventArgs args) {
-
-            try {
-                ActionObject actionObject = GetActionObject(args.ObjectId);
-                if (actionObject.TryGetParameterMetadata(args.Parameter.Name, out ParameterMeta parameterMeta)) {
-                    //Parameter p = new Parameter(parameterMeta, args.Parameter.Value);
-                    //actionObject.Overrides[args.Parameter.Name] = p;
-                }
-                
-            } catch (KeyNotFoundException ex) {
-                Debug.LogError(ex);
-                
-            }
-        }
-
-        private async void OnSceneState(object sender, SceneStateEventArgs args) {
-            switch (args.Event.State) {
-                case SceneStateData.StateEnum.Starting:
-                    OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
-                    break;
-                case SceneStateData.StateEnum.Stopping:
-                    SceneStarted = false;
-                    if (!string.IsNullOrEmpty(args.Event.Message)) {
-                        Notifications.Instance.ShowNotification("Scene service failed", args.Event.Message);
-                    }
-                    OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
-                    break;
-                case SceneStateData.StateEnum.Started:
-                    StartCoroutine(WaitUntillSceneValid(() => OnSceneStarted(args)));
-                    break;
-                case SceneStateData.StateEnum.Stopped:
-                    SceneStarted = false;
-                    SelectedArmId = null;
-                    //SelectedEndEffector = null;
-                    OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
-                    break;
-            }
-        }
-
-        private IEnumerator WaitUntillSceneValid(UnityEngine.Events.UnityAction callback) {
-            yield return new WaitUntil(() => Valid);
-            callback();
-        }
-
-        private async void OnSceneStarted(SceneStateEventArgs args) {
-            SceneStarted = true;
-            //RegisterRobotsForEvent(true, RegisterForRobotEventRequestArgs.WhatEnum.Joints);
-            string selectedRobotID = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedRobotId", null);
-            SelectedArmId = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedRobotArmId", null);
-            string selectedEndEffectorId = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedEndEffectorId", null);
-            //await SelectRobotAndEE(selectedRobotID, SelectedArmId, selectedEndEffectorId);
-            //GameManager.Instance.HideLoadingScreen();
-            OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
-        }
-
-        private void OnSceneBaseUpdated(object sender, BareSceneEventArgs args) {
-            if (GameManager.Instance.GetGameState() == GameManager.GameStateEnum.SceneEditor) {
-                SetSceneMeta(args.Scene);
-                updateScene = true;
-            }
-        }
-
-        /// <summary>
-        /// Loads selected setings from player prefs
-        /// </summary>
-        internal void LoadSettings() {
-            //ActionObjectsVisibility = PlayerPrefsHelper.LoadFloat("AOVisibility" + (VRModeManager.Instance.VRModeON ? "VR" : "AR"), (VRModeManager.Instance.VRModeON ? 1f : 0f));
-            //ActionObjectsInteractive = PlayerPrefsHelper.LoadBool("scene/" + SceneMeta.Id + "/AOInteractivity", true);
-            //RobotsEEVisible = PlayerPrefsHelper.LoadBool("scene/" + SceneMeta.Id + "/RobotsEEVisibility", true);
-        }
-
         #region ACTION_OBJECTS
         /// <summary>
         /// Spawns new action object
@@ -291,106 +129,6 @@ namespace Base {
         }
 
         /// <summary>
-        /// Finds free action object name, based on action object type (e.g. Box, Box_1, Box_2 etc.)
-        /// </summary>
-        /// <param name="aoType">Type of action object</param>
-        /// <returns></returns>
-        public string GetFreeAOName(string aoType) {
-            int i = 1;
-            bool hasFreeName;
-            string freeName = ToUnderscoreCase(aoType);
-            do {
-                hasFreeName = true;
-                if (ActionObjectsContainName(freeName)) {
-                    hasFreeName = false;
-                }
-                if (!hasFreeName)
-                    freeName = ToUnderscoreCase(aoType) + "_" + i++.ToString();
-            } while (!hasFreeName);
-
-            return freeName;
-        }
-
-        public string GetFreeObjectTypeName(string objectTypeName) {
-            int i = 1;
-            bool hasFreeName;
-            string freeName = objectTypeName;
-            do {
-                hasFreeName = true;
-                if (ActionsManager.Instance.ActionObjectsMetadata.ContainsKey(freeName)) {
-                    hasFreeName = false;
-                }
-                if (!hasFreeName)
-                    freeName = ToUnderscoreCase(objectTypeName) + "_" + i++.ToString();
-            } while (!hasFreeName);
-
-            return freeName;
-        }
-
-        public string GetFreeSceneName(string sceneName) {
-            int i = 1;
-            bool hasFreeName;
-            string freeName = sceneName;
-            do {
-                hasFreeName = true;
-                try {
-                    GameManager.Instance.GetSceneId(freeName);
-                    hasFreeName = false;
-                    freeName = sceneName + "_" + i++.ToString();
-                } catch (RequestFailedException) {
-                    
-                }
-                    
-            } while (!hasFreeName);
-
-            return freeName;
-        }
-
-        /// <summary>
-        /// Returns all robots in scene
-        /// </summary>
-        /// <returns></returns>
-        //public List<IRobot> GetRobots() {
-        //    List<IRobot> robots = new List<IRobot>();
-        //    foreach (ActionObject actionObject in ActionObjects.Values) {
-        //        if (actionObject.IsRobot()) {
-        //            //robots.Add((RobotActionObject) actionObject);
-        //        }                    
-        //    }
-        //    return robots;
-        //}
-
-        public List<ActionObject> GetCameras() {
-            List<ActionObject> cameras = new List<ActionObject>();
-            foreach (ActionObject actionObject in ActionObjects.Values) {
-                if (actionObject.IsCamera()) {
-                    cameras.Add(actionObject);
-                }
-            }
-            return cameras;
-        }
-
-        public List<string> GetCamerasIds() {
-            List<string> cameraIds = new List<string>();
-            foreach (ActionObject actionObject in ActionObjects.Values) {
-                if (actionObject.IsCamera()) {
-                    cameraIds.Add(actionObject.Data.Id);
-                }
-            }
-            return cameraIds;
-        }
-
-        public List<string> GetCamerasNames() {
-            List<string> camerasNames = new List<string>();
-            foreach (ActionObject actionObject in ActionObjects.Values) {
-                if (actionObject.IsCamera()) {
-                    camerasNames.Add(actionObject.Data.Name);
-                }
-            }
-            return camerasNames;
-        }
-
-        /// <summary>
         /// Updates action object in scene
         /// </summary>
         /// <param name="sceneObject">Description of action object</param>
@@ -404,27 +142,12 @@ namespace Base {
         }
 
         /// <summary>
-        /// Updates metadata of action object in scene
-        /// </summary>
-        /// <param name="sceneObject">Description of action object</param>
-        public void SceneObjectBaseUpdated(SceneObject sceneObject) {
-            ActionObject actionObject = GetActionObject(sceneObject.Id);
-            if (actionObject != null) {
-
-            } else {
-                Debug.LogError("Object " + sceneObject.Name + "(" + sceneObject.Id + ") not found");
-            }
-            updateScene = true;
-        }
-
-        /// <summary>
         /// Adds action object to scene
         /// </summary>
         /// <param name="sceneObject">Description of action object</param>
         /// <returns></returns>
         public void SceneObjectAdded(SceneObject sceneObject) {
-            ActionObject actionObject = SpawnActionObject(sceneObject);
-            updateScene = true;
+            SpawnActionObject(sceneObject);
         }
 
         /// <summary>
@@ -439,7 +162,6 @@ namespace Base {
             } else {
                 Debug.LogError("Object " + sceneObject.Name + "(" + sceneObject.Id + ") not found");
             }
-            updateScene = true;
         }
 
         /// <summary>
@@ -449,11 +171,9 @@ namespace Base {
         /// <param name="customCollisionModels">Allows to override action object collision model</param>
         /// <returns></returns>
         public void UpdateActionObjects(Scene scene, CollisionModels customCollisionModels = null) {
-            List<string> currentAO = new List<string>();
             foreach (IO.Swagger.Model.SceneObject aoSwagger in scene.Objects) {
-                ActionObject actionObject = SpawnActionObject(aoSwagger, customCollisionModels);
+                SpawnActionObject(aoSwagger, customCollisionModels);
                 //actionObject.ActionObjectUpdate(aoSwagger);
-                currentAO.Add(aoSwagger.Id);
             }
         }
 
@@ -572,25 +292,6 @@ namespace Base {
             }
             return false;
         }
-
-        public List<ActionObject> GetAllActionObjectsWithoutPose() {
-            List<ActionObject> objects = new List<ActionObject>();
-            foreach (ActionObject actionObject in ActionObjects.Values) {
-                if (!actionObject.ActionObjectMetadata.HasPose && actionObject.gameObject.activeSelf) {
-                    objects.Add(actionObject);
-                }
-            }
-            return objects;
-        }
-
-        //public async Task<List<RobotEE>> GetAllRobotsEEs() {
-        //    List<RobotEE> eeList = new List<RobotEE>();
-        //    foreach (ActionObject ao in ActionObjects.Values) {
-        //        if (ao.IsRobot())
-        //            eeList.AddRange(await ((IRobot) ao).GetAllEE());
-        //    }
-        //    return eeList;
-        //}
 
         public List<ActionObject> GetAllObjectsOfType(string type) {
             return ActionObjects.Values.Where(obj => obj.ActionObjectMetadata.Type == type).ToList();

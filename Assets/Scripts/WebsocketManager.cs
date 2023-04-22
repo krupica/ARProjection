@@ -911,7 +911,7 @@ namespace Base {
                     SceneManager.Instance.SceneObjectUpdated(sceneObjectChanged.Data);
                     break;
                 case IO.Swagger.Model.SceneObjectChanged.ChangeTypeEnum.Updatebase:
-                    SceneManager.Instance.SceneObjectBaseUpdated(sceneObjectChanged.Data);
+                    //SceneManager.Instance.SceneObjectBaseUpdated(sceneObjectChanged.Data);
                     break;
                 default:
                     throw new NotImplementedException();

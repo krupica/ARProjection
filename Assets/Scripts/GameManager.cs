@@ -1281,47 +1281,10 @@ namespace Base {
         }
 
         /// <summary>
-        /// Waits until scene is loaded
-        /// </summary>
-        /// <param name="timeout">TimeoutException is thrown after timeout ms when scene is not loaded</param>
-        public void WaitForSceneReady(int timeout) {
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            while (SceneManager.Instance.SceneMeta == null) {
-                if (sw.ElapsedMilliseconds > timeout)
-                    throw new TimeoutException();
-                System.Threading.Thread.Sleep(100);
-            }
-            return;
-        }
-
-        /// <summary>
-        /// Waits until project is loaded
-        /// </summary>
-        /// <param name="timeout">TimeoutException is thrown after timeout ms when project is not loaded</param>
-        public void WaitForProjectReady(int timeout) {
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            //while (Base.ProjectManager.Instance.ProjectMeta == null) {
-            //    if (sw.ElapsedMilliseconds > timeout)
-            //        throw new TimeoutException();
-            //    System.Threading.Thread.Sleep(100);
-            //}
-            return;
-        }
-
-        /// <summary>
         /// Opens scene editor
         /// </summary>
         public void OpenSceneEditor() {
-#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
-            ARSession.enabled = true;
-            if (CalibrationManager.Instance.Calibrated) {
-                Scene.SetActive(true);
-            }
-#else
             //Scene.SetActive(true);
-#endif
             //AREditorResources.Instance.LeftMenuScene.DeactivateAllSubmenus();
             //MainMenu.Instance.Close();
             SetGameState(GameStateEnum.SceneEditor);

@@ -1,13 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
-using IO.Swagger.Model;
 using Assets.Scripts.ARClasses;
-//using WebSocketSharp;
 
-namespace Base {
+namespace Base
+{
     public class ActionPoint : MonoBehaviour {
         [System.NonSerialized]
         public IO.Swagger.Model.ActionPoint Data = new IO.Swagger.Model.ActionPoint(id: "", robotJoints: new List<IO.Swagger.Model.ProjectRobotJoints>(), orientations: new List<IO.Swagger.Model.NamedOrientation>(), position: new IO.Swagger.Model.Position(), actions: new List<IO.Swagger.Model.Action>(), name: "");
