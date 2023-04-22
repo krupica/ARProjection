@@ -781,7 +781,6 @@ GameObject:
   - component: {fileID: 736006832}
   - component: {fileID: 736006837}
   - component: {fileID: 736006834}
-  - component: {fileID: 736006838}
   - component: {fileID: 736006836}
   - component: {fileID: 736006835}
   m_Layer: 0
@@ -880,14 +879,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ActionObjectsSpawn: {fileID: 236444633}
-  SceneOrigin: {fileID: 236444633}
   KinectPrefab: {fileID: 3732759439335168376, guid: fd3faeac0d414a7438c63ebfd2ed7ba3, type: 3}
   RobotPrefab: {fileID: 886395293713347599, guid: 3d5e01698ac5712418788372ddfb171a, type: 3}
   ActionObjectPrefab: {fileID: 886395293713347599, guid: 9aa084133ac03244daca886dbffda21b, type: 3}
   ActionObjectNoPosePrefab: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}
   CollisionObjectPrefab: {fileID: 886395293713347599, guid: a34282451d1f92e468940679c396c7ac, type: 3}
   CurrentlySelectedObject: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}
-  AOToAPConnectionsManager: {fileID: 0}
   LineConnectionPrefab: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}
   RobotEEPrefab: {fileID: 1283878440016341787, guid: 5c9cfc6e900022e4d9c4da9159de3176, type: 3}
   ActionObjectsInteractive: 0
@@ -914,19 +911,6 @@ MonoBehaviour:
   actionPointPrefab: {fileID: 8455981592208975781, guid: e262b9ff850d7224b869723ffe32c26a, type: 3}
   mainCamera: {fileID: 0}
   ProjectorPrefab: {fileID: 6855664508726926502, guid: 4cdb11681686dcb4e92053e79d97416f, type: 3}
---- !u!114 &736006838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 736006831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36ab349b8cd379541a5375001c070732, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LineConnections: []
 --- !u!1 &912439359
 GameObject:
   m_ObjectHideFlags: 0

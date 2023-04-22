@@ -15,17 +15,6 @@ namespace Base
     {
         private Dictionary<string, ActionObjectMetadata> actionObjectsMetadata = new Dictionary<string, ActionObjectMetadata>();
 
-        public event EventHandler OnServiceMetadataUpdated;
-
-
-        public GameObject LinkableParameterInputPrefab, LinkableParameterDropdownPrefab, LinkableParameterDropdownPosesPrefab,
-            LinkableParameterDropdownPositionsPrefab, ParameterDropdownJointsPrefab, ActionPointOrientationPrefab, ParameterRelPosePrefab,
-            LinkableParameterBooleanPrefab, ParameterDropdownPrefab;
-
-        public GameObject InteractiveObjects;
-
-        public event AREditorEventArgs.StringListEventHandler OnObjectTypesAdded, OnObjectTypesRemoved, OnObjectTypesUpdated;
-
         public bool ActionsReady, ActionObjectsLoaded, AbstractOnlyObjects;
 
         public Dictionary<string, RobotMeta> RobotsMeta = new Dictionary<string, RobotMeta>();
@@ -98,9 +87,7 @@ namespace Base
                     if (AbstractOnlyObjects && !obj.Abstract)
                         AbstractOnlyObjects = false;
                 }
-                OnObjectTypesRemoved?.Invoke(this, new StringListEventArgs(new List<string>(removed)));
             }
-
         }
 
         public async void ObjectTypeAdded(object sender, ObjectTypesEventArgs args)
@@ -126,23 +113,18 @@ namespace Base
 
                 added.Add(obj.Type);
             }
-
-            OnObjectTypesAdded?.Invoke(this, new StringListEventArgs(added));
         }
 
         public async void ObjectTypeUpdated(object sender, ObjectTypesEventArgs args)
         {
             ActionsReady = false;
             enabled = true;
-            bool updatedRobot = false;
             List<string> updated = new List<string>();
             foreach (ObjectTypeMeta obj in args.ObjectTypes)
             {
                 if (actionObjectsMetadata.TryGetValue(obj.Type, out ActionObjectMetadata actionObjectMetadata))
                 {
                     actionObjectMetadata.Update(obj);
-                    if (actionObjectMetadata.Robot)
-                        updatedRobot = true;
                     if (AbstractOnlyObjects && !actionObjectMetadata.Abstract)
                         AbstractOnlyObjects = false;
                     if (!actionObjectMetadata.Abstract && !actionObjectMetadata.BuiltIn)
@@ -162,10 +144,7 @@ namespace Base
                     Notifications.Instance.ShowNotification("Update of object types failed", "Server trying to update non-existing object!");
                 }
             }
-            OnObjectTypesUpdated?.Invoke(this, new StringListEventArgs(updated));
         }
-
-
 
         public void UpdateObjects(List<IO.Swagger.Model.ObjectTypeMeta> newActionObjectsMetadata)
         {

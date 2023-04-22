@@ -20,34 +20,6 @@ namespace Base {
     /// </summary>
     public class SceneManager : Singleton<SceneManager> {
         /// <summary>
-        /// Invoked when new scene loaded
-        /// </summary>
-        public event EventHandler OnLoadScene;
-        /// <summary>
-        /// Invoked when scene chagned
-        /// </summary>
-        public event EventHandler OnSceneChanged;
-        /// <summary>
-        /// Invoked when scene save status has changed
-        /// </summary>
-        public event EventHandler OnSceneSavedStatusChanged;
-        /// <summary>
-        /// Invoked when scene saved
-        /// </summary>
-        public event EventHandler OnSceneSaved;
-        /// <summary>
-        /// Invoked when robor should show their EE pose
-        /// </summary>
-        public event EventHandler OnShowRobotsEE;
-        /// <summary>
-        /// Invoked when robots should hide their EE pose
-        /// </summary>
-        public event EventHandler OnHideRobotsEE;
-        /// <summary>
-        /// Invoked when robot and EE are selected (can be opened robot stepping menu)
-        /// </summary>
-        public event EventHandler OnRobotSelected;
-        /// <summary>
         /// Contains metainfo about scene (id, name, modified etc) without info about objects and services
         /// </summary>
         public Scene SceneMeta = null;
@@ -59,10 +31,6 @@ namespace Base {
         /// Spawn point for new action objects. Typically scene origin.
         /// </summary>
         public GameObject ActionObjectsSpawn;
-        /// <summary>
-        /// Origin (0,0,0) of scene.
-        /// </summary>
-        public GameObject SceneOrigin;
         /// <summary>
         /// Prefab for Kinect
         /// </summary>        
@@ -76,48 +44,10 @@ namespace Base {
         /// </summary>
         public GameObject ActionObjectPrefab;
         /// <summary>
-        /// Prefab for action object without pose
-        /// </summary>
-        public GameObject ActionObjectNoPosePrefab;
-        /// <summary>
         /// Prefab for collision object
         /// </summary>
         public GameObject CollisionObjectPrefab;
-        /// <summary>
-        /// Object which is currently selected in scene
-        /// </summary>
-        public GameObject CurrentlySelectedObject;
-        /// <summary>
-        /// Prefab of connectino between action point and action object
-        /// </summary>
-        public GameObject LineConnectionPrefab;
-        /// <summary>
-        /// Prefab for robot end effector object
-        /// </summary>
-        public GameObject RobotEEPrefab;
-        /// <summary>
-        /// Indicates whether or not scene was changed since last save
-        /// </summary>
-        private bool sceneChanged = false;
-        /// <summary>
-        /// ??? Dane?
-        /// </summary>
-        private bool sceneActive = true;
-        /// <summary>
-        /// Indicates if action objects should be interactable in scene (if they should response to clicks)
-        /// </summary>
-        public bool ActionObjectsInteractive;
-        /// <summary>
-        /// Indicates visibility of action objects in scene
-        /// </summary>
-        public float ActionObjectsVisibility;
-        /// <summary>
-        /// Indicates if robots end effector should be visible
-        /// </summary>
-        public bool RobotsEEVisible {
-            get;
-            private set;
-        }
+
         /// <summary>
         /// Indicates if resources (e.g. end effectors for robot) should be loaded when scene created.
         /// </summary>
@@ -146,20 +76,6 @@ namespace Base {
         /// OnSceneSavedStatusChanged when sceneChanged value differs from original value (i.e. when scene
         /// was not changed and now it is and vice versa)
         /// </summary>
-        public bool SceneChanged {
-            get => sceneChanged;
-            set {
-                bool origVal = SceneChanged;
-                sceneChanged = value;
-                if (!Valid)
-                    return;
-                OnSceneChanged?.Invoke(this, EventArgs.Empty);
-                if (origVal != value) {
-                    OnSceneSavedStatusChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
         public bool SceneStarted {
             get => sceneStarted;
             private set => sceneStarted = value;
@@ -186,15 +102,7 @@ namespace Base {
 
             UpdateActionObjects(scene, customCollisionModels);
 
-            if (scene.Modified == System.DateTime.MinValue) { //new scene, never saved
-                sceneChanged = true;
-            } else if (scene.IntModified == System.DateTime.MinValue) {
-                sceneChanged = false;
-            } else {
-                sceneChanged = scene.IntModified > scene.Modified;
-            }
             Valid = true;
-            //OnLoadScene?.Invoke(this, EventArgs.Empty);
             return true;
         }
 
@@ -242,22 +150,12 @@ namespace Base {
             return scene;
         }
         
-
-        // Update is called once per frame
-        private void Update() {
-            if (updateScene) {
-                SceneChanged = true;
-                updateScene = false;
-            }
-        }
-
         /// <summary>
         /// Initialization of scene manager
         /// </summary>
         private void Start() {
             WebsocketManager.Instance.OnSceneBaseUpdated += OnSceneBaseUpdated;
             WebsocketManager.Instance.OnSceneStateEvent += OnSceneState;
-
             WebsocketManager.Instance.OnOverrideAdded += OnOverrideAddedOrUpdated;
             WebsocketManager.Instance.OnOverrideUpdated += OnOverrideAddedOrUpdated;
             WebsocketManager.Instance.OnOverrideBaseUpdated += OnOverrideAddedOrUpdated;
@@ -287,7 +185,6 @@ namespace Base {
                 Debug.LogError(ex);
                 
             }
-            
         }
 
         private async void OnSceneState(object sender, SceneStateEventArgs args) {
@@ -310,8 +207,6 @@ namespace Base {
                     SelectedArmId = null;
                     //SelectedEndEffector = null;
                     OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
-                    if (RobotsEEVisible)
-                        OnHideRobotsEE?.Invoke(this, EventArgs.Empty);
                     break;
             }
         }
@@ -323,8 +218,6 @@ namespace Base {
 
         private async void OnSceneStarted(SceneStateEventArgs args) {
             SceneStarted = true;
-            if (RobotsEEVisible)
-                OnShowRobotsEE?.Invoke(this, EventArgs.Empty);
             //RegisterRobotsForEvent(true, RegisterForRobotEventRequestArgs.WhatEnum.Joints);
             string selectedRobotID = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedRobotId", null);
             SelectedArmId = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedRobotArmId", null);
@@ -334,73 +227,6 @@ namespace Base {
             OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
         }
 
-        //public async Task SelectRobotAndEE(string robotId, string armId, string eeId) {
-        //    if (!string.IsNullOrEmpty(robotId)) {
-        //        try {
-        //            IRobot robot = GetRobot(robotId);
-        //            if (!string.IsNullOrEmpty(eeId)) {
-        //                try {
-        //                    //SelectRobotAndEE(await (robot.GetEE(eeId, armId)));
-        //                } catch (ItemNotFoundException ex) {
-        //                    PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", null);
-        //                    PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", null);
-        //                    Debug.LogError(ex);
-        //                }
-        //            }
-        //        } catch (ItemNotFoundException ex) {
-        //            PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", null);
-        //            Debug.LogError(ex);
-        //        }
-        //    } else {
-        //        //SelectRobotAndEE(null);
-        //    }
-        //}
-
-        //public void SelectRobotAndEE(RobotEE endEffector) {
-        //    if (endEffector == null) {
-        //        SelectedArmId = null;
-        //        SelectedRobot = null;
-        //        SelectedEndEffector = null;
-        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", null);
-        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", null);
-        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", null);
-        //    } else {
-        //        try {
-        //            SelectedArmId = endEffector.ARMId;
-        //            SelectedRobot = GetRobot(endEffector.Robot.GetId());
-        //            SelectedEndEffector = endEffector;
-        //        } catch (ItemNotFoundException ex) {
-        //            PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", null);
-        //            Debug.LogError(ex);
-        //        }
-
-        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", SelectedRobot.GetId());
-        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", SelectedArmId);
-        //        PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", SelectedEndEffector.EEId);
-        //    }
-
-        //    OnRobotSelected(this, EventArgs.Empty);
-        //}
-
-        //public bool IsRobotSelected() {
-        //    return SelectedRobot != null && !string.IsNullOrEmpty(SelectedArmId);
-        //}
-
-        //public bool IsRobotAndEESelected() {
-        //    return IsRobotSelected() && SelectedEndEffector != null;
-        //}
-
-        /// <summary>
-        /// Register or unregister to/from subsription of joints or end effectors pose of each robot in the scene.
-        /// </summary>
-        /// <param name="send">To subscribe or to unsubscribe</param>
-        /// <param name="what">Pose of end effectors or joints</param>
-        //public void RegisterRobotsForEvent(bool send, RegisterForRobotEventRequestArgs.WhatEnum what) {
-        //    foreach (IRobot robot in GetRobots()) {
-        //        WebsocketManager.Instance.RegisterForRobotEvent(robot.GetId(), send, what);
-        //    }
-        //}
-
         private void OnSceneBaseUpdated(object sender, BareSceneEventArgs args) {
             if (GameManager.Instance.GetGameState() == GameManager.GameStateEnum.SceneEditor) {
                 SetSceneMeta(args.Scene);
@@ -409,86 +235,12 @@ namespace Base {
         }
 
         /// <summary>
-        /// Updates robot model based on recieved joints.
-        /// </summary>
-        /// <param name="sender">Who invoked event.</param>
-        /// <param name="args">Robot joints data</param>
-        //private async void RobotJointsUpdated(object sender, RobotJointsUpdatedEventArgs args) {
-        //    // if initializing or deinitializing scene OR scene is not started, dont update robot joints
-        //    if (!Valid || !SceneStarted)
-        //        return;
-        //    try {
-        //        IRobot robot = GetRobot(args.Data.RobotId);
-
-        //        robot.SetJointValue(args.Data.Joints);
-        //    } catch (ItemNotFoundException) {
-                
-        //    }
-        //}
-
-        /// <summary>
-        /// Updates end effector poses in scene based on recieved poses
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args">Robot ee data</param>
-        //private async void RobotEefUpdated(object sender, RobotEefUpdatedEventArgs args) {
-        //    if (!RobotsEEVisible || !Valid) {
-        //        return;
-        //    }
-        //    foreach (RobotEefDataEefPose eefPose in args.Data.EndEffectors) {
-        //        try {
-        //            IRobot robot = GetRobot(args.Data.RobotId);
-        //            //RobotEE ee = await robot.GetEE(eefPose.EndEffectorId, eefPose.ArmId);
-        //            //ee.UpdatePosition(TransformConvertor.ROSToUnity(DataHelper.PositionToVector3(eefPose.Pose.Position)),
-        //                //TransformConvertor.ROSToUnity(DataHelper.OrientationToQuaternion(eefPose.Pose.Orientation)));
-        //        } catch (ItemNotFoundException) {
-        //            continue;
-        //        }
-        //    }
-        //}
-
-      
-        /// <summary>
-        /// Return true if there is any robot in scene
-        /// </summary>
-        /// <returns></returns>
-        //public bool RobotInScene() {
-        //    return GetRobots().Count > 0;
-        //}
-
-        /// <summary>
-        /// Registers for end effector poses (and if robot has URDF then for joints values as well) and displays EE positions in scene
-        /// </summary>
-        /// <param name="robotId">Id of robot which should be registered. If null, all robots in scene are registered.</param>
-        public bool ShowRobotsEE() {
-            RobotsEEVisible = true;
-            if (SceneStarted) {
-                OnShowRobotsEE?.Invoke(this, EventArgs.Empty);
-            } else {
-                Notifications.Instance.ShowToastMessage("End effectors will be shown after going online");
-            }
-
-            PlayerPrefsHelper.SaveBool("scene/" + SceneMeta.Id + "/RobotsEEVisibility", true);
-            return true;
-        }
-
-        /// <summary>
-        /// Hides end effectors and unregister from EE positions and robot joints subscription
-        /// </summary>
-        public void HideRobotsEE() {
-            Debug.LogError("hide");
-            RobotsEEVisible = false;
-            OnHideRobotsEE?.Invoke(this, EventArgs.Empty);
-            PlayerPrefsHelper.SaveBool("scene/" + SceneMeta.Id + "/RobotsEEVisibility", false);
-        }
-
-        /// <summary>
         /// Loads selected setings from player prefs
         /// </summary>
         internal void LoadSettings() {
             //ActionObjectsVisibility = PlayerPrefsHelper.LoadFloat("AOVisibility" + (VRModeManager.Instance.VRModeON ? "VR" : "AR"), (VRModeManager.Instance.VRModeON ? 1f : 0f));
-            ActionObjectsInteractive = PlayerPrefsHelper.LoadBool("scene/" + SceneMeta.Id + "/AOInteractivity", true);
-            RobotsEEVisible = PlayerPrefsHelper.LoadBool("scene/" + SceneMeta.Id + "/RobotsEEVisibility", true);
+            //ActionObjectsInteractive = PlayerPrefsHelper.LoadBool("scene/" + SceneMeta.Id + "/AOInteractivity", true);
+            //RobotsEEVisible = PlayerPrefsHelper.LoadBool("scene/" + SceneMeta.Id + "/RobotsEEVisibility", true);
         }
 
         #region ACTION_OBJECTS
@@ -508,7 +260,7 @@ namespace Base {
                 obj = Instantiate(RobotPrefab, ActionObjectsSpawn.transform);
             } else if (aom.CollisionObject) {
                 obj = Instantiate(CollisionObjectPrefab, ActionObjectsSpawn.transform);
-            } else if (aom.HasPose) {
+            } else{
                 if (aom.Type == "KinectAzure")
                 {
                     obj = Instantiate(KinectPrefab, ActionObjectsSpawn.transform);
@@ -518,9 +270,7 @@ namespace Base {
                 {
                     obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
                 }
-            } else {
-                obj = Instantiate(ActionObjectNoPosePrefab, ActionObjectsSpawn.transform);
-            }
+            } 
             ActionObject actionObject = obj.GetComponent<ActionObject>();
             actionObject.InitActionObject(sceneObject, obj.transform.localPosition, obj.transform.localRotation, aom, customCollisionModels);
 
@@ -651,7 +401,6 @@ namespace Base {
             } else {
                 Debug.LogError("Object " + sceneObject.Name + "(" + sceneObject.Id + ") not found");
             }
-            SceneChanged = true;
         }
 
         /// <summary>
@@ -726,15 +475,6 @@ namespace Base {
                 throw new ItemNotFoundException("This should never happen");
             }
             return actionObject;
-        }
-
-        /// <summary>
-        /// Invoked when scene was saved
-        /// </summary>
-        internal void SceneSaved() {
-            Base.Notifications.Instance.ShowToastMessage("Scene saved successfully.");
-            OnSceneSaved?.Invoke(this, EventArgs.Empty);
-            SceneChanged = false;
         }
 
         /// <summary>

@@ -37,8 +37,4 @@ public class LandingScreen : Base.Singleton<LandingScreen>
     internal string GetUsername() {
         return "ARProjection";
     }
-
-    public void SaveLogs() {
-        Notifications.Instance.SaveLogs();
-    }
 }

@@ -846,7 +846,6 @@ namespace Base {
                 ActionsManager.Instance.UpdateObjects(objectTypeMetas);
             } catch (RequestFailedException ex) {
                 Debug.LogError(ex);
-                Notifications.Instance.SaveLogs("Failed to update action objects");
                 GameManager.Instance.DisconnectFromSever();
             }
             
@@ -1010,91 +1009,91 @@ namespace Base {
 
         public async void UpdatePackageState(IO.Swagger.Model.PackageStateData state) {
 
-            if (state.State == PackageStateData.StateEnum.Running ||
-                state.State == PackageStateData.StateEnum.Paused) {
-                if (!ActionsManager.Instance.ActionsReady || PackageInfo == null) {
-                    newPackageState = state;
-                    openPackage = true;
-                    return;
-                }
-                Debug.LogError(state);
-                if (!ProjectManager.Instance.Valid) {
-                    try {
-                        SetGameState(GameStateEnum.LoadingPackage);
-                        WaitUntilPackageReady(5000);
-                        if (PackageInfo == null) {
-                            updatingPackageState = false;
-                            return;
-                        }
-                        if (!SceneManager.Instance.CreateScene(PackageInfo.Scene, PackageInfo.CollisionModels)) {
-                            Notifications.Instance.SaveLogs(PackageInfo.Scene, PackageInfo.Project, "Failed to initialize scene");
-                            updatingPackageState = false;
-                            return;
-                        }
-                        if (PackageInfo == null) {
-                            updatingPackageState = false;
-                            return;
-                        }
-                        if (!await ProjectManager.Instance.CreateProject(PackageInfo.Project, false)) {
-                            Notifications.Instance.SaveLogs(PackageInfo.Scene, PackageInfo.Project, "Failed to initialize project");
-                        }
-                        if (PackageInfo == null) {
-                            updatingPackageState = false;
-                            return;
-                        }
-                        Debug.LogError("done");
-                        openPackageRunningScreenFlag = true;
-                        if (state.State == PackageStateData.StateEnum.Paused) {
-                            OnPausePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-                        } else {
-                            OnResumePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-                        }
-                        //if (!string.IsNullOrEmpty(ActionRunningOnStartupId)) {
-                        //    try {
-                        //        Action action = ProjectManager.Instance.GetAction(ActionRunningOnStartupId);
-                        //        ActionsManager.Instance.CurrentlyRunningAction = action;
-                        //        action.RunAction();
-                        //    } catch (ItemNotFoundException) {
+            //if (state.State == PackageStateData.StateEnum.Running ||
+            //    state.State == PackageStateData.StateEnum.Paused) {
+            //    if (!ActionsManager.Instance.ActionsReady || PackageInfo == null) {
+            //        newPackageState = state;
+            //        openPackage = true;
+            //        return;
+            //    }
+            //    Debug.LogError(state);
+            //    if (!ProjectManager.Instance.Valid) {
+            //        try {
+            //            SetGameState(GameStateEnum.LoadingPackage);
+            //            WaitUntilPackageReady(5000);
+            //            if (PackageInfo == null) {
+            //                updatingPackageState = false;
+            //                return;
+            //            }
+            //            if (!SceneManager.Instance.CreateScene(PackageInfo.Scene, PackageInfo.CollisionModels)) {
+            //                Notifications.Instance.SaveLogs(PackageInfo.Scene, PackageInfo.Project, "Failed to initialize scene");
+            //                updatingPackageState = false;
+            //                return;
+            //            }
+            //            if (PackageInfo == null) {
+            //                updatingPackageState = false;
+            //                return;
+            //            }
+            //            if (!await ProjectManager.Instance.CreateProject(PackageInfo.Project, false)) {
+            //                Notifications.Instance.SaveLogs(PackageInfo.Scene, PackageInfo.Project, "Failed to initialize project");
+            //            }
+            //            if (PackageInfo == null) {
+            //                updatingPackageState = false;
+            //                return;
+            //            }
+            //            Debug.LogError("done");
+            //            openPackageRunningScreenFlag = true;
+            //            if (state.State == PackageStateData.StateEnum.Paused) {
+            //                OnPausePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
+            //            } else {
+            //                OnResumePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
+            //            }
+            //            //if (!string.IsNullOrEmpty(ActionRunningOnStartupId)) {
+            //            //    try {
+            //            //        Action action = ProjectManager.Instance.GetAction(ActionRunningOnStartupId);
+            //            //        ActionsManager.Instance.CurrentlyRunningAction = action;
+            //            //        action.RunAction();
+            //            //    } catch (ItemNotFoundException) {
 
-                        //    } finally {
-                        //        ActionRunningOnStartupId = null;
-                        //    }
+            //            //    } finally {
+            //            //        ActionRunningOnStartupId = null;
+            //            //    }
 
-                        //}
-                    } catch (TimeoutException ex) {
-                        Debug.LogError(ex);
-                        Notifications.Instance.SaveLogs(null, null, "Failed to initialize project");
-                    } finally {
-                        updatingPackageState = false;
-                    }
-                } else if (state.State == PackageStateData.StateEnum.Paused) {
-                    OnPausePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-                    //HideLoadingScreen();
-                    updatingPackageState = false;
-                } else if (state.State == PackageStateData.StateEnum.Running) {
-                    OnResumePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-                    //HideLoadingScreen();
-                    updatingPackageState = false;
-                }
+            //            //}
+            //        } catch (TimeoutException ex) {
+            //            Debug.LogError(ex);
+            //            Notifications.Instance.SaveLogs(null, null, "Failed to initialize project");
+            //        } finally {
+            //            updatingPackageState = false;
+            //        }
+            //    } else if (state.State == PackageStateData.StateEnum.Paused) {
+            //        OnPausePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
+            //        //HideLoadingScreen();
+            //        updatingPackageState = false;
+            //    } else if (state.State == PackageStateData.StateEnum.Running) {
+            //        OnResumePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
+            //        //HideLoadingScreen();
+            //        updatingPackageState = false;
+            //    }
 
 
-            } else if (state.State == PackageStateData.StateEnum.Stopping) {
+            //} else if (state.State == PackageStateData.StateEnum.Stopping) {
 
-                updatingPackageState = false;
-            } else if (state.State == PackageStateData.StateEnum.Stopped) {
-                SetGameState(GameStateEnum.ClosingPackage);
-                PackageInfo = null;
-                //ShowLoadingScreen("Stopping package...");
-                ProjectManager.Instance.DestroyProject();
-                SceneManager.Instance.DestroyScene();
-                updatingPackageState = false;
-                OnStopPackage?.Invoke(this, new EventArgs());
-                updatingPackageState = false;
-                SetGameState(GameStateEnum.None);
-                Debug.LogError("stopped");
-            }
+            //    updatingPackageState = false;
+            //} else if (state.State == PackageStateData.StateEnum.Stopped) {
+            //    SetGameState(GameStateEnum.ClosingPackage);
+            //    PackageInfo = null;
+            //    //ShowLoadingScreen("Stopping package...");
+            //    ProjectManager.Instance.DestroyProject();
+            //    SceneManager.Instance.DestroyScene();
+            //    updatingPackageState = false;
+            //    OnStopPackage?.Invoke(this, new EventArgs());
+            //    updatingPackageState = false;
+            //    SetGameState(GameStateEnum.None);
+            //    Debug.LogError("stopped");
+            //}
 
-            updatingPackageState = false;
+            //updatingPackageState = false;
         }
 
         /// <summary>
@@ -1303,11 +1302,11 @@ namespace Base {
         public void WaitForProjectReady(int timeout) {
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
-            while (Base.ProjectManager.Instance.ProjectMeta == null) {
-                if (sw.ElapsedMilliseconds > timeout)
-                    throw new TimeoutException();
-                System.Threading.Thread.Sleep(100);
-            }
+            //while (Base.ProjectManager.Instance.ProjectMeta == null) {
+            //    if (sw.ElapsedMilliseconds > timeout)
+            //        throw new TimeoutException();
+            //    System.Threading.Thread.Sleep(100);
+            //}
             return;
         }
 

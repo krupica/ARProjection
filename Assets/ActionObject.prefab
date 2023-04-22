@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6307510119187651307}
   - component: {fileID: 5160324381482028341}
-  - component: {fileID: 5095419011355691082}
   m_Layer: 0
   m_Name: ActionObject
   m_TagString: Untagged
@@ -48,16 +47,3 @@ MonoBehaviour:
   Square: {fileID: 1429862277040400757, guid: bddfe2aa04d290e43abecbd3885ab2b1, type: 3}
   Circle: {fileID: 6078801240473815496, guid: fa97684a02e87434f89f54e5ee8b5ff9, type: 3}
   Model: {fileID: 0}
---- !u!114 &5095419011355691082
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 886395293713347599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9074aedeb737ce4c8129fb757fbad47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ChildToBind: {fileID: 0}

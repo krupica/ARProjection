@@ -314,7 +314,7 @@ namespace Base {
                         //HandleActionChanged(data);
                         break;
                     case "LogicItemChanged":
-                        HandleLogicItemChanged(data);
+                        //HandleLogicItemChanged(data);
                         break;
                     case "OrientationChanged":
                         HandleOrientationChanged(data);
@@ -353,7 +353,7 @@ namespace Base {
                         HandleProjectSaved(data);
                         break;
                     case "SceneSaved":
-                        HandleSceneSaved(data);
+                        //HandleSceneSaved(data);
                         break;
                     case "ProjectException":
                         HandleProjectException(data);
@@ -474,7 +474,7 @@ namespace Base {
         /// </summary>
         /// <param name="obj">Message from server</param>
         private void HandleProjectChanged(string obj) {
-            ProjectManager.Instance.ProjectChanged = true;
+            //ProjectManager.Instance.ProjectChanged = true;
             IO.Swagger.Model.ProjectChanged eventProjectChanged = JsonConvert.DeserializeObject<IO.Swagger.Model.ProjectChanged>(obj);
             switch (eventProjectChanged.ChangeType) {
                 case IO.Swagger.Model.ProjectChanged.ChangeTypeEnum.Add:
@@ -497,7 +497,7 @@ namespace Base {
         /// </summary>
         /// <param name="obj">Message from server</param>
         private void HandleOverrideUpdated(string obj) {
-            ProjectManager.Instance.ProjectChanged = true;
+            //ProjectManager.Instance.ProjectChanged = true;
             IO.Swagger.Model.OverrideUpdated overrideUpdated = JsonConvert.DeserializeObject<IO.Swagger.Model.OverrideUpdated>(obj);
             switch (overrideUpdated.ChangeType) {
                 case IO.Swagger.Model.OverrideUpdated.ChangeTypeEnum.Add:
@@ -573,61 +573,61 @@ namespace Base {
         }
 
         private void HandleStateBefore(string obj) {
-            string puck_id;
+            //string puck_id;
             
-            try {
+            //try {
 
-                IO.Swagger.Model.ActionStateBefore actionStateBefore = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionStateBefore>(obj);
-                if (!string.IsNullOrEmpty(actionStateBefore.Data.ActionId)) {
-                    puck_id = actionStateBefore.Data.ActionId;
+            //    IO.Swagger.Model.ActionStateBefore actionStateBefore = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionStateBefore>(obj);
+            //    if (!string.IsNullOrEmpty(actionStateBefore.Data.ActionId)) {
+            //        puck_id = actionStateBefore.Data.ActionId;
 
-                    if (!ProjectManager.Instance.Valid) {
-                        Debug.LogWarning("Project not yet loaded, ignoring current action");
-                        GameManager.Instance.ActionRunningOnStartupId = puck_id;
-                        return;
-                    }
-                    // Stop previously running action (change its color to default)
-                    //if (ActionsManager.Instance.CurrentlyRunningAction != null)
-                    //    ActionsManager.Instance.CurrentlyRunningAction.StopAction();
+            //        if (!ProjectManager.Instance.Valid)
+            //        {
+            //            Debug.LogWarning("Project not yet loaded, ignoring current action");
+            //            GameManager.Instance.ActionRunningOnStartupId = puck_id;
+            //            return;
+            //        }
+            //        Stop previously running action(change its color to default)
+            //        if (ActionsManager.Instance.CurrentlyRunningAction != null)
+            //            ActionsManager.Instance.CurrentlyRunningAction.StopAction();
 
-                    //Action puck = ProjectManager.Instance.GetAction(puck_id);
-                    //ActionsManager.Instance.CurrentlyRunningAction = puck;
-                    // Run current action (set its color to running)
-                    //puck.RunAction();
-                } else {
-                    //if (ActionsManager.Instance.CurrentlyRunningAction != null)
-                    //    ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-                    //ActionsManager.Instance.CurrentlyRunningAction = null;
-                }
-                
-                
+            //        Action puck = ProjectManager.Instance.GetAction(puck_id);
+            //        ActionsManager.Instance.CurrentlyRunningAction = puck;
+            //        Run current action(set its color to running)
+            //        puck.RunAction();
+            //    }
+            //    else
+            //    {
+            //        if (ActionsManager.Instance.CurrentlyRunningAction != null)
+            //            ActionsManager.Instance.CurrentlyRunningAction.StopAction();
+            //        ActionsManager.Instance.CurrentlyRunningAction = null;
+            //    }
 
-            } catch (NullReferenceException e) {
-                Debug.Log("Parse error in HandleCurrentAction()");
-                return;
-            } catch (ItemNotFoundException e) {
-                Debug.LogError(e);
-            }
+            //} catch (NullReferenceException e) {
+            //    Debug.Log("Parse error in HandleCurrentAction()");
+            //    return;
+            //} catch (ItemNotFoundException e) {
+            //    Debug.LogError(e);
+            //}
             
         }
 
         private void HandleActionStateAfter(string obj) {
-            string puck_id;
-            if (!ProjectManager.Instance.Valid) {
-                return;
-            }
-            try {
+            //string puck_id;
+            //if (!ProjectManager.Instance.Valid) {
+            //    return;
+            //}
+            //try {
 
-                IO.Swagger.Model.ActionStateAfter actionStateBefore = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionStateAfter>(obj);
-                //if (ActionsManager.Instance.CurrentlyRunningAction != null)
-                //        ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-                //    ActionsManager.Instance.CurrentlyRunningAction = null;
+            //    IO.Swagger.Model.ActionStateAfter actionStateBefore = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionStateAfter>(obj);
+            //    //if (ActionsManager.Instance.CurrentlyRunningAction != null)
+            //    //        ActionsManager.Instance.CurrentlyRunningAction.StopAction();
+            //    //    ActionsManager.Instance.CurrentlyRunningAction = null;
                 
-            } catch (NullReferenceException e) {
-                Debug.Log("Parse error in HandleCurrentAction()");
-                return;
-            }
-            
+            //} catch (NullReferenceException e) {
+            //    Debug.Log("Parse error in HandleCurrentAction()");
+            //    return;
+            //}
         }
 
 
@@ -636,12 +636,11 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleActionResult(string data) {
-
-            if (!ProjectManager.Instance.Valid) {
-                return;
-            }
-            IO.Swagger.Model.ActionResult actionResult = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionResult>(data);
-            GameManager.Instance.HandleActionResult(actionResult.Data);
+            //if (!ProjectManager.Instance.Valid) {
+            //    return;
+            //}
+            //IO.Swagger.Model.ActionResult actionResult = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionResult>(data);
+            //GameManager.Instance.HandleActionResult(actionResult.Data);
         }
 
         public bool IsWebsocketNull() {
@@ -735,7 +734,7 @@ namespace Base {
             IO.Swagger.Model.ChangedObjectTypes objectTypesChangedEvent = JsonConvert.DeserializeObject<IO.Swagger.Model.ChangedObjectTypes>(data);
             switch (objectTypesChangedEvent.ChangeType) {
                 case IO.Swagger.Model.ChangedObjectTypes.ChangeTypeEnum.Add:
-                    ActionsManager.Instance.ActionsReady = false;
+                    //ActionsManager.Instance.ActionsReady = false;
                     OnObjectTypeAdded?.Invoke(this, new ObjectTypesEventArgs(objectTypesChangedEvent.Data));
 
                     break;
@@ -747,7 +746,7 @@ namespace Base {
                     break;
 
                 case ChangedObjectTypes.ChangeTypeEnum.Update:
-                    ActionsManager.Instance.ActionsReady = false;
+                    //ActionsManager.Instance.ActionsReady = false;
                     OnObjectTypeUpdated?.Invoke(this, new ObjectTypesEventArgs(objectTypesChangedEvent.Data));
                     break;
                 default:
@@ -792,30 +791,30 @@ namespace Base {
         /// Decodes changes in program logic
         /// </summary>
         /// <param name="data">Message from server</param>
-        private void HandleLogicItemChanged(string data) {
-            LogicItemChanged logicItemChanged = JsonConvert.DeserializeObject<LogicItemChanged>(data);
-            ProjectManager.Instance.ProjectChanged = true;
-            switch (logicItemChanged.ChangeType) {
-                case LogicItemChanged.ChangeTypeEnum.Add:
-                    OnLogicItemAdded?.Invoke(this, new LogicItemChangedEventArgs(logicItemChanged.Data));
-                    break;
-                case LogicItemChanged.ChangeTypeEnum.Remove:
-                    OnLogicItemRemoved?.Invoke(this, new StringEventArgs(logicItemChanged.Data.Id));
-                    break;
-                case LogicItemChanged.ChangeTypeEnum.Update:
-                    OnLogicItemUpdated?.Invoke(this, new LogicItemChangedEventArgs(logicItemChanged.Data));
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-        }
+        //private void HandleLogicItemChanged(string data) {
+        //    LogicItemChanged logicItemChanged = JsonConvert.DeserializeObject<LogicItemChanged>(data);
+        //    ProjectManager.Instance.ProjectChanged = true;
+        //    switch (logicItemChanged.ChangeType) {
+        //        case LogicItemChanged.ChangeTypeEnum.Add:
+        //            OnLogicItemAdded?.Invoke(this, new LogicItemChangedEventArgs(logicItemChanged.Data));
+        //            break;
+        //        case LogicItemChanged.ChangeTypeEnum.Remove:
+        //            OnLogicItemRemoved?.Invoke(this, new StringEventArgs(logicItemChanged.Data.Id));
+        //            break;
+        //        case LogicItemChanged.ChangeTypeEnum.Update:
+        //            OnLogicItemUpdated?.Invoke(this, new LogicItemChangedEventArgs(logicItemChanged.Data));
+        //            break;
+        //        default:
+        //            throw new NotImplementedException();
+        //    }
+        //}
 
         /// <summary>
         /// Decodes changes of action points
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleActionPointChanged(string data) {
-            ProjectManager.Instance.ProjectChanged = true;
+            //ProjectManager.Instance.ProjectChanged = true;
             IO.Swagger.Model.ActionPointChanged actionPointChangedEvent = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionPointChanged>(data);
             var actionPointChangedFields = new {
                 data = new IO.Swagger.Model.ActionPoint(id: "", name: "string", parent: "", position: new Position(),
@@ -848,7 +847,7 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleOrientationChanged(string data) {
-            ProjectManager.Instance.ProjectChanged = true;
+            //ProjectManager.Instance.ProjectChanged = true;
             IO.Swagger.Model.OrientationChanged orientationChanged = JsonConvert.DeserializeObject<IO.Swagger.Model.OrientationChanged>(data);
             switch (orientationChanged.ChangeType) {
                 case IO.Swagger.Model.OrientationChanged.ChangeTypeEnum.Add:
@@ -874,7 +873,7 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleJointsChanged(string data) {
-            ProjectManager.Instance.ProjectChanged = true;
+            //ProjectManager.Instance.ProjectChanged = true;
             IO.Swagger.Model.JointsChanged jointsChanged = JsonConvert.DeserializeObject<IO.Swagger.Model.JointsChanged>(data);
             switch (jointsChanged.ChangeType) {
                 case IO.Swagger.Model.JointsChanged.ChangeTypeEnum.Add:
@@ -967,15 +966,7 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleProjectSaved(string data) {
-            ProjectManager.Instance.ProjectSaved();
-        }
-
-        /// <summary>
-        /// Invoked when scene was saved
-        /// </summary>
-        /// <param name="data">Message from server</param>
-        private void HandleSceneSaved(string data) {
-            SceneManager.Instance.SceneSaved();
+            //ProjectManager.Instance.ProjectSaved();
         }
 
         /// <summary>
