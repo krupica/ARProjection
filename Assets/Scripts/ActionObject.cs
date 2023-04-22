@@ -5,7 +5,7 @@ using IO.Swagger.Model;
 using System;
 
 namespace Base {
-    public abstract class ActionObject : MonoBehaviour, IActionProvider, IActionPointParent {
+    public abstract class ActionObject : MonoBehaviour, IActionPointParent {
 
         [System.NonSerialized]
         public int CounterAP = 0;

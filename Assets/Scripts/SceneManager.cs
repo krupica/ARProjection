@@ -140,8 +140,6 @@ namespace Base {
 
         public event AREditorEventArgs.SceneStateHandler OnSceneStateEvent;
 
-        public IRobot SelectedRobot;
-
         public string SelectedArmId;
 
         //private RobotEE selectedEndEffector;
@@ -261,8 +259,6 @@ namespace Base {
         /// Initialization of scene manager
         /// </summary>
         private void Start() {
-            WebsocketManager.Instance.OnRobotEefUpdated += RobotEefUpdated;
-            WebsocketManager.Instance.OnRobotJointsUpdated += RobotJointsUpdated;
             WebsocketManager.Instance.OnSceneBaseUpdated += OnSceneBaseUpdated;
             WebsocketManager.Instance.OnSceneStateEvent += OnSceneState;
 
@@ -315,7 +311,6 @@ namespace Base {
                     break;
                 case SceneStateData.StateEnum.Stopped:
                     SceneStarted = false;
-                    SelectedRobot = null;
                     SelectedArmId = null;
                     //SelectedEndEffector = null;
                     OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
@@ -334,36 +329,36 @@ namespace Base {
             SceneStarted = true;
             if (RobotsEEVisible)
                 OnShowRobotsEE?.Invoke(this, EventArgs.Empty);
-            RegisterRobotsForEvent(true, RegisterForRobotEventRequestArgs.WhatEnum.Joints);
+            //RegisterRobotsForEvent(true, RegisterForRobotEventRequestArgs.WhatEnum.Joints);
             string selectedRobotID = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedRobotId", null);
             SelectedArmId = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedRobotArmId", null);
             string selectedEndEffectorId = PlayerPrefsHelper.LoadString(SceneMeta.Id + "/selectedEndEffectorId", null);
-            await SelectRobotAndEE(selectedRobotID, SelectedArmId, selectedEndEffectorId);
+            //await SelectRobotAndEE(selectedRobotID, SelectedArmId, selectedEndEffectorId);
             //GameManager.Instance.HideLoadingScreen();
             OnSceneStateEvent?.Invoke(this, args); // needs to be rethrown to ensure all subscribers has updated data
         }
 
-        public async Task SelectRobotAndEE(string robotId, string armId, string eeId) {
-            if (!string.IsNullOrEmpty(robotId)) {
-                try {
-                    IRobot robot = GetRobot(robotId);
-                    if (!string.IsNullOrEmpty(eeId)) {
-                        try {
-                            //SelectRobotAndEE(await (robot.GetEE(eeId, armId)));
-                        } catch (ItemNotFoundException ex) {
-                            PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", null);
-                            PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", null);
-                            Debug.LogError(ex);
-                        }
-                    }
-                } catch (ItemNotFoundException ex) {
-                    PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", null);
-                    Debug.LogError(ex);
-                }
-            } else {
-                //SelectRobotAndEE(null);
-            }
-        }
+        //public async Task SelectRobotAndEE(string robotId, string armId, string eeId) {
+        //    if (!string.IsNullOrEmpty(robotId)) {
+        //        try {
+        //            IRobot robot = GetRobot(robotId);
+        //            if (!string.IsNullOrEmpty(eeId)) {
+        //                try {
+        //                    //SelectRobotAndEE(await (robot.GetEE(eeId, armId)));
+        //                } catch (ItemNotFoundException ex) {
+        //                    PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedEndEffectorId", null);
+        //                    PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotArmId", null);
+        //                    Debug.LogError(ex);
+        //                }
+        //            }
+        //        } catch (ItemNotFoundException ex) {
+        //            PlayerPrefsHelper.SaveString(SceneMeta.Id + "/selectedRobotId", null);
+        //            Debug.LogError(ex);
+        //        }
+        //    } else {
+        //        //SelectRobotAndEE(null);
+        //    }
+        //}
 
         //public void SelectRobotAndEE(RobotEE endEffector) {
         //    if (endEffector == null) {
@@ -391,9 +386,9 @@ namespace Base {
         //    OnRobotSelected(this, EventArgs.Empty);
         //}
 
-        public bool IsRobotSelected() {
-            return SelectedRobot != null && !string.IsNullOrEmpty(SelectedArmId);
-        }
+        //public bool IsRobotSelected() {
+        //    return SelectedRobot != null && !string.IsNullOrEmpty(SelectedArmId);
+        //}
 
         //public bool IsRobotAndEESelected() {
         //    return IsRobotSelected() && SelectedEndEffector != null;
@@ -404,11 +399,11 @@ namespace Base {
         /// </summary>
         /// <param name="send">To subscribe or to unsubscribe</param>
         /// <param name="what">Pose of end effectors or joints</param>
-        public void RegisterRobotsForEvent(bool send, RegisterForRobotEventRequestArgs.WhatEnum what) {
-            foreach (IRobot robot in GetRobots()) {
-                WebsocketManager.Instance.RegisterForRobotEvent(robot.GetId(), send, what);
-            }
-        }
+        //public void RegisterRobotsForEvent(bool send, RegisterForRobotEventRequestArgs.WhatEnum what) {
+        //    foreach (IRobot robot in GetRobots()) {
+        //        WebsocketManager.Instance.RegisterForRobotEvent(robot.GetId(), send, what);
+        //    }
+        //}
 
         private void OnSceneBaseUpdated(object sender, BareSceneEventArgs args) {
             if (GameManager.Instance.GetGameState() == GameManager.GameStateEnum.SceneEditor) {
@@ -422,48 +417,48 @@ namespace Base {
         /// </summary>
         /// <param name="sender">Who invoked event.</param>
         /// <param name="args">Robot joints data</param>
-        private async void RobotJointsUpdated(object sender, RobotJointsUpdatedEventArgs args) {
-            // if initializing or deinitializing scene OR scene is not started, dont update robot joints
-            if (!Valid || !SceneStarted)
-                return;
-            try {
-                IRobot robot = GetRobot(args.Data.RobotId);
+        //private async void RobotJointsUpdated(object sender, RobotJointsUpdatedEventArgs args) {
+        //    // if initializing or deinitializing scene OR scene is not started, dont update robot joints
+        //    if (!Valid || !SceneStarted)
+        //        return;
+        //    try {
+        //        IRobot robot = GetRobot(args.Data.RobotId);
 
-                robot.SetJointValue(args.Data.Joints);
-            } catch (ItemNotFoundException) {
+        //        robot.SetJointValue(args.Data.Joints);
+        //    } catch (ItemNotFoundException) {
                 
-            }
-        }
+        //    }
+        //}
 
         /// <summary>
         /// Updates end effector poses in scene based on recieved poses
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args">Robot ee data</param>
-        private async void RobotEefUpdated(object sender, RobotEefUpdatedEventArgs args) {
-            if (!RobotsEEVisible || !Valid) {
-                return;
-            }
-            foreach (RobotEefDataEefPose eefPose in args.Data.EndEffectors) {
-                try {
-                    IRobot robot = GetRobot(args.Data.RobotId);
-                    //RobotEE ee = await robot.GetEE(eefPose.EndEffectorId, eefPose.ArmId);
-                    //ee.UpdatePosition(TransformConvertor.ROSToUnity(DataHelper.PositionToVector3(eefPose.Pose.Position)),
-                        //TransformConvertor.ROSToUnity(DataHelper.OrientationToQuaternion(eefPose.Pose.Orientation)));
-                } catch (ItemNotFoundException) {
-                    continue;
-                }
-            }
-        }
+        //private async void RobotEefUpdated(object sender, RobotEefUpdatedEventArgs args) {
+        //    if (!RobotsEEVisible || !Valid) {
+        //        return;
+        //    }
+        //    foreach (RobotEefDataEefPose eefPose in args.Data.EndEffectors) {
+        //        try {
+        //            IRobot robot = GetRobot(args.Data.RobotId);
+        //            //RobotEE ee = await robot.GetEE(eefPose.EndEffectorId, eefPose.ArmId);
+        //            //ee.UpdatePosition(TransformConvertor.ROSToUnity(DataHelper.PositionToVector3(eefPose.Pose.Position)),
+        //                //TransformConvertor.ROSToUnity(DataHelper.OrientationToQuaternion(eefPose.Pose.Orientation)));
+        //        } catch (ItemNotFoundException) {
+        //            continue;
+        //        }
+        //    }
+        //}
 
       
         /// <summary>
         /// Return true if there is any robot in scene
         /// </summary>
         /// <returns></returns>
-        public bool RobotInScene() {
-            return GetRobots().Count > 0;
-        }
+        //public bool RobotInScene() {
+        //    return GetRobots().Count > 0;
+        //}
 
         /// <summary>
         /// Registers for end effector poses (and if robot has URDF then for joints values as well) and displays EE positions in scene
@@ -609,15 +604,15 @@ namespace Base {
         /// Returns all robots in scene
         /// </summary>
         /// <returns></returns>
-        public List<IRobot> GetRobots() {
-            List<IRobot> robots = new List<IRobot>();
-            foreach (ActionObject actionObject in ActionObjects.Values) {
-                if (actionObject.IsRobot()) {
-                    //robots.Add((RobotActionObject) actionObject);
-                }                    
-            }
-            return robots;
-        }
+        //public List<IRobot> GetRobots() {
+        //    List<IRobot> robots = new List<IRobot>();
+        //    foreach (ActionObject actionObject in ActionObjects.Values) {
+        //        if (actionObject.IsRobot()) {
+        //            //robots.Add((RobotActionObject) actionObject);
+        //        }                    
+        //    }
+        //    return robots;
+        //}
 
         public List<ActionObject> GetCameras() {
             List<ActionObject> cameras = new List<ActionObject>();
@@ -647,40 +642,6 @@ namespace Base {
                 }
             }
             return camerasNames;
-        }
-
-        /// <summary>
-        /// Gets robot based on its ID
-        /// </summary>
-        /// <param name="robotId">UUID of robot</param>
-        /// <returns></returns>
-        public IRobot GetRobot(string robotId) {
-            foreach (IRobot robot in GetRobots()) {
-                if (robot.GetId() == robotId)
-                    return robot;
-            }
-            throw new ItemNotFoundException("No robot with id: " + robotId);
-        }
-
-        /// <summary>
-        /// Gets robot based on its name
-        /// </summary>
-        /// <param name="robotName">Human readable name of robot</param>
-        /// <returns>Robot</returns>
-        public IRobot GetRobotByName(string robotName) {
-            foreach (IRobot robot in GetRobots())
-                if (robot.GetName() == robotName)
-                    return robot;
-            throw new ItemNotFoundException("Robot with name " + robotName + " does not exists!");
-        }
-
-        /// <summary>
-        /// Convers robots name to ID
-        /// </summary>
-        /// <param name="robotName">Robots name</param>
-        /// <returns>Robots ID</returns>
-        public string RobotNameToId(string robotName) {
-            return GetRobotByName(robotName).GetId();
         }
 
         /// <summary>

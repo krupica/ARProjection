@@ -240,12 +240,6 @@ namespace Base {
         private Canvas headUpCanvas;
 
         /// <summary>
-        /// Info box for selecting of objects
-        /// </summary>
-        [SerializeField]
-        private SelectObjectInfo SelectObjectInfo;
-
-        /// <summary>
         /// Holds info about server (version, supported RPCs, supported parameters etc.)
         /// </summary>
         public IO.Swagger.Model.SystemInfoResponseData SystemInfo;
@@ -763,13 +757,13 @@ namespace Base {
                     await UpdateActionObjects();
                     await UpdateRobotsMeta();
 
-                    try {
-                        await Task.Run(() => ActionsManager.Instance.WaitUntilActionsReady(15000));
-                    } catch (TimeoutException e) {
-                        Notifications.Instance.ShowNotification("Connection failed", "Some actions were not loaded within timeout");
-                        DisconnectFromSever();
-                        return;
-                    }
+                    //try {
+                    //    await Task.Run(() => ActionsManager.Instance.WaitUntilActionsReady(15000));
+                    //} catch (TimeoutException e) {
+                    //    Notifications.Instance.ShowNotification("Connection failed", "Some actions were not loaded within timeout");
+                    //    DisconnectFromSever();
+                    //    return;
+                    //}
 
                     connectionStatus = newState;
                     break;

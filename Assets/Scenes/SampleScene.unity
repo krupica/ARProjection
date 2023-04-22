@@ -814,7 +814,6 @@ MonoBehaviour:
   ServerVersion: {fileID: 0}
   ObjectWithGizmo: {fileID: 0}
   headUpCanvas: {fileID: 0}
-  SelectObjectInfo: {fileID: 0}
 --- !u!114 &736006835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -833,8 +832,6 @@ MonoBehaviour:
   PuckPrefab: {fileID: 6417292780430755493, guid: 95ac9ebcf9bac6045bc0198ac650dd9c, type: 3}
   StartPrefab: {fileID: 2114904411120870232, guid: 06c760160c28f2d4b902d23070629a7b, type: 3}
   EndPrefab: {fileID: 5767670319277044569, guid: 7dd960350584cc749b51c27d24318208, type: 3}
-  StartAction: {fileID: 3189732798780276477, guid: 06c760160c28f2d4b902d23070629a7b, type: 3}
-  EndAction: {fileID: 7209179513504303124, guid: 7dd960350584cc749b51c27d24318208, type: 3}
   APSize: 0.2
   Valid: 0
   AnyAvailableAction: 0

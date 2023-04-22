@@ -47,7 +47,7 @@ namespace Base {
         }
 
         public bool ActionsLoaded {
-            get => actionsLoaded;
+            get => true;
             set => actionsLoaded = value;
         }
         public Dictionary<string, ActionMetadata> ActionsMetadata {
