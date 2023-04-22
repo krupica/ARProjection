@@ -10,6 +10,7 @@ namespace Assets.Scripts.ARClasses
             return new Vector3(-position.y, 0, position.x);
         }
 
+        // inspirováno https://answers.unity.com/questions/1014337/calculation-behind-cameraworldtoscreenpoint.html
         public static Vector3 ManualWorldToScreenPoint(Vector3 wp)
         {
             Matrix4x4 projInt = ProjectionManager.Instance.calibrationData.ProjInt;

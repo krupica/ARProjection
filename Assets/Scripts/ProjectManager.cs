@@ -40,14 +40,6 @@ namespace Base {
         /// </summary>
         public GameObject ConnectionPrefab, ActionPointPrefab, PuckPrefab, StartPrefab, EndPrefab;
         /// <summary>
-        /// Action representing start of program
-        /// </summary>
-        public StartAction StartAction;
-        /// <summary>
-        /// Action representing end of program
-        /// </summary>
-        public EndAction EndAction;
-        /// <summary>
         /// Indicates if action point orientations should be visible for given project
         /// </summary>
         //public bool APOrientationsVisible;
@@ -344,11 +336,6 @@ namespace Base {
                     break;
                 }
 
-            StartAction = Instantiate(StartPrefab,  SceneManager.Instance.SceneOrigin.transform).GetComponent<StartAction>();
-            StartAction.Init(null, null, null, null, "START");
-            EndAction = Instantiate(EndPrefab, SceneManager.Instance.SceneOrigin.transform).GetComponent<EndAction>();
-            EndAction.Init(null, null, null, null, "END");
-
             foreach (SceneObjectOverride objectOverrides in project.ObjectOverrides) {
                 ActionObject actionObject = SceneManager.Instance.GetActionObject(objectOverrides.Id);
                 foreach (IO.Swagger.Model.Parameter p in objectOverrides.Parameters) {
@@ -394,14 +381,6 @@ namespace Base {
             ProjectMeta = null;
             foreach (ActionPoint ap in ActionPoints.Values) {
                 ap.DeleteAP(false);
-            }
-            if (StartAction != null) {
-                Destroy(StartAction.gameObject);
-                StartAction = null;
-            }               
-            if (EndAction != null) {
-                Destroy(EndAction.gameObject);
-                EndAction = null;
             }
             ActionPoints.Clear();
             //ConnectionManagerArcoro.Instance.Clear();
@@ -1037,16 +1016,11 @@ namespace Base {
         /// <param name="id"></param>
         /// <returns></returns>
         public Action GetAction(string id) {
-            if (id == "START")
-                return StartAction;
-            else if (id == "END")
-                return EndAction;
             foreach (ActionPoint actionPoint in ActionPoints.Values) {
                 if (actionPoint.Actions.TryGetValue(id, out Action action)) {
                     return action;
                 }
             }
-
             throw new ItemNotFoundException("Action with ID " + id + " not found");
         }
 
