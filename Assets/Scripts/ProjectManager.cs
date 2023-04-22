@@ -105,7 +105,7 @@ namespace Base {
         public bool AnyAvailableAction;
 
         public event AREditorEventArgs.ActionPointEventHandler OnActionPointAddedToScene;
-        public event AREditorEventArgs.ActionEventHandler OnActionAddedToScene;
+        //public event AREditorEventArgs.ActionEventHandler OnActionAddedToScene;
 
         public event AREditorEventArgs.ActionPointOrientationEventHandler OnActionPointOrientationAdded;
         public event AREditorEventArgs.ActionPointOrientationEventHandler OnActionPointOrientationUpdated;
@@ -472,29 +472,29 @@ namespace Base {
             project.ActionPoints = new List<IO.Swagger.Model.ActionPoint>();
             foreach (ActionPoint ap in ActionPoints.Values) {
                 IO.Swagger.Model.ActionPoint projectActionPoint = ap.Data;
-                foreach (Action action in ap.Actions.Values) {
-                    IO.Swagger.Model.Action projectAction = new IO.Swagger.Model.Action(id: action.Data.Id,
-                        name: action.Data.Name, type: action.Data.Type) {
-                        Parameters = new List<IO.Swagger.Model.ActionParameter>()                        
-                    };
-                    foreach (Parameter param in action.Parameters.Values) {
-                        projectAction.Parameters.Add(param);
-                    }
-                }
+                //foreach (Action action in ap.Actions.Values) {
+                //    IO.Swagger.Model.Action projectAction = new IO.Swagger.Model.Action(id: action.Data.Id,
+                //        name: action.Data.Name, type: action.Data.Type) {
+                //        Parameters = new List<IO.Swagger.Model.ActionParameter>()                        
+                //    };
+                //    foreach (Parameter param in action.Parameters.Values) {
+                //        projectAction.Parameters.Add(param);
+                //    }
+                //}
                 project.ActionPoints.Add(projectActionPoint);
             }
             return project;
         }
 
-        public List<Action> GetActionsWithReturnType(string type) {
-            List<Action> actions = new List<Action>();
-            foreach (Action action in GetAllActions()) {
-                if (action.Metadata.Returns.Contains(type)) {
-                    actions.Add(action);
-                }
-            }
-            return actions;
-        }
+        //public List<Action> GetActionsWithReturnType(string type) {
+        //    List<Action> actions = new List<Action>();
+        //    foreach (Action action in GetAllActions()) {
+        //        if (action.Metadata.Returns.Contains(type)) {
+        //            actions.Add(action);
+        //        }
+        //    }
+        //    return actions;
+        //}
 
         private void Update() {
             
@@ -695,11 +695,11 @@ namespace Base {
             }
 
             // Remove deleted actions
-            foreach (string actionId in GetAllActionsDict().Keys.ToList<string>()) {
-                if (!currentActions.Contains(actionId)) {
-                    RemoveAction(actionId);
-                }
-            }
+            //foreach (string actionId in GetAllActionsDict().Keys.ToList<string>()) {
+            //    if (!currentActions.Contains(actionId)) {
+            //        RemoveAction(actionId);
+            //    }
+            //}
 
             // Remove deleted action points
             foreach (string actionPointId in GetAllActionPointsDict().Keys.ToList<string>()) {
@@ -933,143 +933,143 @@ namespace Base {
 
         #region ACTIONS
 
-        public Action SpawnAction(IO.Swagger.Model.Action projectAction, ActionPoint ap) {
-            Debug.Assert(!ActionsContainsName(projectAction.Name));
-            ActionMetadata actionMetadata;
-            string providerName = projectAction.Type.Split('/').First();
-            string actionType = projectAction.Type.Split('/').Last();
-            IActionProvider actionProvider;
-            try {
-                actionProvider = SceneManager.Instance.GetActionObject(providerName);
-            } catch (KeyNotFoundException ex) {
-                throw new RequestFailedException("PROVIDER NOT FOUND EXCEPTION: " + providerName + " " + actionType);                
-            }
+        //public Action SpawnAction(IO.Swagger.Model.Action projectAction, ActionPoint ap) {
+        //    Debug.Assert(!ActionsContainsName(projectAction.Name));
+        //    ActionMetadata actionMetadata;
+        //    string providerName = projectAction.Type.Split('/').First();
+        //    string actionType = projectAction.Type.Split('/').Last();
+        //    IActionProvider actionProvider;
+        //    try {
+        //        actionProvider = SceneManager.Instance.GetActionObject(providerName);
+        //    } catch (KeyNotFoundException ex) {
+        //        throw new RequestFailedException("PROVIDER NOT FOUND EXCEPTION: " + providerName + " " + actionType);                
+        //    }
 
-            try {
-                actionMetadata = actionProvider.GetActionMetadata(actionType);
-            } catch (ItemNotFoundException ex) {
-                Debug.LogError(ex);
-                return null; //TODO: throw exception
-            }
+        //    try {
+        //        actionMetadata = actionProvider.GetActionMetadata(actionType);
+        //    } catch (ItemNotFoundException ex) {
+        //        Debug.LogError(ex);
+        //        return null; //TODO: throw exception
+        //    }
 
-            if (actionMetadata == null) {
-                Debug.LogError("Actions not ready");
-                return null; //TODO: throw exception
-            }
-            GameObject puck = Instantiate(PuckPrefab, ap.gameObject.transform);
-            puck.SetActive(false);
+        //    if (actionMetadata == null) {
+        //        Debug.LogError("Actions not ready");
+        //        return null; //TODO: throw exception
+        //    }
+        //    GameObject puck = Instantiate(PuckPrefab, ap.gameObject.transform);
+        //    puck.SetActive(false);
 
-            puck.GetComponent<Action>().Init(projectAction, actionMetadata, ap, actionProvider);
+        //    puck.GetComponent<Action>().Init(projectAction, actionMetadata, ap, actionProvider);
 
-            puck.transform.localScale = new Vector3(1f, 1f, 1f);
+        //    puck.transform.localScale = new Vector3(1f, 1f, 1f);
 
-            Action action = puck.GetComponent<Action>();
+        //    Action action = puck.GetComponent<Action>();
 
-            // Add new action into scene reference
-            ActionPoints[ap.Data.Id].Actions.Add(action.Data.Id, action);
-            //ap.UpdatePositionsOfPucks();
-            puck.SetActive(true);
+        //    // Add new action into scene reference
+        //    ActionPoints[ap.Data.Id].Actions.Add(action.Data.Id, action);
+        //    //ap.UpdatePositionsOfPucks();
+        //    puck.SetActive(true);
 
-            return action;
-        }
+        //    return action;
+        //}
 
-        public string GetFreeActionName(string actionName) {
-            int i = 2;
-            bool hasFreeName;
-            string freeName = actionName;
-            do {
-                hasFreeName = true;
-                if (ActionsContainsName(freeName)) {
-                    hasFreeName = false;
-                }
-                if (!hasFreeName)
-                    freeName = actionName + "_" + i++.ToString();
-            } while (!hasFreeName);
+        //public string GetFreeActionName(string actionName) {
+        //    int i = 2;
+        //    bool hasFreeName;
+        //    string freeName = actionName;
+        //    do {
+        //        hasFreeName = true;
+        //        if (ActionsContainsName(freeName)) {
+        //            hasFreeName = false;
+        //        }
+        //        if (!hasFreeName)
+        //            freeName = actionName + "_" + i++.ToString();
+        //    } while (!hasFreeName);
 
-            return freeName;
-        }
+        //    return freeName;
+        //}
 
 
         /// <summary>
         /// Destroys and removes references to action of given Id.
         /// </summary>
         /// <param name="Id"></param>
-        public void RemoveAction(string Id) {
-            Action aToRemove = GetAction(Id);
-            string apIdToRemove = aToRemove.ActionPoint.Data.Id;
-            // Call function in corresponding action that will delete it and properly remove all references and connections.
-            // We don't want to update project, because we are calling this method only upon received update from server.
-            ActionPoints[apIdToRemove].Actions[Id].DeleteAction();
-        }
+        //public void RemoveAction(string Id) {
+        //    Action aToRemove = GetAction(Id);
+        //    string apIdToRemove = aToRemove.ActionPoint.Data.Id;
+        //    // Call function in corresponding action that will delete it and properly remove all references and connections.
+        //    // We don't want to update project, because we are calling this method only upon received update from server.
+        //    ActionPoints[apIdToRemove].Actions[Id].DeleteAction();
+        //}
 
-        public bool ActionsContainsName(string name) {
-            foreach (Action action in GetAllActions()) {
-                if (action.Data.Name == name)
-                    return true;
-            }
-            return false;
-        }
+        //public bool ActionsContainsName(string name) {
+        //    foreach (Action action in GetAllActions()) {
+        //        if (action.Data.Name == name)
+        //            return true;
+        //    }
+        //    return false;
+        //}
 
         /// <summary>
         /// Returns action of given Id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Action GetAction(string id) {
-            foreach (ActionPoint actionPoint in ActionPoints.Values) {
-                if (actionPoint.Actions.TryGetValue(id, out Action action)) {
-                    return action;
-                }
-            }
-            throw new ItemNotFoundException("Action with ID " + id + " not found");
-        }
+        //public Action GetAction(string id) {
+        //    foreach (ActionPoint actionPoint in ActionPoints.Values) {
+        //        if (actionPoint.Actions.TryGetValue(id, out Action action)) {
+        //            return action;
+        //        }
+        //    }
+        //    throw new ItemNotFoundException("Action with ID " + id + " not found");
+        //}
 
         /// <summary>
         /// Returns action of given ID.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Action GetActionByName(string name) {
-            foreach (ActionPoint actionPoint in ActionPoints.Values) {
-                foreach (Action action in actionPoint.Actions.Values) {
-                    if (action.Data.Name == name) {
-                        return action;
-                    }
-                }
-            }
+        //public Action GetActionByName(string name) {
+        //    foreach (ActionPoint actionPoint in ActionPoints.Values) {
+        //        foreach (Action action in actionPoint.Actions.Values) {
+        //            if (action.Data.Name == name) {
+        //                return action;
+        //            }
+        //        }
+        //    }
 
-            throw new ItemNotFoundException("Action with name " + name + " not found");
-        }
+        //    throw new ItemNotFoundException("Action with name " + name + " not found");
+        //}
 
         /// <summary>
         /// Returns all actions in the scene in a list [Action_object]
         /// </summary>
         /// <returns></returns>
-        public List<Action> GetAllActions() {
-            List<Action> actions = new List<Action>();
-            foreach (ActionPoint actionPoint in ActionPoints.Values) {
-                foreach (Action action in actionPoint.Actions.Values) {
-                    actions.Add(action);
-                }
-            }
+        //public List<Action> GetAllActions() {
+        //    List<Action> actions = new List<Action>();
+        //    foreach (ActionPoint actionPoint in ActionPoints.Values) {
+        //        foreach (Action action in actionPoint.Actions.Values) {
+        //            actions.Add(action);
+        //        }
+        //    }
 
-            return actions;
-        }
+        //    return actions;
+        //}
 
         /// <summary>
         /// Returns all actions in the scene in a dictionary [action_Id, Action_object]
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, Action> GetAllActionsDict() {
-            Dictionary<string, Action> actions = new Dictionary<string, Action>();
-            foreach (ActionPoint actionPoint in ActionPoints.Values) {
-                foreach (Action action in actionPoint.Actions.Values) {
-                    actions.Add(action.Data.Id, action);
-                }
-            }
+        //public Dictionary<string, Action> GetAllActionsDict() {
+        //    Dictionary<string, Action> actions = new Dictionary<string, Action>();
+        //    foreach (ActionPoint actionPoint in ActionPoints.Values) {
+        //        foreach (Action action in actionPoint.Actions.Values) {
+        //            actions.Add(action.Data.Id, action);
+        //        }
+        //    }
 
-            return actions;
-        }
+        //    return actions;
+        //}
 
         #endregion
 
@@ -1077,59 +1077,59 @@ namespace Base {
         /// Updates action 
         /// </summary>
         /// <param name="projectAction">Action description</param>
-        public void ActionUpdated(IO.Swagger.Model.Action projectAction) {
-            Base.Action action = GetAction(projectAction.Id);
-            if (action == null) {
-                Debug.LogError("Trying to update non-existing action!");
-                return;
-            }
-            action.ActionUpdate(projectAction, true);
-            updateProject = true;
-        }
+        //public void ActionUpdated(IO.Swagger.Model.Action projectAction) {
+        //    Base.Action action = GetAction(projectAction.Id);
+        //    if (action == null) {
+        //        Debug.LogError("Trying to update non-existing action!");
+        //        return;
+        //    }
+        //    action.ActionUpdate(projectAction, true);
+        //    updateProject = true;
+        //}
 
         /// <summary>
         /// Updates metadata of action
         /// </summary>
         /// <param name="projectAction">Action description</param>
-        public void ActionBaseUpdated(IO.Swagger.Model.BareAction projectAction) {
-            Base.Action action = GetAction(projectAction.Id);
-            if (action == null) {
-                Debug.LogError("Trying to update non-existing action!");
-                return;
-            }
-            action.ActionUpdateBaseData(projectAction);
-            updateProject = true;
-        }
+        //public void ActionBaseUpdated(IO.Swagger.Model.BareAction projectAction) {
+        //    Base.Action action = GetAction(projectAction.Id);
+        //    if (action == null) {
+        //        Debug.LogError("Trying to update non-existing action!");
+        //        return;
+        //    }
+        //    action.ActionUpdateBaseData(projectAction);
+        //    updateProject = true;
+        //}
 
         /// <summary>
         /// Adds action to the project
         /// </summary>
         /// <param name="projectAction">Action description</param>
         /// <param name="parentId">UUID of action point to which the action should be added</param>
-        public void ActionAdded(IO.Swagger.Model.Action projectAction, string parentId) {
-            ActionPoint actionPoint = GetActionPoint(parentId);
-            try {
-                Base.Action action = SpawnAction(projectAction, actionPoint);
-                // updates name of the action
-                action.ActionUpdateBaseData(DataHelper.ActionToBareAction(projectAction));
-                // updates parameters of the action
-                action.ActionUpdate(projectAction);
-                //action.EnableInputOutput(MainSettingsMenu.Instance.ConnectionsSwitch.IsOn());
-                updateProject = true;
-                OnActionAddedToScene.Invoke(this, new ActionEventArgs(action));
-            } catch (RequestFailedException ex) {
-                Debug.LogError(ex);
-            }            
-        }
+        //public void ActionAdded(IO.Swagger.Model.Action projectAction, string parentId) {
+        //    ActionPoint actionPoint = GetActionPoint(parentId);
+        //    try {
+        //        Base.Action action = SpawnAction(projectAction, actionPoint);
+        //        // updates name of the action
+        //        action.ActionUpdateBaseData(DataHelper.ActionToBareAction(projectAction));
+        //        // updates parameters of the action
+        //        action.ActionUpdate(projectAction);
+        //        //action.EnableInputOutput(MainSettingsMenu.Instance.ConnectionsSwitch.IsOn());
+        //        updateProject = true;
+        //        //OnActionAddedToScene.Invoke(this, new ActionEventArgs(action));
+        //    } catch (RequestFailedException ex) {
+        //        Debug.LogError(ex);
+        //    }            
+        //}
 
         /// <summary>
         /// Removes actino from project
         /// </summary>
         /// <param name="action"></param>
-        public void ActionRemoved(IO.Swagger.Model.BareAction action) {
-            ProjectManager.Instance.RemoveAction(action.Id);
-            updateProject = true;
-        }
+        //public void ActionRemoved(IO.Swagger.Model.BareAction action) {
+        //    ProjectManager.Instance.RemoveAction(action.Id);
+        //    updateProject = true;
+        //}
 
         /// <summary>
         /// Called when project saved. Invokes OnProjectSaved event

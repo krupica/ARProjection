@@ -10,7 +10,7 @@ namespace Base {
     public abstract class ActionPoint : MonoBehaviour, IActionPointParent {
 
         // Key string is set to IO.Swagger.Model.ActionPoint Data.Uuid
-        public Dictionary<string, Action> Actions = new Dictionary<string, Action>();
+        //public Dictionary<string, Action> Actions = new Dictionary<string, Action>();
         public GameObject ActionsSpawn;
         public GameObject ActionPoints;
 
@@ -286,7 +286,7 @@ namespace Base {
 
         public void DeleteAP(bool removeFromList = true) {
             // Remove all actions of this action point
-            RemoveActions();
+            //RemoveActions();
             RemoveConnectionToParent();
             RemoveOrientations();
 
@@ -319,17 +319,17 @@ namespace Base {
         public abstract Vector3 GetScenePosition();
         public abstract Quaternion GetSceneOrientation();
 
-        public void RemoveActions() {
-            // Remove all actions of this action point
-            foreach (string actionUUID in Actions.Keys.ToList<string>()) {
-                RemoveAction(actionUUID);
-            }
-            Actions.Clear();
-        }
+        //public void RemoveActions() {
+        //    // Remove all actions of this action point
+        //    foreach (string actionUUID in Actions.Keys.ToList<string>()) {
+        //        RemoveAction(actionUUID);
+        //    }
+        //    Actions.Clear();
+        //}
 
-        public void RemoveAction(string action_id) {
-            Actions[action_id].DeleteAction();
-        }
+        //public void RemoveAction(string action_id) {
+        //    Actions[action_id].DeleteAction();
+        //}
 
         
 
@@ -376,33 +376,31 @@ namespace Base {
             }
             // Connections between actions (action -> output --- input <- action2)
             Dictionary<string, string> connections = new Dictionary<string, string>();
-            if (projectActionPoint.Actions != null) {
-                //update actions
-                foreach (IO.Swagger.Model.Action projectAction in projectActionPoint.Actions) {
+            //if (projectActionPoint.Actions != null) {
+            //    //update actions
+            //    foreach (IO.Swagger.Model.Action projectAction in projectActionPoint.Actions) {
 
-                    // if action exist, just update it, otherwise create new
-                    if (!Actions.TryGetValue(projectAction.Id, out Action action)) {
-                        try {
-                            action = ProjectManager.Instance.SpawnAction(projectAction, this);
-                        } catch (RequestFailedException ex) {
-                            Debug.LogError(ex);
-                            continue;
-                        }
-                    }
-                    // updates name of the action
-                    action.ActionUpdateBaseData(DataHelper.ActionToBareAction(projectAction));
-                    // updates parameters of the action
-                    action.ActionUpdate(projectAction);
+            //        // if action exist, just update it, otherwise create new
+            //        if (!Actions.TryGetValue(projectAction.Id, out Action action)) {
+            //            try {
+            //                action = ProjectManager.Instance.SpawnAction(projectAction, this);
+            //            } catch (RequestFailedException ex) {
+            //                Debug.LogError(ex);
+            //                continue;
+            //            }
+            //        }
+            //        // updates name of the action
+            //        action.ActionUpdateBaseData(DataHelper.ActionToBareAction(projectAction));
+            //        // updates parameters of the action
+            //        action.ActionUpdate(projectAction);
 
-                    // Add current connection from the server, we will only map the outputs
+            //        // Add current connection from the server, we will only map the outputs
                     
 
-                    // local list of all actions for current action point
-                    currentA.Add(projectAction.Id);
-                }
-            }        
-
-
+            //        // local list of all actions for current action point
+            //        currentA.Add(projectAction.Id);
+            //    }
+            //}        
  
             return (currentA, connections);
         }

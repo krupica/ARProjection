@@ -74,8 +74,8 @@ namespace Base {
         public event AREditorEventArgs.StringEventHandler OnSceneRemoved;
         public event AREditorEventArgs.BareSceneEventHandler OnSceneBaseUpdated;
 
-        public event AREditorEventArgs.ActionEventHandler OnActionAdded;
-        public event AREditorEventArgs.ActionEventHandler OnActionUpdated;
+        //public event AREditorEventArgs.ActionEventHandler OnActionAdded;
+        //public event AREditorEventArgs.ActionEventHandler OnActionUpdated;
         public event AREditorEventArgs.BareActionEventHandler OnActionBaseUpdated;
         public event AREditorEventArgs.StringEventHandler OnActionRemoved;
 
@@ -311,7 +311,7 @@ namespace Base {
                         HandleOverrideUpdated(data);
                         break;
                     case "ActionChanged":
-                        HandleActionChanged(data);
+                        //HandleActionChanged(data);
                         break;
                     case "LogicItemChanged":
                         HandleLogicItemChanged(data);
@@ -587,17 +587,17 @@ namespace Base {
                         return;
                     }
                     // Stop previously running action (change its color to default)
-                    if (ActionsManager.Instance.CurrentlyRunningAction != null)
-                        ActionsManager.Instance.CurrentlyRunningAction.StopAction();
+                    //if (ActionsManager.Instance.CurrentlyRunningAction != null)
+                    //    ActionsManager.Instance.CurrentlyRunningAction.StopAction();
 
-                    Action puck = ProjectManager.Instance.GetAction(puck_id);
-                    ActionsManager.Instance.CurrentlyRunningAction = puck;
+                    //Action puck = ProjectManager.Instance.GetAction(puck_id);
+                    //ActionsManager.Instance.CurrentlyRunningAction = puck;
                     // Run current action (set its color to running)
-                    puck.RunAction();
+                    //puck.RunAction();
                 } else {
-                    if (ActionsManager.Instance.CurrentlyRunningAction != null)
-                        ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-                    ActionsManager.Instance.CurrentlyRunningAction = null;
+                    //if (ActionsManager.Instance.CurrentlyRunningAction != null)
+                    //    ActionsManager.Instance.CurrentlyRunningAction.StopAction();
+                    //ActionsManager.Instance.CurrentlyRunningAction = null;
                 }
                 
                 
@@ -619,9 +619,9 @@ namespace Base {
             try {
 
                 IO.Swagger.Model.ActionStateAfter actionStateBefore = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionStateAfter>(obj);
-                if (ActionsManager.Instance.CurrentlyRunningAction != null)
-                        ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-                    ActionsManager.Instance.CurrentlyRunningAction = null;
+                //if (ActionsManager.Instance.CurrentlyRunningAction != null)
+                //        ActionsManager.Instance.CurrentlyRunningAction.StopAction();
+                //    ActionsManager.Instance.CurrentlyRunningAction = null;
                 
             } catch (NullReferenceException e) {
                 Debug.Log("Parse error in HandleCurrentAction()");
@@ -661,8 +661,8 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleActionExecution(string data) {
-            IO.Swagger.Model.ActionExecution actionExecution = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionExecution>(data);
-            GameManager.Instance.HandleActionExecution(actionExecution.Data.ActionId);
+            //IO.Swagger.Model.ActionExecution actionExecution = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionExecution>(data);
+            //GameManager.Instance.HandleActionExecution(actionExecution.Data.ActionId);
         }
 
         /// <summary>
@@ -759,31 +759,31 @@ namespace Base {
         /// Decodes changes on actions and invokes proper callback 
         /// </summary>
         /// <param name="data">Message from server</param>
-        private void HandleActionChanged(string data) {
-            IO.Swagger.Model.ActionChanged actionChanged = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionChanged>(data);
-            var actionChangedFields = new {
-                data = new IO.Swagger.Model.Action(id: "", name: "", type: "", flows: new List<Flow>(), parameters: new List<ActionParameter>())
-            };
-            ProjectManager.Instance.ProjectChanged = true;
-            switch (actionChanged.ChangeType) {
-                case IO.Swagger.Model.ActionChanged.ChangeTypeEnum.Add:
-                    var action = JsonConvert.DeserializeAnonymousType(data, actionChangedFields);
-                    ProjectManager.Instance.ActionAdded(action.data, actionChanged.ParentId);
-                    break;
-                case IO.Swagger.Model.ActionChanged.ChangeTypeEnum.Remove:
-                    ProjectManager.Instance.ActionRemoved(actionChanged.Data);
-                    break;
-                case IO.Swagger.Model.ActionChanged.ChangeTypeEnum.Update:
-                    var actionUpdate = JsonConvert.DeserializeAnonymousType(data, actionChangedFields);
-                    ProjectManager.Instance.ActionUpdated(actionUpdate.data);
-                    break;
-                case IO.Swagger.Model.ActionChanged.ChangeTypeEnum.Updatebase:
-                    ProjectManager.Instance.ActionBaseUpdated(actionChanged.Data);
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-        }
+        //private void HandleActionChanged(string data) {
+        //    IO.Swagger.Model.ActionChanged actionChanged = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionChanged>(data);
+        //    var actionChangedFields = new {
+        //        data = new IO.Swagger.Model.Action(id: "", name: "", type: "", flows: new List<Flow>(), parameters: new List<ActionParameter>())
+        //    };
+        //    ProjectManager.Instance.ProjectChanged = true;
+        //    switch (actionChanged.ChangeType) {
+        //        case IO.Swagger.Model.ActionChanged.ChangeTypeEnum.Add:
+        //            var action = JsonConvert.DeserializeAnonymousType(data, actionChangedFields);
+        //            ProjectManager.Instance.ActionAdded(action.data, actionChanged.ParentId);
+        //            break;
+        //        case IO.Swagger.Model.ActionChanged.ChangeTypeEnum.Remove:
+        //            ProjectManager.Instance.ActionRemoved(actionChanged.Data);
+        //            break;
+        //        case IO.Swagger.Model.ActionChanged.ChangeTypeEnum.Update:
+        //            var actionUpdate = JsonConvert.DeserializeAnonymousType(data, actionChangedFields);
+        //            ProjectManager.Instance.ActionUpdated(actionUpdate.data);
+        //            break;
+        //        case IO.Swagger.Model.ActionChanged.ChangeTypeEnum.Updatebase:
+        //            ProjectManager.Instance.ActionBaseUpdated(actionChanged.Data);
+        //            break;
+        //        default:
+        //            throw new NotImplementedException();
+        //    }
+        //}
 
         /// <summary>
         /// Decodes changes in program logic

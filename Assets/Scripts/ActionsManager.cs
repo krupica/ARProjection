@@ -14,7 +14,7 @@ namespace Base {
 
         private Dictionary<string, ActionObjectMetadata> actionObjectsMetadata = new Dictionary<string, ActionObjectMetadata>();
         
-        public Action CurrentlyRunningAction = null;
+        //public Action CurrentlyRunningAction = null;
         
         public event EventHandler OnServiceMetadataUpdated, OnActionsLoaded;
 

@@ -880,56 +880,56 @@ namespace Base {
         /// </summary>
         /// <param name="data"></param>
         internal void HandleActionResult(ActionResultData data) {
-            if (data.Error != null)
-                Notifications.Instance.ShowNotification("Action execution failed", data.Error);
-            else {
-                string res = "";
-                if (data.Results != null && data.Results.Count > 0) {
-                    res = "Result: " + data.Results[0];
-                }
-                Notifications.Instance.ShowNotification("Action execution finished sucessfully", res);
-            }
-            ExecutingAction = null;
-            OnActionExecutionFinished?.Invoke(this, EventArgs.Empty);
-            // Stop previously running action (change its color to default)
-            if (ActionsManager.Instance.CurrentlyRunningAction != null)
-                ActionsManager.Instance.CurrentlyRunningAction.StopAction();
+            //if (data.Error != null)
+            //    Notifications.Instance.ShowNotification("Action execution failed", data.Error);
+            //else {
+            //    string res = "";
+            //    if (data.Results != null && data.Results.Count > 0) {
+            //        res = "Result: " + data.Results[0];
+            //    }
+            //    Notifications.Instance.ShowNotification("Action execution finished sucessfully", res);
+            //}
+            //ExecutingAction = null;
+            //OnActionExecutionFinished?.Invoke(this, EventArgs.Empty);
+            //// Stop previously running action (change its color to default)
+            //if (ActionsManager.Instance.CurrentlyRunningAction != null)
+            //    ActionsManager.Instance.CurrentlyRunningAction.StopAction();
         }
 
         /// <summary>
         /// Inform the user that action execution was canceled
         /// </summary>
         internal void HandleActionCanceled() {
-            try {
-                Action action = ProjectManager.Instance.GetAction(ExecutingAction);                
-                Notifications.Instance.ShowNotification("Action execution canceled", "Action " + action.Data.Name + " was cancelled");
-            } catch (ItemNotFoundException ex) {
-                Notifications.Instance.ShowNotification("Action execution canceled", "Unknown action was cancelled");
-            } finally {
-                ExecutingAction = null;
-                OnActionExecutionCanceled?.Invoke(this, EventArgs.Empty);
+            //try {
+            //    Action action = ProjectManager.Instance.GetAction(ExecutingAction);                
+            //    Notifications.Instance.ShowNotification("Action execution canceled", "Action " + action.Data.Name + " was cancelled");
+            //} catch (ItemNotFoundException ex) {
+            //    Notifications.Instance.ShowNotification("Action execution canceled", "Unknown action was cancelled");
+            //} finally {
+            //    ExecutingAction = null;
+            //    OnActionExecutionCanceled?.Invoke(this, EventArgs.Empty);
                 
-                // Stop previously running action (change its color to default)
-                if (ActionsManager.Instance.CurrentlyRunningAction != null)
-                    ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-            }
+            //    // Stop previously running action (change its color to default)
+            //    if (ActionsManager.Instance.CurrentlyRunningAction != null)
+            //        ActionsManager.Instance.CurrentlyRunningAction.StopAction();
+            //}
         }
 
         /// <summary>
         /// Highlights currently executed action and invoke coresponding event
         /// </summary>
         /// <param name="actionId"></param>
-        internal void HandleActionExecution(string actionId) {
-            ExecutingAction = actionId;
-            OnActionExecution?.Invoke(this, new StringEventArgs(ExecutingAction));
-            Action puck = ProjectManager.Instance.GetAction(actionId);
-            if (puck == null)
-                return;
+        //internal void HandleActionExecution(string actionId) {
+        //    ExecutingAction = actionId;
+        //    OnActionExecution?.Invoke(this, new StringEventArgs(ExecutingAction));
+        //    Action puck = ProjectManager.Instance.GetAction(actionId);
+        //    if (puck == null)
+        //        return;
 
-            ActionsManager.Instance.CurrentlyRunningAction = puck;
-            // Run current action (set its color to running)
-            puck.RunAction();
-        }
+        //    ActionsManager.Instance.CurrentlyRunningAction = puck;
+        //    // Run current action (set its color to running)
+        //    puck.RunAction();
+        //}
 
         /// <summary>
         /// Create visual elements of opened scene and open scene editor
@@ -1055,18 +1055,18 @@ namespace Base {
                         } else {
                             OnResumePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
                         }
-                        if (!string.IsNullOrEmpty(ActionRunningOnStartupId)) {
-                            try {
-                                Action action = ProjectManager.Instance.GetAction(ActionRunningOnStartupId);
-                                ActionsManager.Instance.CurrentlyRunningAction = action;
-                                action.RunAction();
-                            } catch (ItemNotFoundException) {
+                        //if (!string.IsNullOrEmpty(ActionRunningOnStartupId)) {
+                        //    try {
+                        //        Action action = ProjectManager.Instance.GetAction(ActionRunningOnStartupId);
+                        //        ActionsManager.Instance.CurrentlyRunningAction = action;
+                        //        action.RunAction();
+                        //    } catch (ItemNotFoundException) {
 
-                            } finally {
-                                ActionRunningOnStartupId = null;
-                            }
+                        //    } finally {
+                        //        ActionRunningOnStartupId = null;
+                        //    }
 
-                        }
+                        //}
                     } catch (TimeoutException ex) {
                         Debug.LogError(ex);
                         Notifications.Instance.SaveLogs(null, null, "Failed to initialize project");
