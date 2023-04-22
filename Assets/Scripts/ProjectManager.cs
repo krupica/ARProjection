@@ -411,12 +411,7 @@ namespace Base {
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void OnLogicItemUpdated(object sender, LogicItemChangedEventArgs args) {
-            if (LogicItems.TryGetValue(args.Data.Id, out LogicItem logicItem)) {
-                logicItem.Data = args.Data;
-                logicItem.UpdateConnection(args.Data);
-            } else {
-                Debug.LogError("Server tries to update logic item that does not exists (id: " + args.Data.Id + ")");
-            }
+            
         }
 
         /// <summary>
@@ -425,12 +420,7 @@ namespace Base {
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void OnLogicItemRemoved(object sender, StringEventArgs args) {
-            if (LogicItems.TryGetValue(args.Data, out LogicItem logicItem)) {
-                logicItem.Remove();
-                LogicItems.Remove(args.Data);
-            } else {
-                Debug.LogError("Server tries to remove logic item that does not exists (id: " + args.Data + ")");
-            }
+
         }
 
         /// <summary>
@@ -439,8 +429,7 @@ namespace Base {
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void OnLogicItemAdded(object sender, LogicItemChangedEventArgs args) {
-            LogicItem logicItem = new LogicItem(args.Data);
-            LogicItems.Add(args.Data.Id, logicItem);
+
         }
 
         /// <summary>
