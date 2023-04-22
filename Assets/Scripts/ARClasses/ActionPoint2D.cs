@@ -10,15 +10,6 @@ namespace Assets.Scripts.ARClasses
 {
     public class ActionPoint2D : Base.ActionPoint
     {
-        public override bool BreakPoint
-        {
-            get => base.BreakPoint;
-            set
-            {
-                base.BreakPoint = value;
-            }
-        }
-
         public override Vector3 GetScenePosition()
         {
             Vector3 newPos = ProjectionCoordConversion.ROSToUnityY0(DataHelper.PositionToVector3(Data.Position));

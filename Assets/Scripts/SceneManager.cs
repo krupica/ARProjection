@@ -88,10 +88,6 @@ namespace Base {
         /// </summary>
         public GameObject CurrentlySelectedObject;
         /// <summary>
-        /// Manager taking care of connections between action points and action objects
-        /// </summary>
-        public LineConnectionsManager AOToAPConnectionsManager;
-        /// <summary>
         /// Prefab of connectino between action point and action object
         /// </summary>
         public GameObject LineConnectionPrefab;
@@ -283,8 +279,8 @@ namespace Base {
             try {
                 ActionObject actionObject = GetActionObject(args.ObjectId);
                 if (actionObject.TryGetParameterMetadata(args.Parameter.Name, out ParameterMeta parameterMeta)) {
-                    Parameter p = new Parameter(parameterMeta, args.Parameter.Value);
-                    actionObject.Overrides[args.Parameter.Name] = p;
+                    //Parameter p = new Parameter(parameterMeta, args.Parameter.Value);
+                    //actionObject.Overrides[args.Parameter.Name] = p;
                 }
                 
             } catch (KeyNotFoundException ex) {

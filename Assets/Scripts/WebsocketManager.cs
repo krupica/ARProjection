@@ -758,14 +758,17 @@ namespace Base {
         /// <summary>
         /// Decodes changes on actions and invokes proper callback 
         /// </summary>
-        /// <param name="data">Message from server</param>
-        //private void HandleActionChanged(string data) {
+        /// <param name = "data" > Message from server</param>
+        //private void HandleActionChanged(string data)
+        //{
         //    IO.Swagger.Model.ActionChanged actionChanged = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionChanged>(data);
-        //    var actionChangedFields = new {
+        //    var actionChangedFields = new
+        //    {
         //        data = new IO.Swagger.Model.Action(id: "", name: "", type: "", flows: new List<Flow>(), parameters: new List<ActionParameter>())
         //    };
         //    ProjectManager.Instance.ProjectChanged = true;
-        //    switch (actionChanged.ChangeType) {
+        //    switch (actionChanged.ChangeType)
+        //    {
         //        case IO.Swagger.Model.ActionChanged.ChangeTypeEnum.Add:
         //            var action = JsonConvert.DeserializeAnonymousType(data, actionChangedFields);
         //            ProjectManager.Instance.ActionAdded(action.data, actionChanged.ParentId);

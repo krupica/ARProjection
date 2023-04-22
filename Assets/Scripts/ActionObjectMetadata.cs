@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ARServer.Models;
 using IO.Swagger.Model;
 using UnityEngine;
 using UnityEngine.PlayerLoop;

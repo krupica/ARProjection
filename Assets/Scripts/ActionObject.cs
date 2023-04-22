@@ -5,7 +5,7 @@ using IO.Swagger.Model;
 using System;
 
 namespace Base {
-    public abstract class ActionObject : MonoBehaviour, IActionPointParent {
+    public abstract class ActionObject : MonoBehaviour {
 
         [System.NonSerialized]
         public int CounterAP = 0;
@@ -13,7 +13,6 @@ namespace Base {
         public IO.Swagger.Model.SceneObject Data = new IO.Swagger.Model.SceneObject(id: "", name: "", pose: DataHelper.CreatePose(new Vector3(), new Quaternion()), type: "");
         public ActionObjectMetadata ActionObjectMetadata;
 
-        public Dictionary<string, Parameter> ObjectParameters = new Dictionary<string, Parameter>();
         public Dictionary<string, Parameter> Overrides = new Dictionary<string, Parameter>();
 
 
@@ -47,18 +46,18 @@ namespace Base {
             Data = actionObjectSwagger;
             foreach (IO.Swagger.Model.Parameter p in Data.Parameters) {
 
-                if (!ObjectParameters.ContainsKey(p.Name)) {
-                    if (TryGetParameterMetadata(p.Name, out ParameterMeta parameterMeta)) {
-                        ObjectParameters[p.Name] = new Parameter(parameterMeta, p.Value);
-                    } else {
-                        Debug.LogError("Failed to load metadata for parameter " + p.Name);
-                        Notifications.Instance.ShowNotification("Critical error", "Failed to load parameter's metadata.");
-                        return;
-                    }
+                //if (!ObjectParameters.ContainsKey(p.Name)) {
+                //    if (TryGetParameterMetadata(p.Name, out ParameterMeta parameterMeta)) {
+                //        ObjectParameters[p.Name] = new Parameter(parameterMeta, p.Value);
+                //    } else {
+                //        Debug.LogError("Failed to load metadata for parameter " + p.Name);
+                //        Notifications.Instance.ShowNotification("Critical error", "Failed to load parameter's metadata.");
+                //        return;
+                //    }
 
-                } else {
-                    ObjectParameters[p.Name].Value = p.Value;
-                }
+                //} else {
+                //    ObjectParameters[p.Name].Value = p.Value;
+                //}
             }
         }
 

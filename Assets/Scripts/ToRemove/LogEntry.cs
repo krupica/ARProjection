@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+//TODO remove
 public class LogEntry
 {
     private readonly string logType;

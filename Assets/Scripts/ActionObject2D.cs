@@ -123,7 +123,7 @@ public class ActionObject2D : ActionObject
                     break;
             }
         }
-        gameObject.GetComponent<BindParentToChild>().ChildToBind = Model;
+        //gameObject.GetComponent<BindParentToChild>().ChildToBind = Model;
     }
 
 

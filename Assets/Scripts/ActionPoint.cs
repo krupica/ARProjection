@@ -7,19 +7,14 @@ using IO.Swagger.Model;
 //using WebSocketSharp;
 
 namespace Base {
-    public abstract class ActionPoint : MonoBehaviour, IActionPointParent {
+    public abstract class ActionPoint : MonoBehaviour {
 
-        // Key string is set to IO.Swagger.Model.ActionPoint Data.Uuid
-        //public Dictionary<string, Action> Actions = new Dictionary<string, Action>();
-        public GameObject ActionsSpawn;
         public GameObject ActionPoints;
-
-        public IActionPointParent Parent;
 
         protected Vector3 offset;
         [System.NonSerialized]
         public int PuckCounter = 0;
-        public LineConnection ConnectionToParent;
+        //public LineConnection ConnectionToParent;
 
         [System.NonSerialized]
         public IO.Swagger.Model.ActionPoint Data = new IO.Swagger.Model.ActionPoint(id: "", robotJoints: new List<IO.Swagger.Model.ProjectRobotJoints>(), orientations: new List<IO.Swagger.Model.NamedOrientation>(), position: new IO.Swagger.Model.Position(), actions: new List<IO.Swagger.Model.Action>(), name: "");
@@ -27,36 +22,18 @@ namespace Base {
         [SerializeField]
         protected GameObject orientations;
 
-        public bool OrientationsVisible, ActionsCollapsed;
-
-        private bool breakPoint;
-
-        public virtual bool BreakPoint {
-            get => breakPoint;
-            set {
-                breakPoint = value;
-                PlayerPrefsHelper.SaveBool("/AP/" + Data.Id + "/breakPoint", value);
-            }
-        }
-
         public virtual void ActionPointBaseUpdate(IO.Swagger.Model.BareActionPoint apData) {
             Data.Name = apData.Name;
             Data.Position = apData.Position;
             // update position and rotation based on received data from swagger
             transform.localPosition = GetScenePosition();
-            if (Parent != null)
-                ConnectionToParent.UpdateLine();
         }
 
-        public virtual void InitAP(IO.Swagger.Model.ActionPoint apData, float size, IActionPointParent parent = null) {
+        public virtual void InitAP(IO.Swagger.Model.ActionPoint apData, float size) {
             Debug.Assert(apData != null);
-            SetParent(parent);
             Data = apData;
 
             //SelectorItem = SelectorMenu.Instance.CreateSelectorItem(this);
-            OrientationsVisible = PlayerPrefsHelper.LoadBool("/AP/" + Data.Id + "/visible", true);
-            ActionsCollapsed = PlayerPrefsHelper.LoadBool("/AP/" + Data.Id + "/actionsCollapsed", false);
-            BreakPoint = PlayerPrefsHelper.LoadBool("/AP/" + Data.Id + "/breakPoint", false);
             transform.localPosition = GetScenePosition();
             SetSize(size);
             if (Data.Actions == null)
@@ -65,27 +42,6 @@ namespace Base {
                 Data.Orientations = new List<NamedOrientation>();
             if (Data.RobotJoints == null)
                 Data.RobotJoints = new List<ProjectRobotJoints>();
-        }
-
-        public void SetParent(IActionPointParent parent) {
-            Parent = parent;
-            if(parent != null)
-                SetConnectionToParent(parent);
-        }
-
-        private void SetConnectionToParent(IActionPointParent parent) {
-            // Create new Line Connection between parent AO and child AP
-            GameObject c = Instantiate(SceneManager.Instance.LineConnectionPrefab);
-            c.transform.parent = transform;
-            LineConnection newConnection = c.GetComponent<LineConnection>();
-            newConnection.targets[0] = parent.GetTransform();
-            newConnection.targets[1] = this.transform;
-
-            // add the connection to connections manager
-            SceneManager.Instance.AOToAPConnectionsManager.AddConnection(newConnection);
-
-            ConnectionToParent = newConnection;
-            
         }
 
         internal string GetFreeOrientationName() {
@@ -182,32 +138,6 @@ namespace Base {
             throw new ItemNotFoundException("No orientation");
         }
 
-        /// <summary>
-        /// 
-        /// Returns visual representation of orientation
-        /// </summary>
-        /// <param name="id">UUID of orientation</param>
-        /// <returns></returns>
-        //public APOrientation GetOrientationVisual(string id) {
-        //    foreach (Transform transform in orientations.transform) {
-        //        APOrientation orientation = transform.GetComponent<APOrientation>();
-        //        if (orientation != null && orientation.OrientationId == id) {
-        //            return orientation;
-        //        }
-        //    }
-        //    throw new KeyNotFoundException("Orientation with id " + id + " not found.");
-        //}
-
-        //public List<APOrientation> GetOrientationsVisuals() {
-        //    List<APOrientation> orientationsList = new List<APOrientation>();
-        //    foreach (Transform transform in orientations.transform) {
-        //        APOrientation o = transform.GetComponent<APOrientation>();
-        //        if (o != null)
-        //            orientationsList.Add(o);
-        //    }
-        //    return orientationsList;
-        //}
-
         public IO.Swagger.Model.Pose GetDefaultPose() {
             foreach (IO.Swagger.Model.NamedOrientation orientation in Data.Orientations) {
                 if (orientation.Id == "default")
@@ -216,78 +146,11 @@ namespace Base {
             throw new ItemNotFoundException();            
         }
 
-        //TODO: check if it works
-        public IO.Swagger.Model.ProjectRobotJoints GetFirstJoints(string robot_id = null, bool valid_only = false) {
-            foreach (IO.Swagger.Model.ProjectRobotJoints robotJoint in Data.RobotJoints) {
-                if ((robot_id != null && robot_id != robotJoint.RobotId) ||
-                        (valid_only && !robotJoint.IsValid))
-                    continue;
-                return robotJoint;
-            }
-            if (!string.IsNullOrEmpty(Data.Parent)) {
-                ActionPoint parent = ProjectManager.Instance.GetActionPoint(Data.Parent);
-                return parent.GetFirstJoints();
-            }
-
-            throw new ItemNotFoundException();    
-        }
-
-        public IO.Swagger.Model.ProjectRobotJoints GetFirstJointsFromDescendants() {
-            List<ActionPoint> descendantActionPoints = new List<ActionPoint>();
-            foreach (Transform t in ActionPoints.transform) {
-                ActionPoint ap = t.GetComponent<ActionPoint>();
-                if (ap.Data.RobotJoints.Count > 0)
-                    return ap.Data.RobotJoints[0];
-                descendantActionPoints.Add(ap);
-            }
-            foreach (ActionPoint ap in descendantActionPoints) {
-                try {
-                    return ap.GetFirstJointsFromDescendants();
-                } catch (ItemNotFoundException) {
-
-                }
-            }
-
-            throw new ItemNotFoundException("No joints");
-        }
-
-        public Dictionary<string, IO.Swagger.Model.ProjectRobotJoints> GetAllJoints(bool uniqueOnly = false, string robot_id = null, bool valid_only = false) {
-            Dictionary<string, IO.Swagger.Model.ProjectRobotJoints> joints = new Dictionary<string, IO.Swagger.Model.ProjectRobotJoints>();
-            Dictionary<string, IO.Swagger.Model.Pose> poses = new Dictionary<string, IO.Swagger.Model.Pose>();
-            if (uniqueOnly) {
-                poses = GetPoses();
-            }
-            foreach (IO.Swagger.Model.ProjectRobotJoints robotJoint in Data.RobotJoints) {
-                if ((uniqueOnly && poses.ContainsKey(robotJoint.Id)) ||
-                    (!string.IsNullOrEmpty(robot_id) && robot_id != robotJoint.RobotId) ||
-                    (valid_only && !robotJoint.IsValid)) {
-                    continue;
-                }                
-                joints.Add(robotJoint.Id, robotJoint);
-            }
-            return joints;
-        }
-
-        public Dictionary<string, IO.Swagger.Model.ProjectRobotJoints> GetJointsOfArm(string robot_id, string arm_id, bool uniqueOnly = false) {
-            Dictionary<string, IO.Swagger.Model.ProjectRobotJoints> joints = new Dictionary<string, IO.Swagger.Model.ProjectRobotJoints>();
-            Dictionary<string, IO.Swagger.Model.Pose> poses = new Dictionary<string, IO.Swagger.Model.Pose>();
-            if (uniqueOnly) {
-                poses = GetPoses();
-            }
-            foreach (IO.Swagger.Model.ProjectRobotJoints robotJoint in Data.RobotJoints) {
-                if (uniqueOnly && poses.ContainsKey(robotJoint.Id)) {
-                    continue;
-                }
-                if (robot_id == robotJoint.RobotId && arm_id == robotJoint.ArmId)
-                    joints.Add(robotJoint.Id, robotJoint);
-            }
-            return joints;
-        }
 
         public void DeleteAP(bool removeFromList = true) {
             // Remove all actions of this action point
             //RemoveActions();
-            RemoveConnectionToParent();
+            //RemoveConnectionToParent();
             RemoveOrientations();
 
             // Remove this ActionPoint reference from parent ActionObject list
@@ -302,15 +165,15 @@ namespace Base {
             Destroy(gameObject);
         }
 
-        private void RemoveConnectionToParent() {
-            // Remove connections to parent
-            if (ConnectionToParent != null && ConnectionToParent.gameObject != null) {
-                // remove connection from connectinos manager
-                SceneManager.Instance.AOToAPConnectionsManager.RemoveConnection(ConnectionToParent);
-                // destroy connection gameobject
-                Destroy(ConnectionToParent.gameObject);
-            }
-        }
+        //private void RemoveConnectionToParent() {
+        //    // Remove connections to parent
+        //    if (ConnectionToParent != null && ConnectionToParent.gameObject != null) {
+        //        // remove connection from connectinos manager
+        //        SceneManager.Instance.AOToAPConnectionsManager.RemoveConnection(ConnectionToParent);
+        //        // destroy connection gameobject
+        //        Destroy(ConnectionToParent.gameObject);
+        //    }
+        //}
 
         public virtual bool ProjectInteractable() {
             return GameManager.Instance.GetGameState() == GameManager.GameStateEnum.ProjectEditor;
@@ -337,22 +200,6 @@ namespace Base {
             gameObject.layer = LayerMask.NameToLayer(layer);
         }
 
-        public IActionPointParent GetParent() {
-            return Parent;
-        }
-
-        public bool IsActionObject() {
-            return false;
-        }
-
-        public ActionObject GetActionObject() {
-            if (Parent != null) {
-                return Parent.GetActionObject();
-            } else {
-                return null;
-            }
-        }
-
         public Transform GetTransform() {
             return transform;
         }
@@ -363,9 +210,9 @@ namespace Base {
         /// <param name="projectActionPoint"></param>
         /// <returns></returns>
         public virtual (List<string>, Dictionary<string, string>) UpdateActionPoint(IO.Swagger.Model.ActionPoint projectActionPoint) {
-            if (Data.Parent != projectActionPoint.Parent) {
-                ChangeParent(projectActionPoint.Parent);
-            }
+            //if (Data.Parent != projectActionPoint.Parent) {
+            //    ChangeParent(projectActionPoint.Parent);
+            //}
             Data = projectActionPoint;
             transform.localPosition = GetScenePosition();            
             transform.localRotation = GetSceneOrientation();
@@ -405,27 +252,27 @@ namespace Base {
             return (currentA, connections);
         }
 
-        private void ChangeParent(string parentId) {
-            if (parentId == null || parentId == "") {
-                RemoveConnectionToParent();
-                Parent = null;
-                Data.Parent = "";
-                transform.parent = ProjectManager.Instance.ActionPointsOrigin.transform;
-                transform.localRotation = Quaternion.identity;
-                return;
-            } else {
-                try {
-                    IActionPointParent actionPointParent = ProjectManager.Instance.GetActionPointParent(parentId);
-                    Parent = actionPointParent;
-                    Data.Parent = parentId;
-                    transform.parent = actionPointParent.GetTransform();
-                    RemoveConnectionToParent();
-                    SetConnectionToParent(Parent);
-                } catch (KeyNotFoundException ex) {
-                    Debug.LogError(ex);
-                }
-            }
-        }
+        //private void ChangeParent(string parentId) {
+        //    if (parentId == null || parentId == "") {
+        //        RemoveConnectionToParent();
+        //        Parent = null;
+        //        Data.Parent = "";
+        //        transform.parent = ProjectManager.Instance.ActionPointsOrigin.transform;
+        //        transform.localRotation = Quaternion.identity;
+        //        return;
+        //    } else {
+        //        try {
+        //            IActionPointParent actionPointParent = ProjectManager.Instance.GetActionPointParent(parentId);
+        //            Parent = actionPointParent;
+        //            Data.Parent = parentId;
+        //            transform.parent = actionPointParent.GetTransform();
+        //            RemoveConnectionToParent();
+        //            SetConnectionToParent(Parent);
+        //        } catch (KeyNotFoundException ex) {
+        //            Debug.LogError(ex);
+        //        }
+        //    }
+        //}
 
         public bool OrientationNameExist(string name) {
             try {

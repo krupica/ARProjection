@@ -125,7 +125,7 @@ public class KinectAzure : ActionObject
                     break;
             }
         }
-        gameObject.GetComponent<BindParentToChild>().ChildToBind = Model;
+        //gameObject.GetComponent<BindParentToChild>().ChildToBind = Model;
     }
 
     public string GetObjectTypeName()

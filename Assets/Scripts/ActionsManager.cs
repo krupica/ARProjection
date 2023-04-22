@@ -13,10 +13,9 @@ namespace Base
 
     public class ActionsManager : Singleton<ActionsManager>
     {
-
         private Dictionary<string, ActionObjectMetadata> actionObjectsMetadata = new Dictionary<string, ActionObjectMetadata>();
 
-        public event EventHandler OnServiceMetadataUpdated, OnActionsLoaded;
+        public event EventHandler OnServiceMetadataUpdated;
 
 
         public GameObject LinkableParameterInputPrefab, LinkableParameterDropdownPrefab, LinkableParameterDropdownPosesPrefab,
@@ -68,7 +67,6 @@ namespace Base
                     }
                 }
                 ActionsReady = true;
-                OnActionsLoaded?.Invoke(this, EventArgs.Empty);
                 enabled = false;
             }
         }
@@ -109,7 +107,6 @@ namespace Base
         {
             ActionsReady = false;
             enabled = true;
-            bool robotAdded = false;
             List<string> added = new List<string>();
             foreach (ObjectTypeMeta obj in args.ObjectTypes)
             {
@@ -126,8 +123,7 @@ namespace Base
                 m.Camera = IsDescendantOfType("Camera", m);
                 m.CollisionObject = IsDescendantOfType("VirtualCollisionObject", m);
                 actionObjectsMetadata.Add(obj.Type, m);
-                if (m.Robot)
-                    robotAdded = true;
+
                 added.Add(obj.Type);
             }
 

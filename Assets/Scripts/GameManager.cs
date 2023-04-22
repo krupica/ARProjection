@@ -620,7 +620,7 @@ namespace Base {
             if (Application.isEditor || Debug.isDebugBuild) {
                 //TrilleonAutomation.AutomationMaster.Initialize();
             }
-            ActionsManager.Instance.OnActionsLoaded += OnActionsLoaded;
+            //ActionsManager.Instance.OnActionsLoaded += OnActionsLoaded;
             WebsocketManager.Instance.OnConnectedEvent += OnConnected;
             WebsocketManager.Instance.OnDisconnectEvent += OnDisconnected;
             WebsocketManager.Instance.OnShowMainScreen += OnShowMainScreen;
@@ -755,7 +755,7 @@ namespace Base {
                     OnConnectedToServer?.Invoke(this, new StringEventArgs(WebsocketManager.Instance.APIDomainWS));
 
                     await UpdateActionObjects();
-                    await UpdateRobotsMeta();
+                    //await UpdateRobotsMeta();
 
                     //try {
                     //    await Task.Run(() => ActionsManager.Instance.WaitUntilActionsReady(15000));
@@ -856,9 +856,9 @@ namespace Base {
         /// Updates robot metadata from server
         /// </summary>
         /// <returns></returns>
-        private async Task UpdateRobotsMeta() {
-            ActionsManager.Instance.UpdateRobotsMetadata(await WebsocketManager.Instance.GetRobotMeta());
-        }
+        //private async Task UpdateRobotsMeta() {
+        //    ActionsManager.Instance.UpdateRobotsMetadata(await WebsocketManager.Instance.GetRobotMeta());
+        //}
 
       
         /// <summary>

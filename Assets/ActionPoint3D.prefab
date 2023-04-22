@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43017f7b3cfa02643a6097a5d1b773c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionsSpawn: {fileID: 0}
+  ActionsSpawn: {fileID: 1429862277040400757, guid: bddfe2aa04d290e43abecbd3885ab2b1, type: 3}
   ActionPoints: {fileID: 0}
   ConnectionToParent: {fileID: 0}
   orientations: {fileID: 0}
