@@ -59,7 +59,6 @@ namespace Base {
         /// project running screen.</param>
         /// <returns>True if scene successfully created, false otherwise</returns>
         public bool CreateScene(IO.Swagger.Model.Scene scene, CollisionModels customCollisionModels = null) {
-            Debug.Assert(ActionsManager.Instance.ActionsReady);
             UpdateActionObjects(scene, customCollisionModels);
             return true;
         }
@@ -81,6 +80,7 @@ namespace Base {
         /// </summary>
         private void Start() {
         }
+
         #region ACTION_OBJECTS
         /// <summary>
         /// Spawns new action object
@@ -117,15 +117,6 @@ namespace Base {
             actionObject.ActionObjectUpdate(sceneObject);
 
             return actionObject;
-        }
-
-        /// <summary>
-        /// Transform string to underscore case (e.g. CamelCase to camel_case)
-        /// </summary>
-        /// <param name="str">String to be transformed</param>
-        /// <returns>Underscored string</returns>
-        public static string ToUnderscoreCase(string str) {
-            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
         }
 
         /// <summary>
@@ -178,57 +169,6 @@ namespace Base {
         }
 
         /// <summary>
-        /// Gets next action object in dictionary. Allows to iterate through all action objects
-        /// </summary>
-        /// <param name="aoId">Current action object UUID</param>
-        /// <returns></returns>
-        public ActionObject GetNextActionObject(string aoId) {
-            List<string> keys = ActionObjects.Keys.ToList();
-            Debug.Assert(keys.Count > 0);
-            int index = keys.IndexOf(aoId);
-            string next;
-            if (index + 1 < ActionObjects.Keys.Count)
-                next = keys[index + 1];
-            else
-                next = keys[0];
-            if (!ActionObjects.TryGetValue(next, out ActionObject actionObject)) {
-                throw new ItemNotFoundException("This should never happen");
-            }
-            return actionObject;
-        }
-
-        /// <summary>
-        /// Gets previous action object in dictionary. Allows to iterate through all action objects
-        /// </summary>
-        /// <param name="aoId">Current action object UUID</param>
-        /// <returns></returns>
-        public ActionObject GetPreviousActionObject(string aoId) {
-            List<string> keys = ActionObjects.Keys.ToList();
-            Debug.Assert(keys.Count > 0);
-            int index = keys.IndexOf(aoId);
-            string previous;
-            if (index - 1 > -1)
-                previous = keys[index - 1];
-            else
-                previous = keys[keys.Count - 1];
-            if (!ActionObjects.TryGetValue(previous, out ActionObject actionObject)) {
-                throw new ItemNotFoundException("This should never happen");
-            }
-            return actionObject;
-        }
-
-        /// <summary>
-        /// Gets first action object in dictionary all null if empty
-        /// </summary>
-        /// <returns></returns>
-        public ActionObject GetFirstActionObject() {
-            if (ActionObjects.Count == 0) {
-                return null;
-            }
-            return ActionObjects.First().Value;
-        }
-
-        /// <summary>
         /// Destroys and removes references to all action objects in the scene.
         /// </summary>
         public void RemoveActionObjects() {
@@ -260,37 +200,6 @@ namespace Base {
             if (ActionObjects.TryGetValue(id, out Base.ActionObject actionObject))
                 return actionObject;
             throw new KeyNotFoundException("Action object not found");
-        }
-
-        /// <summary>
-        /// Tries to get action object based on its human readable name
-        /// </summary>
-        /// <param name="name">Human readable name</param>
-        /// <param name="actionObjectOut">Found action object</param>
-        /// <returns>True if object was found, false otherwise</returns>
-        public bool TryGetActionObjectByName(string name, out ActionObject actionObjectOut) {
-            foreach (ActionObject actionObject in ActionObjects.Values) {
-                if (actionObject.GetName() == name) {
-                    actionObjectOut = actionObject;
-                    return true;
-                }   
-            }
-            actionObjectOut = null;
-            return false;
-        }
-
-        /// <summary>
-        /// Checks if there is action object of given name
-        /// </summary>
-        /// <param name="name">Human readable name of actio point</param>
-        /// <returns>True if action object with given name exists, false otherwise</returns>
-        public bool ActionObjectsContainName(string name) {
-            foreach (ActionObject actionObject in ActionObjects.Values) {
-                if (actionObject.Data.Name == name) {
-                    return true;
-                }
-            }
-            return false;
         }
 
         public List<ActionObject> GetAllObjectsOfType(string type) {

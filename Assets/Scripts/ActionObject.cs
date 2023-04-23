@@ -65,32 +65,6 @@ namespace Base {
             transform.localPosition = GetScenePosition();
             transform.localRotation = GetSceneOrientation();
         }
-
-        public virtual bool SceneInteractable() {
-            return (GameManager.Instance.GetGameState() == GameManager.GameStateEnum.SceneEditor);
-        }
-
-        public bool TryGetParameter(string id, out IO.Swagger.Model.Parameter parameter) {
-            foreach (IO.Swagger.Model.Parameter p in Data.Parameters) {
-                if (p.Name == id) {
-                    parameter = p;
-                    return true;
-                }
-            }
-            parameter = null;
-            return false;
-        }
-                
-        public bool TryGetParameterMetadata(string id, out IO.Swagger.Model.ParameterMeta parameterMeta) {
-            foreach (IO.Swagger.Model.ParameterMeta p in ActionObjectMetadata.Settings) {
-                if (p.Name == id) {
-                    parameterMeta = p;
-                    return true;
-                }
-            }
-            parameterMeta = null;
-            return false;
-        }
                 
         public abstract Vector3 GetScenePosition();
 
@@ -103,7 +77,6 @@ namespace Base {
         public string GetProviderName() {
             return Data.Name;
         }
-
 
         public ActionMetadata GetActionMetadata(string action_id) {
             if (ActionObjectMetadata.ActionsLoaded) {

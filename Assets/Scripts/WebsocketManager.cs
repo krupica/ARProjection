@@ -344,7 +344,7 @@ namespace Base {
                         HandleActionStateAfter(data);
                         break;
                     case "PackageState":
-                        HandlePackageState(data);
+                        //HandlePackageState(data);
                         break;
                     case "PackageInfo":
                         HandlePackageInfo(data);
@@ -573,61 +573,10 @@ namespace Base {
         }
 
         private void HandleStateBefore(string obj) {
-            //string puck_id;
-            
-            //try {
-
-            //    IO.Swagger.Model.ActionStateBefore actionStateBefore = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionStateBefore>(obj);
-            //    if (!string.IsNullOrEmpty(actionStateBefore.Data.ActionId)) {
-            //        puck_id = actionStateBefore.Data.ActionId;
-
-            //        if (!ProjectManager.Instance.Valid)
-            //        {
-            //            Debug.LogWarning("Project not yet loaded, ignoring current action");
-            //            GameManager.Instance.ActionRunningOnStartupId = puck_id;
-            //            return;
-            //        }
-            //        Stop previously running action(change its color to default)
-            //        if (ActionsManager.Instance.CurrentlyRunningAction != null)
-            //            ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-
-            //        Action puck = ProjectManager.Instance.GetAction(puck_id);
-            //        ActionsManager.Instance.CurrentlyRunningAction = puck;
-            //        Run current action(set its color to running)
-            //        puck.RunAction();
-            //    }
-            //    else
-            //    {
-            //        if (ActionsManager.Instance.CurrentlyRunningAction != null)
-            //            ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-            //        ActionsManager.Instance.CurrentlyRunningAction = null;
-            //    }
-
-            //} catch (NullReferenceException e) {
-            //    Debug.Log("Parse error in HandleCurrentAction()");
-            //    return;
-            //} catch (ItemNotFoundException e) {
-            //    Debug.LogError(e);
-            //}
             
         }
 
         private void HandleActionStateAfter(string obj) {
-            //string puck_id;
-            //if (!ProjectManager.Instance.Valid) {
-            //    return;
-            //}
-            //try {
-
-            //    IO.Swagger.Model.ActionStateAfter actionStateBefore = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionStateAfter>(obj);
-            //    //if (ActionsManager.Instance.CurrentlyRunningAction != null)
-            //    //        ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-            //    //    ActionsManager.Instance.CurrentlyRunningAction = null;
-                
-            //} catch (NullReferenceException e) {
-            //    Debug.Log("Parse error in HandleCurrentAction()");
-            //    return;
-            //}
         }
 
 
@@ -636,11 +585,6 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleActionResult(string data) {
-            //if (!ProjectManager.Instance.Valid) {
-            //    return;
-            //}
-            //IO.Swagger.Model.ActionResult actionResult = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionResult>(data);
-            //GameManager.Instance.HandleActionResult(actionResult.Data);
         }
 
         public bool IsWebsocketNull() {
@@ -652,7 +596,7 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleActionCanceled(string data) {
-            GameManager.Instance.HandleActionCanceled();
+
         }
 
         /// <summary>
@@ -660,8 +604,6 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleActionExecution(string data) {
-            //IO.Swagger.Model.ActionExecution actionExecution = JsonConvert.DeserializeObject<IO.Swagger.Model.ActionExecution>(data);
-            //GameManager.Instance.HandleActionExecution(actionExecution.Data.ActionId);
         }
 
         /// <summary>
@@ -674,21 +616,12 @@ namespace Base {
         }
 
         /// <summary>
-        /// Decodes package state
-        /// </summary>
-        /// <param name="obj"></param>
-        private void HandlePackageState(string obj) {
-            IO.Swagger.Model.PackageState projectState = JsonConvert.DeserializeObject<IO.Swagger.Model.PackageState>(obj);
-            GameManager.Instance.PackageStateUpdated(projectState.Data);
-        }
-
-        /// <summary>
         /// Decodes package info
         /// </summary>
         /// <param name="obj">Message from server</param>
         private void HandlePackageInfo(string obj) {
             IO.Swagger.Model.PackageInfo packageInfo = JsonConvert.DeserializeObject<IO.Swagger.Model.PackageInfo>(obj);
-            GameManager.Instance.PackageInfo = packageInfo.Data;
+            //GameManager.Instance.PackageInfo = packageInfo.Data;
         }
 
         /// <summary>

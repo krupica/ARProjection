@@ -20,31 +20,6 @@ namespace Base {
         #region fields
 
         /// <summary>
-        /// Advanced mode of editor
-        /// </summary>
-        public bool ExpertMode = true;
-
-        /// <summary>
-        /// Called when project was saved
-        /// </summary>
-        public event EventHandler OnSaveProject;
-        /// <summary>
-        /// Called when package is running. Contains id and name of package 
-        /// </summary>
-        public event AREditorEventArgs.ProjectMetaEventHandler OnRunPackage;
-        /// <summary>
-        /// Called when package is stopped
-        /// </summary>
-        public event EventHandler OnStopPackage;
-        /// <summary>
-        /// Called when package is paused. Contains id and name of package 
-        /// </summary>
-        public event AREditorEventArgs.ProjectMetaEventHandler OnPausePackage;
-        /// <summary>
-        /// Called when package is resumed. Contains id and name of package
-        /// </summary>
-        public event AREditorEventArgs.ProjectMetaEventHandler OnResumePackage;
-        /// <summary>
         /// Called when project is closed
         /// </summary>
         public event EventHandler OnCloseProject;
@@ -52,18 +27,6 @@ namespace Base {
         /// Called when scene is closed
         /// </summary>
         public event EventHandler OnCloseScene;
-        /// <summary>
-        /// Called when list of projects is changed (new project, removed project, renamed project)
-        /// </summary>
-        public event EventHandler OnProjectsListChanged;
-        /// <summary>
-        /// Called when list of packages is changed (new package, removed package, renamed package)
-        /// </summary>
-        public event EventHandler OnPackagesListChanged;
-        /// <summary>
-        /// Called when list of scenes is changed (new, removed, renamed)
-        /// </summary>
-        public event EventHandler OnScenesListChanged;
         /// <summary>
         /// Called when editor connected to server. Contains server URI
         /// </summary>
@@ -268,12 +231,6 @@ namespace Base {
         /// Callback to be invoked when requested object is selected and potentionally validated
         /// </summary>
         private Action<object> ObjectCallback;
-        /// <summary>
-        /// Callback to be invoked when requested object is selected
-        /// </summary>
-        private Func<object, Task<RequestResult>> ObjectValidationCallback;
-
-        private bool openPackageRunningScreenFlag = false;
 
         #endregion
 
@@ -284,8 +241,6 @@ namespace Base {
         public enum ConnectionStatusEnum {
             Connected, Disconnected, Connecting
         }
-
-        private bool updatingPackageState;
 
         /// <summary>
         /// Enum specifying aplication states
@@ -404,26 +359,12 @@ namespace Base {
                     ProjectOpened(scene, project);
                 }
                 // request for delayed openning of package to allow loading of action objects and their actions
-            } else if (openPackage) {
-                openPackage = false;
-                updatingPackageState = true;
-                UpdatePackageState(newPackageState);
-            }
-            if (nextPackageState != null && !updatingPackageState && (GameManager.Instance.GetGameState() == GameStateEnum.PackageRunning || GameManager.Instance.GetGameState() == GameStateEnum.LoadingPackage || GameManager.Instance.GetGameState() == GameStateEnum.ClosingPackage)) {
-                updatingPackageState = true;
-                UpdatePackageState(nextPackageState);
-                nextPackageState = null;
-            }
+            } 
             // request for delayed openning of main screen to allow loading of action objects and their actions
             if (openMainScreenRequest && ActionsManager.Instance.ActionsReady) {
                 openMainScreenRequest = false;
                 //await OpenMainScreen(openMainScreenData.What, openMainScreenData.Highlight);
             }
-            if (openPackageRunningScreenFlag && GetGameState() != GameStateEnum.PackageRunning) {
-                openPackageRunningScreenFlag = false;
-                OpenPackageRunningScreen();
-            }
-
         }
 
         /// <summary>
@@ -615,8 +556,6 @@ namespace Base {
         /// </summary>
         private void Start() {
             SetDefaultFramerate();
-            updatingPackageState = false;
-            nextPackageState = null;
             if (Application.isEditor || Debug.isDebugBuild) {
                 //TrilleonAutomation.AutomationMaster.Initialize();
             }
@@ -744,26 +683,11 @@ namespace Base {
                         DisconnectFromSever();
                         return;
                     }
-
                     SystemInfo = systemInfo;
-                    //ServerVersion.text = "Editor version: " + Application.version +
-                    //    "\nServer version: " + systemInfo.Version;
-                    //ConnectionInfo.text = WebsocketManager.Instance.APIDomainWS;
-                    //MainMenu.Instance.gameObject.SetActive(false);
-
 
                     OnConnectedToServer?.Invoke(this, new StringEventArgs(WebsocketManager.Instance.APIDomainWS));
 
                     await UpdateActionObjects();
-                    //await UpdateRobotsMeta();
-
-                    //try {
-                    //    await Task.Run(() => ActionsManager.Instance.WaitUntilActionsReady(15000));
-                    //} catch (TimeoutException e) {
-                    //    Notifications.Instance.ShowNotification("Connection failed", "Some actions were not loaded within timeout");
-                    //    DisconnectFromSever();
-                    //    return;
-                    //}
 
                     connectionStatus = newState;
                     break;
@@ -780,31 +704,6 @@ namespace Base {
                     break;
             }
         }
-
-        /// <summary>
-        /// Shows loading screen
-        /// </summary>
-        /// <param name="text">Optional text for user</param>
-        /// <param name="forceToHide">Sets if //HideLoadingScreen needs to be run with force flag to
-        /// hide loading screen. Used to avoid flickering when several actions with own loading
-        /// screen management are chained.</param>
-        //public void //ShowLoadingScreen(string text = "Loading...", bool forceToHide = false) {
-        //    Debug.Assert(LoadingScreen != null);
-        //    // HACK to make loading screen in foreground
-        //    // TODO - find better way
-        //    headUpCanvas.enabled = false;
-        //    headUpCanvas.enabled = true;
-        //    LoadingScreen.Show(text, forceToHide);
-        //}
-
-        /// <summary>
-        /// Hides loading screen
-        /// </summary>
-        /// <param name="force">Specify if hiding has to be forced. More details in //ShowLoadingScreen</param>
-        //public void //HideLoadingScreen(bool force = false) {
-        //    Debug.Assert(LoadingScreen != null);
-        //    LoadingScreen.Hide(force);
-        //}
 
         /// <summary>
         /// Connects to server
@@ -850,15 +749,6 @@ namespace Base {
             }
             
         }
-
-        /// <summary>
-        /// Updates robot metadata from server
-        /// </summary>
-        /// <returns></returns>
-        //private async Task UpdateRobotsMeta() {
-        //    ActionsManager.Instance.UpdateRobotsMetadata(await WebsocketManager.Instance.GetRobotMeta());
-        //}
-
       
         /// <summary>
         /// When package runs failed with exception, show notification to the user
@@ -867,62 +757,6 @@ namespace Base {
         internal void HandleProjectException(ProjectExceptionData data) {
             Notifications.Instance.ShowNotification("Project exception", data.Message);
         }
-
-        /// <summary>
-        /// Display result of called action to the user
-        /// </summary>
-        /// <param name="data"></param>
-        internal void HandleActionResult(ActionResultData data) {
-            //if (data.Error != null)
-            //    Notifications.Instance.ShowNotification("Action execution failed", data.Error);
-            //else {
-            //    string res = "";
-            //    if (data.Results != null && data.Results.Count > 0) {
-            //        res = "Result: " + data.Results[0];
-            //    }
-            //    Notifications.Instance.ShowNotification("Action execution finished sucessfully", res);
-            //}
-            //ExecutingAction = null;
-            //OnActionExecutionFinished?.Invoke(this, EventArgs.Empty);
-            //// Stop previously running action (change its color to default)
-            //if (ActionsManager.Instance.CurrentlyRunningAction != null)
-            //    ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-        }
-
-        /// <summary>
-        /// Inform the user that action execution was canceled
-        /// </summary>
-        internal void HandleActionCanceled() {
-            //try {
-            //    Action action = ProjectManager.Instance.GetAction(ExecutingAction);                
-            //    Notifications.Instance.ShowNotification("Action execution canceled", "Action " + action.Data.Name + " was cancelled");
-            //} catch (ItemNotFoundException ex) {
-            //    Notifications.Instance.ShowNotification("Action execution canceled", "Unknown action was cancelled");
-            //} finally {
-            //    ExecutingAction = null;
-            //    OnActionExecutionCanceled?.Invoke(this, EventArgs.Empty);
-                
-            //    // Stop previously running action (change its color to default)
-            //    if (ActionsManager.Instance.CurrentlyRunningAction != null)
-            //        ActionsManager.Instance.CurrentlyRunningAction.StopAction();
-            //}
-        }
-
-        /// <summary>
-        /// Highlights currently executed action and invoke coresponding event
-        /// </summary>
-        /// <param name="actionId"></param>
-        //internal void HandleActionExecution(string actionId) {
-        //    ExecutingAction = actionId;
-        //    OnActionExecution?.Invoke(this, new StringEventArgs(ExecutingAction));
-        //    Action puck = ProjectManager.Instance.GetAction(actionId);
-        //    if (puck == null)
-        //        return;
-
-        //    ActionsManager.Instance.CurrentlyRunningAction = puck;
-        //    // Run current action (set its color to running)
-        //    puck.RunAction();
-        //}
 
         /// <summary>
         /// Create visual elements of opened scene and open scene editor
@@ -991,112 +825,6 @@ namespace Base {
         }
 
         /// <summary>
-        /// Callback called when state of currently executed package change
-        /// </summary>
-        /// <param name="state">New state:
-        /// - running - the package is runnnig
-        /// - paused - the package was paused
-        /// - stopped - the package was stopped</param>
-        public void PackageStateUpdated(IO.Swagger.Model.PackageStateData state) {
-            if (!updatingPackageState) {
-                nextPackageState = null;
-                updatingPackageState = true;
-                UpdatePackageState(state);
-            }
-            else
-                nextPackageState = state;
-        }
-
-        public async void UpdatePackageState(IO.Swagger.Model.PackageStateData state) {
-
-            //if (state.State == PackageStateData.StateEnum.Running ||
-            //    state.State == PackageStateData.StateEnum.Paused) {
-            //    if (!ActionsManager.Instance.ActionsReady || PackageInfo == null) {
-            //        newPackageState = state;
-            //        openPackage = true;
-            //        return;
-            //    }
-            //    Debug.LogError(state);
-            //    if (!ProjectManager.Instance.Valid) {
-            //        try {
-            //            SetGameState(GameStateEnum.LoadingPackage);
-            //            WaitUntilPackageReady(5000);
-            //            if (PackageInfo == null) {
-            //                updatingPackageState = false;
-            //                return;
-            //            }
-            //            if (!SceneManager.Instance.CreateScene(PackageInfo.Scene, PackageInfo.CollisionModels)) {
-            //                Notifications.Instance.SaveLogs(PackageInfo.Scene, PackageInfo.Project, "Failed to initialize scene");
-            //                updatingPackageState = false;
-            //                return;
-            //            }
-            //            if (PackageInfo == null) {
-            //                updatingPackageState = false;
-            //                return;
-            //            }
-            //            if (!await ProjectManager.Instance.CreateProject(PackageInfo.Project, false)) {
-            //                Notifications.Instance.SaveLogs(PackageInfo.Scene, PackageInfo.Project, "Failed to initialize project");
-            //            }
-            //            if (PackageInfo == null) {
-            //                updatingPackageState = false;
-            //                return;
-            //            }
-            //            Debug.LogError("done");
-            //            openPackageRunningScreenFlag = true;
-            //            if (state.State == PackageStateData.StateEnum.Paused) {
-            //                OnPausePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-            //            } else {
-            //                OnResumePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-            //            }
-            //            //if (!string.IsNullOrEmpty(ActionRunningOnStartupId)) {
-            //            //    try {
-            //            //        Action action = ProjectManager.Instance.GetAction(ActionRunningOnStartupId);
-            //            //        ActionsManager.Instance.CurrentlyRunningAction = action;
-            //            //        action.RunAction();
-            //            //    } catch (ItemNotFoundException) {
-
-            //            //    } finally {
-            //            //        ActionRunningOnStartupId = null;
-            //            //    }
-
-            //            //}
-            //        } catch (TimeoutException ex) {
-            //            Debug.LogError(ex);
-            //            Notifications.Instance.SaveLogs(null, null, "Failed to initialize project");
-            //        } finally {
-            //            updatingPackageState = false;
-            //        }
-            //    } else if (state.State == PackageStateData.StateEnum.Paused) {
-            //        OnPausePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-            //        //HideLoadingScreen();
-            //        updatingPackageState = false;
-            //    } else if (state.State == PackageStateData.StateEnum.Running) {
-            //        OnResumePackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-            //        //HideLoadingScreen();
-            //        updatingPackageState = false;
-            //    }
-
-
-            //} else if (state.State == PackageStateData.StateEnum.Stopping) {
-
-            //    updatingPackageState = false;
-            //} else if (state.State == PackageStateData.StateEnum.Stopped) {
-            //    SetGameState(GameStateEnum.ClosingPackage);
-            //    PackageInfo = null;
-            //    //ShowLoadingScreen("Stopping package...");
-            //    ProjectManager.Instance.DestroyProject();
-            //    SceneManager.Instance.DestroyScene();
-            //    updatingPackageState = false;
-            //    OnStopPackage?.Invoke(this, new EventArgs());
-            //    updatingPackageState = false;
-            //    SetGameState(GameStateEnum.None);
-            //    Debug.LogError("stopped");
-            //}
-
-            //updatingPackageState = false;
-        }
-
-        /// <summary>
         /// Callback when scene was closed
         /// </summary>
         internal void SceneClosed() {
@@ -1145,68 +873,6 @@ namespace Base {
             throw new RequestFailedException("No project with name: " + name);
         }
 
-        public void InvokeScenesListChanged() {
-            OnScenesListChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void InvokeProjectsListChanged() {
-            OnProjectsListChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void InvokePackagesListChanged() {
-            OnPackagesListChanged?.Invoke(this, EventArgs.Empty);
-        }
-             
-        /// <summary>
-        /// Gets package by ID
-        /// </summary>
-        /// <param name="id">Id of package</param>
-        /// <returns>Package with corresponding ID</returns>
-        public PackageSummary GetPackage(string id) {
-            foreach (PackageSummary package in Packages) {
-                if (id == package.Id)
-                    return package;
-            }
-            throw new ItemNotFoundException("Package does not exist");
-        }
-
-        /// <summary>
-        /// Asks server to save scene
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IO.Swagger.Model.SaveSceneResponse> SaveScene() {
-            //ShowLoadingScreen("Saving scene...");
-            IO.Swagger.Model.SaveSceneResponse response = await WebsocketManager.Instance.SaveScene();
-            //HideLoadingScreen();
-            return response;
-        }
-
-        /// <summary>
-        /// Asks server to save project
-        /// </summary>
-        /// <returns></returns>
-        public void SaveProject() {
-            //ShowLoadingScreen("Saving project...");
-            WebsocketManager.Instance.SaveProject(false, SaveProjectCallback);
-        }
-
-        /// <summary>
-        /// Callback triggered when save project is done
-        /// </summary>
-        /// <param name="_"></param>
-        /// <param name="response"></param>
-        public void SaveProjectCallback(string _, string response) {
-            SaveProjectResponse saveProjectResponse = JsonConvert.DeserializeObject<SaveProjectResponse>(response);
-            //HideLoadingScreen();
-            if (saveProjectResponse.Result) {
-                OnSaveProject?.Invoke(this, EventArgs.Empty);
-            } else {
-                saveProjectResponse.Messages.ForEach(Debug.LogError);
-                Base.Notifications.Instance.ShowNotification("Failed to save project", (saveProjectResponse.Messages.Count > 0 ? saveProjectResponse.Messages[0] : ""));
-                return;
-            }
-        }
-            
         /// <summary>
         /// Will quit the app
         /// </summary>
@@ -1314,36 +980,6 @@ namespace Base {
         }
 
         /// <summary>
-        /// Opens package running screen
-        /// </summary>
-        public async void OpenPackageRunningScreen() {
-            openPackageRunningScreenFlag = false;
-            try {
-                //MainMenu.Instance.Close();
-                SetGameState(GameStateEnum.PackageRunning);
-                SetEditorState(EditorStateEnum.InteractionDisabled);
-                //EditorHelper.EnableCanvasGroup(MainMenuBtnCG, true);
-#if (UNITY_ANDROID || UNITY_IOS) && AR_ON
-                ARSession.enabled = true;
-                if (CalibrationManager.Instance.Calibrated) {
-                    Scene.SetActive(true);
-                }
-#else
-                //Scene.SetActive(true);
-#endif
-
-                if (PackageInfo == null)
-                    return;
-                OnRunPackage?.Invoke(this, new ProjectMetaEventArgs(PackageInfo.PackageId, PackageInfo.PackageName));
-            } catch (TimeoutException ex) {
-                Debug.LogError(ex);
-                Notifications.Instance.ShowNotification("Failed to open package run screen", "Package info did not arrived");
-            } finally {
-                //HideLoadingScreen(true);
-            }
-        }
-
-        /// <summary>
         /// Waits until package is loaded
         /// </summary>
         /// <param name="timeout">TimeoutException is thrown after timeout ms when package is not loaded</param>
@@ -1393,53 +1029,53 @@ namespace Base {
         }
     }
 
-    /// <summary>
-    /// Universal struct for getting result of requests. 
-    /// </summary>
-    public struct RequestResult {
-        /// <summary>
-        /// Whether the request was successfull or not
-        /// </summary>
-        public bool Success;
-        /// <summary>
-        /// Empty when success is true, otherwise contains error description
-        /// </summary>
-        public string Message;
+    ///// <summary>
+    ///// Universal struct for getting result of requests. 
+    ///// </summary>
+    //public struct RequestResult {
+    //    /// <summary>
+    //    /// Whether the request was successfull or not
+    //    /// </summary>
+    //    public bool Success;
+    //    /// <summary>
+    //    /// Empty when success is true, otherwise contains error description
+    //    /// </summary>
+    //    public string Message;
 
-        public RequestResult(bool success, string message) {
-            this.Success = success;
-            this.Message = message;
-        }
+    //    public RequestResult(bool success, string message) {
+    //        this.Success = success;
+    //        this.Message = message;
+    //    }
 
-        public RequestResult(bool success) {
-            this.Success = success;
-            this.Message = "";
-        }
+    //    public RequestResult(bool success) {
+    //        this.Success = success;
+    //        this.Message = "";
+    //    }
 
-        public override bool Equals(object obj) {
-            return obj is RequestResult other &&
-                   Success == other.Success &&
-                   Message == other.Message;
-        }
+    //    public override bool Equals(object obj) {
+    //        return obj is RequestResult other &&
+    //               Success == other.Success &&
+    //               Message == other.Message;
+    //    }
 
-        public override int GetHashCode() {
-            int hashCode = 151515764;
-            hashCode = hashCode * -1521134295 + Success.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Message);
-            return hashCode;
-        }
+    //    public override int GetHashCode() {
+    //        int hashCode = 151515764;
+    //        hashCode = hashCode * -1521134295 + Success.GetHashCode();
+    //        hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Message);
+    //        return hashCode;
+    //    }
 
-        public void Deconstruct(out bool success, out string message) {
-            success = Success;
-            message = Message;
-        }
+    //    public void Deconstruct(out bool success, out string message) {
+    //        success = Success;
+    //        message = Message;
+    //    }
 
-        public static implicit operator (bool success, string message)(RequestResult value) {
-            return (value.Success, value.Message);
-        }
+    //    public static implicit operator (bool success, string message)(RequestResult value) {
+    //        return (value.Success, value.Message);
+    //    }
 
-        public static implicit operator RequestResult((bool success, string message) value) {
-            return new RequestResult(value.success, value.message);
-        }
-    }
+    //    public static implicit operator RequestResult((bool success, string message) value) {
+    //        return new RequestResult(value.success, value.message);
+    //    }
+    //}
 }
