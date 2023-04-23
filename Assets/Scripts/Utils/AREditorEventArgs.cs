@@ -45,15 +45,15 @@ namespace Base {
         }
     }
 
-    public class EditorStateEventArgs : EventArgs {
-        public GameManager.EditorStateEnum Data {
-            get; set;
-        }
+    //public class EditorStateEventArgs : EventArgs {
+    //    public GameManager.EditorStateEnum Data {
+    //        get; set;
+    //    }
 
-        public EditorStateEventArgs(GameManager.EditorStateEnum data) {
-            Data = data;
-        }
-    }
+    //    public EditorStateEventArgs(GameManager.EditorStateEnum data) {
+    //        Data = data;
+    //    }
+    //}
 
     public class ProjectMetaEventArgs : EventArgs {
         public string Name {
@@ -450,7 +450,7 @@ namespace Base {
         public delegate void StringListEventHandler(object sender, StringListEventArgs args);
         public delegate void FloatEventHandler(object sender, FloatEventArgs args);
         public delegate void GameStateEventHandler(object sender, GameStateEventArgs args);
-        public delegate void EditorStateEventHandler(object sender, EditorStateEventArgs args);
+        //public delegate void EditorStateEventHandler(object sender, EditorStateEventArgs args);
         public delegate void ProjectMetaEventHandler(object sender, ProjectMetaEventArgs args);
         public delegate void BareProjectEventHandler(object sender, BareProjectEventArgs args);
         public delegate void BareSceneEventHandler(object sender, BareSceneEventArgs args);
