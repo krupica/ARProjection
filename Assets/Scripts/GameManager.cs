@@ -13,43 +13,6 @@ namespace Base
     /// </summary>
     public class GameManager : Singleton<GameManager> {
         #region fields
-
-        /// <summary>
-        /// Called when project is closed
-        /// </summary>
-        public event EventHandler OnCloseProject;
-        /// <summary>
-        /// Called when scene is closed
-        /// </summary>
-        public event EventHandler OnCloseScene;
-        /// <summary>
-        /// Called when editor connected to server. Contains server URI
-        /// </summary>
-        public event AREditorEventArgs.StringEventHandler OnConnectedToServer;
-        /// <summary>
-        /// Called when editor is trying to connect to server. Contains server URI
-        /// </summary>
-        public event AREditorEventArgs.StringEventHandler OnConnectingToServer;
-        /// <summary>
-        /// Called when disconected from server
-        /// </summary>
-        public event EventHandler OnDisconnectedFromServer;
-        /// <summary>
-        /// Called when some element of scene changed (action object)
-        /// </summary>
-        public event EventHandler OnSceneChanged;
-        /// <summary>
-        /// Called when some action object changed
-        /// </summary>
-        public event EventHandler OnActionObjectsChanged;
-        /// <summary>
-        /// Invoked when game state changed. Contains new state
-        /// </summary>
-        public event AREditorEventArgs.GameStateEventHandler OnGameStateChanged;
-        /// <summary>
-        /// Holds current application state (opened screen)
-        /// </summary>
-        private GameStateEnum gameState;
         /// <summary>
         /// Temp storage for delayed project
         /// </summary>
@@ -75,46 +38,12 @@ namespace Base
         public enum ConnectionStatusEnum {
             Connected, Disconnected, Connecting
         }
-
-        /// <summary>
-        /// Enum specifying aplication states
-        /// </summary>
-        public enum GameStateEnum {
-            /// <summary>
-            /// Not connected to server
-            /// </summary>
-            Disconnected,
-            /// <summary>
-            /// Screen with list of scenes, projects and packages
-            /// </summary>
-            MainScreen,
-            /// <summary>
-            /// Scene editor
-            /// </summary>
-            SceneEditor,
-            /// <summary>
-            /// Project editor
-            /// </summary>
-            ProjectEditor,
-            /// <summary>
-            /// Visualisation of running package
-            /// </summary>
-            PackageRunning,
-            LoadingScene,
-            LoadingProject,
-            LoadingPackage,
-            ClosingScene,
-            ClosingProject,
-            ClosingPackage,
-            None
-        }
-
+       
         /// <summary>
         /// Holds info of connection status
         /// </summary>
         private ConnectionStatusEnum connectionStatus;
 
-        //NEMAZAT
         /// <summary>
         /// When connected to server, checks for requests for delayd scene, project, package or main screen openning
         /// </summary>
@@ -157,30 +86,6 @@ namespace Base
         }
 
         /// <summary>
-        /// Returns current game state
-        /// </summary>
-        /// <returns>Current game state</returns>
-        public GameStateEnum GetGameState() {
-            return gameState;
-        }
-
-        /// <summary>
-        /// Change game state and invoke coresponding event
-        /// </summary>
-        /// <param name="value">New game state</param>
-        public void SetGameState(GameStateEnum value) {
-            gameState = value;            
-            OnGameStateChanged?.Invoke(this, new GameStateEventArgs(gameState));            
-        }
-
-        /// <summary>
-        /// Sets framerate to default value (30fps)
-        /// </summary>
-        public void SetDefaultFramerate() {
-            Application.targetFrameRate = 30;
-        }
-
-        /// <summary>
         /// Sets initial state of app
         /// </summary>
         private void Awake() {
@@ -191,7 +96,6 @@ namespace Base
         /// Binds events and sets initial state of app
         /// </summary>
         private void Start() {
-            SetDefaultFramerate();
             WebsocketManager.Instance.OnConnectedEvent += OnConnected;
         }
 
@@ -201,8 +105,7 @@ namespace Base
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void OnConnected(object sender, EventArgs args) {
-            // initialize when connected to the server
-            ConnectionStatus = GameManager.ConnectionStatusEnum.Connected;
+            ConnectionStatus = ConnectionStatusEnum.Connected;
         }
 
         /// <summary>
@@ -213,27 +116,21 @@ namespace Base
         private async void OnConnectionStatusChanged(ConnectionStatusEnum newState) {
             switch (newState) {
                 case ConnectionStatusEnum.Connected:
-                    IO.Swagger.Model.SystemInfoResponseData systemInfo;
                     try {
-                        systemInfo = await WebsocketManager.Instance.GetSystemInfo();
                         await WebsocketManager.Instance.RegisterUser("ARProjection");
                     } catch (RequestFailedException ex) {
                         DisconnectFromSever();
                         Notifications.Instance.ShowNotification("Connection failed", ex.Message);
                         return;
                     }
-                    OnConnectedToServer?.Invoke(this, new StringEventArgs(WebsocketManager.Instance.APIDomainWS));
-
                     await UpdateActionObjects();
 
                     connectionStatus = newState;
                     break;
                 case ConnectionStatusEnum.Disconnected:
                     connectionStatus = ConnectionStatusEnum.Disconnected;
-                    OnDisconnectedFromServer?.Invoke(this, EventArgs.Empty);
                     ProjectManager.Instance.DestroyProject();
                     SceneManager.Instance.DestroyScene();
-                    //Scene.SetActive(false);
                     break;
             }
         }
@@ -243,9 +140,7 @@ namespace Base
         /// </summary>
         /// <param name="domain">hostname or IP address</param>
         /// <param name="port">Port of ARServer</param>
-        public async void ConnectToSever(string domain, int port) {
-            //ShowLoadingScreen("Connecting to server");
-            OnConnectingToServer?.Invoke(this, new StringEventArgs(WebsocketManager.Instance.GetWSURI(domain, port)));
+        public void ConnectToSever(string domain, int port) {
             WebsocketManager.Instance.ConnectToServer(domain, port);
         }
 
@@ -274,36 +169,23 @@ namespace Base
         }
       
         /// <summary>
-        /// When package runs failed with exception, show notification to the user
-        /// </summary>
-        /// <param name="data"></param>
-        internal void HandleProjectException(ProjectExceptionData data) {
-            Notifications.Instance.ShowNotification("Project exception", data.Message);
-        }
-
-        /// <summary>
         /// Create visual elements of opened scene and open scene editor
         /// </summary>
         /// <param name="scene">Scene desription from the server</param>
         /// <returns></returns>
         internal void SceneOpened(Scene scene) {
-            SetGameState(GameStateEnum.LoadingScene);
             if (!ActionsManager.Instance.ActionsReady) {
                 newScene = scene;
                 openScene = true;
                 return;
             }
             try {
-                if (SceneManager.Instance.CreateScene(scene)) {                    
-                    OpenSceneEditor();                    
-                } else {
+                if (!SceneManager.Instance.CreateScene(scene)) {
                     Notifications.Instance.SaveLogs(scene, null, "Failed to initialize scene");
-                    //HideLoadingScreen();
                 }
             } catch (TimeoutException ex) {
                 Debug.LogError(ex);
                 Notifications.Instance.SaveLogs(scene, null, "Failed to initialize scene");
-                //HideLoadingScreen();
             } 
         }
 
@@ -312,35 +194,25 @@ namespace Base
         /// </summary>
         /// <param name="project">Project desription from the server</param>
         /// <returns></returns>
-        internal async Task ProjectOpened(Scene scene, Project project) {
-            var state = GetGameState();
+        internal void ProjectOpened(Scene scene, Project project) {
             if (!ActionsManager.Instance.ActionsReady) {
                 newProject = project;
                 newScene = scene;
                 openProject = true;
                 return;
             }
-            if (GetGameState() == GameStateEnum.SceneEditor) {
-                SceneManager.Instance.DestroyScene();
-            }
-            SetGameState(GameStateEnum.LoadingProject);
             try {
                 if (!SceneManager.Instance.CreateScene(scene)) {
                     Notifications.Instance.SaveLogs(scene, project, "Failed to initialize scene");
-                    Debug.LogError("wft");
-                    //HideLoadingScreen();
                     return;
                 }
-                if (await ProjectManager.Instance.CreateProject(project, true)) {
-                    OpenProjectEditor();
-                } else {
+                if (!ProjectManager.Instance.CreateProject(project, true)) {
                     Notifications.Instance.SaveLogs(scene, project, "Failed to initialize project");
                     //HideLoadingScreen();
                 }
             } catch (TimeoutException ex) {
                 Debug.LogError(ex);
                 Notifications.Instance.SaveLogs(scene, project, "Failed to initialize project");
-                //HideLoadingScreen();
             }
         }
 
@@ -348,42 +220,15 @@ namespace Base
         /// Callback when scene was closed
         /// </summary>
         internal void SceneClosed() {
-            SetGameState(GameStateEnum.ClosingScene);
-            //ShowLoadingScreen();
             SceneManager.Instance.DestroyScene();
-            OnCloseScene?.Invoke(this, EventArgs.Empty);
-            SetGameState(GameStateEnum.None);
         }
 
         /// <summary>
         /// Callback when project was closed
         /// </summary>
         internal void ProjectClosed() {
-            SetGameState(GameStateEnum.ClosingProject);
-            //ShowLoadingScreen();
             ProjectManager.Instance.DestroyProject();
             SceneManager.Instance.DestroyScene();
-            OnCloseProject?.Invoke(this, EventArgs.Empty);
-            SetGameState(GameStateEnum.None);
-        }
-
-        /// <summary>
-        /// Will quit the app
-        /// </summary>
-        public void ExitApp() => Application.Quit();
-
-        /// <summary>
-        /// Opens scene editor
-        /// </summary>
-        public void OpenSceneEditor() {
-            SetGameState(GameStateEnum.SceneEditor);
-        }
-
-        /// <summary>
-        /// Opens project editor
-        /// </summary>
-        public void OpenProjectEditor() {
-            SetGameState(GameStateEnum.ProjectEditor);
         }
     }
 }

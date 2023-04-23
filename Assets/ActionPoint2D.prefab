@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 772932491770565628}
   - component: {fileID: 3982772431430932910}
   - component: {fileID: 7410794340704049508}
+  - component: {fileID: -2044805897192987124}
   m_Layer: 5
   m_Name: ActionPoint2D
   m_TagString: Untagged
@@ -59,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9528302, g: 0.17528482, b: 0.69367534, a: 1}
+  m_Color: {r: 0.7254902, g: 0.15686275, b: 0.85882354, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -76,3 +77,15 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &-2044805897192987124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8455981592208975781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5278cf159d66fd46b05cffae06e451a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

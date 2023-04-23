@@ -24,9 +24,13 @@ namespace Base {
         /// </summary>
         public Dictionary<string, ActionObject> ActionObjects = new Dictionary<string, ActionObject>();
         /// <summary>
-        /// Spawn point for new action objects. Typically scene origin.
+        /// Spawn point for new action objects (Canvas).
         /// </summary>
-        public GameObject ActionObjectsSpawn;
+        public GameObject CanvasScene;
+        /// <summary>
+        /// Spawn point for kinect and projector.
+        /// </summary>
+        public GameObject World;
         /// <summary>
         /// Prefab for Kinect
         /// </summary>        
@@ -43,12 +47,6 @@ namespace Base {
         /// Prefab for collision object
         /// </summary>
         public GameObject CollisionObjectPrefab;
-
-        /// <summary>
-        /// Defines if scene was started on server - e.g. if all robots and other action objects
-        /// are instantioned and are ready
-        /// </summary>
-        private bool sceneStarted = false;
 
         /// <summary>
         /// Creates scene from given json
@@ -95,18 +93,18 @@ namespace Base {
             }
             GameObject obj;
             if (aom.Robot) {
-                obj = Instantiate(RobotPrefab, ActionObjectsSpawn.transform);
+                obj = Instantiate(RobotPrefab, CanvasScene.transform);
             } else if (aom.CollisionObject) {
-                obj = Instantiate(CollisionObjectPrefab, ActionObjectsSpawn.transform);
+                obj = Instantiate(CollisionObjectPrefab, CanvasScene.transform);
             } else{
                 if (aom.Type == "KinectAzure")
                 {
-                    obj = Instantiate(KinectPrefab, ActionObjectsSpawn.transform);
+                    obj = Instantiate(KinectPrefab, World.transform);
                     ProjectionManager.Instance.SetupProjection(obj);
                 }
                 else
                 {
-                    obj = Instantiate(ActionObjectPrefab, ActionObjectsSpawn.transform);
+                    obj = Instantiate(ActionObjectPrefab, CanvasScene.transform);
                 }
             } 
             ActionObject actionObject = obj.GetComponent<ActionObject>();
@@ -197,7 +195,7 @@ namespace Base {
         /// <param name="id"></param>
         /// <returns></returns>
         public ActionObject GetActionObject(string id) {
-            if (ActionObjects.TryGetValue(id, out Base.ActionObject actionObject))
+            if (ActionObjects.TryGetValue(id, out ActionObject actionObject))
                 return actionObject;
             throw new KeyNotFoundException("Action object not found");
         }

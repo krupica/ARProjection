@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using IO.Swagger.Model;
 using UnityEngine;
+using ActionPoint = Assets.Scripts.ARClasses.ActionPoint;
 
 namespace Base {
 
@@ -35,15 +36,15 @@ namespace Base {
         }
     }
 
-    public class GameStateEventArgs : EventArgs {
-        public GameManager.GameStateEnum Data {
-            get; set;
-        }
+    //public class GameStateEventArgs : EventArgs {
+    //    public GameManager.GameStateEnum Data {
+    //        get; set;
+    //    }
 
-        public GameStateEventArgs(GameManager.GameStateEnum data) {
-            Data = data;
-        }
-    }
+    //    public GameStateEventArgs(GameManager.GameStateEnum data) {
+    //        Data = data;
+    //    }
+    //}
 
     //public class EditorStateEventArgs : EventArgs {
     //    public GameManager.EditorStateEnum Data {
@@ -449,7 +450,7 @@ namespace Base {
         public delegate void StringEventHandler(object sender, StringEventArgs args);
         public delegate void StringListEventHandler(object sender, StringListEventArgs args);
         public delegate void FloatEventHandler(object sender, FloatEventArgs args);
-        public delegate void GameStateEventHandler(object sender, GameStateEventArgs args);
+        //public delegate void GameStateEventHandler(object sender, GameStateEventArgs args);
         //public delegate void EditorStateEventHandler(object sender, EditorStateEventArgs args);
         public delegate void ProjectMetaEventHandler(object sender, ProjectMetaEventArgs args);
         public delegate void BareProjectEventHandler(object sender, BareProjectEventArgs args);

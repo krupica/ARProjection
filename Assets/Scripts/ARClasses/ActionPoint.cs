@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Assets.Scripts.ARClasses;
+using Base;
 
-namespace Base
+namespace Assets.Scripts.ARClasses
 {
     public class ActionPoint : MonoBehaviour {
         [System.NonSerialized]
@@ -14,7 +14,7 @@ namespace Base
             transform.localPosition = GetScenePosition();
         }
 
-        public virtual void InitAP(IO.Swagger.Model.ActionPoint apData, float size) {
+        public virtual void InitAP(IO.Swagger.Model.ActionPoint apData) {
             Debug.Assert(apData != null);
             Data = apData;
             transform.localPosition = GetScenePosition();
@@ -28,22 +28,19 @@ namespace Base
             Destroy(gameObject);
         }
 
+        public void ResetPosition()
+        {
+            transform.localPosition = GetScenePosition();
+        }
+
         public Vector3 GetScenePosition()
         {
             Vector3 newPos = ProjectionCoordConversion.ROSToUnityY0(DataHelper.PositionToVector3(Data.Position));
             if (ProjectionManager.Instance.kinect != null)
             {
-                GameObject projector = ProjectionManager.Instance.projector;
-                //Matrix4x4 kinectToWorld = kinect.transform.worldToLocalMatrix;
-                //Vector3 localPoint = kinectToWorld.MultiplyPoint(newPos);
-
-                //Vector3 Point2D = projector.GetComponent<Camera>().WorldToScreenPoint(newPos);
                 Vector2 Point2D = ProjectionCoordConversion.ManualWorldToScreenPoint(newPos);
-                GameObject go = Instantiate(ProjectionManager.Instance.actionPointPrefab, Point2D, Quaternion.identity, ProjectionManager.Instance.canvasScene.transform);
-
-                return newPos;
+                return Point2D;
             }
-
             return newPos;
         }
     }

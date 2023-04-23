@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6307510119187651307}
-  - component: {fileID: 5160324381482028341}
+  - component: {fileID: 5953626555755685907}
   m_Layer: 0
   m_Name: CollisionObject
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5160324381482028341
+--- !u!114 &5953626555755685907
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,9 +41,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 886395293713347599}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c8f853c557cee4478a6cab6843d10d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 470724dcfab94ae4d893491179d8c789, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Square: {fileID: 1429862277040400757, guid: bddfe2aa04d290e43abecbd3885ab2b1, type: 3}
-  Circle: {fileID: 6078801240473815496, guid: fa97684a02e87434f89f54e5ee8b5ff9, type: 3}
+  Square: {fileID: 2331139469154914799, guid: 0c47a397ca048fa45b0893eaf62822bb, type: 3}
+  Circle: {fileID: 2331139469154914799, guid: 155bfe73fc1d3e04a88f803768bd6888, type: 3}
   Model: {fileID: 0}

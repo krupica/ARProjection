@@ -7,6 +7,7 @@ using System;
 using IO.Swagger.Model;
 using System.Linq;
 using Assets.Scripts.ARClasses;
+using ActionPoint = Assets.Scripts.ARClasses.ActionPoint;
 
 namespace Base {
     /// <summary>
@@ -32,7 +33,7 @@ namespace Base {
         /// </summary>
         public float APSize = 0.2f;
         
-        public event AREditorEventArgs.ActionPointEventHandler OnActionPointAddedToScene;
+        //public event AREditorEventArgs.ActionPointEventHandler OnActionPointAddedToScene;
 
         #endregion
 
@@ -42,7 +43,6 @@ namespace Base {
         private void Start() {
             WebsocketManager.Instance.OnActionPointAdded += OnActionPointAdded;
             WebsocketManager.Instance.OnActionPointRemoved += OnActionPointRemoved;
-            WebsocketManager.Instance.OnActionPointUpdated += OnActionPointUpdated;
             WebsocketManager.Instance.OnActionPointBaseUpdated += OnActionPointBaseUpdated;
         }
 
@@ -61,18 +61,6 @@ namespace Base {
             RemoveActionPoint(args.Data);
         }
 
-        private void OnActionPointUpdated(object sender, ProjectActionPointEventArgs args) {
-            //try {
-            //    ActionPoint actionPoint = GetActionPoint(args.ActionPoint.Id);
-            //    actionPoint.UpdateActionPoint(args.ActionPoint);
-            //    // TODO - update orientations, joints etc.
-            //} catch (KeyNotFoundException ex) {
-            //    Debug.LogError("Action point " + args.ActionPoint.Id + " not found!");
-            //    Notifications.Instance.ShowNotification("", "Action point " + args.ActionPoint.Id + " not found!");
-            //    return;
-            //}
-        }
-
         private void OnActionPointAdded(object sender, ProjectActionPointEventArgs data) {
             SpawnActionPoint(data.ActionPoint);
         }
@@ -83,7 +71,7 @@ namespace Base {
         /// <param name="project">Project descriptoin in json</param>
         /// <param name="allowEdit">Sets if project is editable</param>
         /// <returns>True if project sucessfully created</returns>
-        public async Task<bool> CreateProject(IO.Swagger.Model.Project project, bool allowEdit) {
+        public bool CreateProject(IO.Swagger.Model.Project project, bool allowEdit) {
             foreach (SceneObjectOverride objectOverrides in project.ObjectOverrides) {
                 ActionObject actionObject = SceneManager.Instance.GetActionObject(objectOverrides.Id);
                 foreach (IO.Swagger.Model.Parameter p in objectOverrides.Parameters) {
@@ -114,14 +102,12 @@ namespace Base {
         /// <returns></returns>
         public ActionPoint SpawnActionPoint(IO.Swagger.Model.ActionPoint apData) {
             Debug.Assert(apData != null);
-            GameObject AP;                         
-            AP = Instantiate(ActionPointPrefab, ActionPointsOrigin.transform);
+            GameObject AP = Instantiate(ActionPointPrefab, ActionPointsOrigin.transform);
             
             AP.transform.localScale = new Vector3(1f, 1f, 1f);
             ActionPoint actionPoint = AP.GetComponent<ActionPoint>();
-            actionPoint.InitAP(apData, APSize);
+            actionPoint.InitAP(apData);
             ActionPoints.Add(actionPoint.Data.Id, actionPoint);
-            OnActionPointAddedToScene?.Invoke(this, new ActionPointEventArgs(actionPoint));
             return actionPoint;
         }
 

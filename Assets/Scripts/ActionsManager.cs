@@ -15,10 +15,7 @@ namespace Base
     {
         private Dictionary<string, ActionObjectMetadata> actionObjectsMetadata = new Dictionary<string, ActionObjectMetadata>();
 
-        public bool ActionsReady, ActionObjectsLoaded, AbstractOnlyObjects;
-
-        public Dictionary<string, RobotMeta> RobotsMeta = new Dictionary<string, RobotMeta>();
-
+        public bool ActionsReady, ActionObjectsLoaded;
 
         public Dictionary<string, ActionObjectMetadata> ActionObjectsMetadata
         {
@@ -63,81 +60,46 @@ namespace Base
         public void Init()
         {
             actionObjectsMetadata.Clear();
-            AbstractOnlyObjects = true;
             ActionsReady = false;
             ActionObjectsLoaded = false;
         }
 
         public void ObjectTypeRemoved(object sender, StringListEventArgs type)
         {
-            List<string> removed = new List<string>();
             foreach (string item in type.Data)
             {
                 if (actionObjectsMetadata.ContainsKey(item))
                 {
                     actionObjectsMetadata.Remove(item);
-                    removed.Add(item);
-                }
-            }
-            if (type.Data.Count > 0)
-            {
-                AbstractOnlyObjects = true;
-                foreach (ActionObjectMetadata obj in actionObjectsMetadata.Values)
-                {
-                    if (AbstractOnlyObjects && !obj.Abstract)
-                        AbstractOnlyObjects = false;
                 }
             }
         }
 
-        public async void ObjectTypeAdded(object sender, ObjectTypesEventArgs args)
+        public void ObjectTypeAdded(object sender, ObjectTypesEventArgs args)
         {
             ActionsReady = false;
             enabled = true;
-            List<string> added = new List<string>();
             foreach (ObjectTypeMeta obj in args.ObjectTypes)
             {
                 ActionObjectMetadata m = new ActionObjectMetadata(meta: obj);
-                if (AbstractOnlyObjects && !m.Abstract)
-                    AbstractOnlyObjects = false;
-                if (!m.Abstract && !m.BuiltIn)
-                {
-                    //UpdateActionsOfActionObject(m);
-                }
-                else
-                    m.ActionsLoaded = true;
+                m.ActionsLoaded = true;
                 m.Robot = IsDescendantOfType("Robot", m);
                 m.Camera = IsDescendantOfType("Camera", m);
                 m.CollisionObject = IsDescendantOfType("VirtualCollisionObject", m);
                 actionObjectsMetadata.Add(obj.Type, m);
-
-                added.Add(obj.Type);
             }
         }
 
-        public async void ObjectTypeUpdated(object sender, ObjectTypesEventArgs args)
+        public void ObjectTypeUpdated(object sender, ObjectTypesEventArgs args)
         {
             ActionsReady = false;
             enabled = true;
-            List<string> updated = new List<string>();
             foreach (ObjectTypeMeta obj in args.ObjectTypes)
             {
                 if (actionObjectsMetadata.TryGetValue(obj.Type, out ActionObjectMetadata actionObjectMetadata))
                 {
                     actionObjectMetadata.Update(obj);
-                    if (AbstractOnlyObjects && !actionObjectMetadata.Abstract)
-                        AbstractOnlyObjects = false;
-                    if (!actionObjectMetadata.Abstract && !actionObjectMetadata.BuiltIn)
-                    {
-                        //UpdateActionsOfActionObject(actionObjectMetadata);
-                    }
-                    else
-                        actionObjectMetadata.ActionsLoaded = true;
-                    updated.Add(obj.Type);
-                    foreach (ActionObject updatedObj in SceneManager.Instance.GetAllObjectsOfType(obj.Type))
-                    {
-                        updatedObj.UpdateModel();
-                    }
+                    actionObjectMetadata.ActionsLoaded = true;
                 }
                 else
                 {
@@ -153,14 +115,7 @@ namespace Base
             foreach (IO.Swagger.Model.ObjectTypeMeta metadata in newActionObjectsMetadata)
             {
                 ActionObjectMetadata m = new ActionObjectMetadata(meta: metadata);
-                if (AbstractOnlyObjects && !m.Abstract)
-                    AbstractOnlyObjects = false;
-                if (!m.Abstract && !m.BuiltIn)
-                {
-                    //UpdateActionsOfActionObject(m);
-                }
-                else
-                    m.ActionsLoaded = true;
+                m.ActionsLoaded = true;
                 actionObjectsMetadata.Add(metadata.Type, m);
             }
             foreach (KeyValuePair<string, ActionObjectMetadata> kv in actionObjectsMetadata)
@@ -170,7 +125,6 @@ namespace Base
                 kv.Value.CollisionObject = IsDescendantOfType("VirtualCollisionObject", kv.Value);
             }
             enabled = true;
-
             ActionObjectsLoaded = true;
         }
 

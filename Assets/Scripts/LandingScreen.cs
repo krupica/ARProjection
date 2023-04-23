@@ -11,7 +11,6 @@ public class LandingScreen : Base.Singleton<LandingScreen>
     public Button ConnectToServerBtn;
 
     private void Start() {
-        bool keepConnected = PlayerPrefs.GetInt("arserver_keep_connected", 0) == 1 ? true : false;
         Domain.text = PlayerPrefs.GetString("arserver_domain", "");
         Port.text = PlayerPrefs.GetInt("arserver_port", 6789).ToString();
         ConnectToServerBtn.onClick.AddListener(() => ConnectToServer(true));

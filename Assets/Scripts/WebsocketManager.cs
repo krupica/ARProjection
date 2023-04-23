@@ -377,7 +377,7 @@ namespace Base {
                         HandleOpenScene(data);
                         break;
                     case "OpenProject":
-                        await HandleOpenProject(data);
+                        HandleOpenProject(data);
                         break;
                     case "SceneClosed":
                         HandleCloseScene(data);
@@ -611,8 +611,8 @@ namespace Base {
         /// </summary>
         /// <param name="data">Message from server</param>
         private void HandleProjectException(string data) {
-            IO.Swagger.Model.ProjectException projectException = JsonConvert.DeserializeObject<IO.Swagger.Model.ProjectException>(data);
-            GameManager.Instance.HandleProjectException(projectException.Data);
+            //IO.Swagger.Model.ProjectException projectException = JsonConvert.DeserializeObject<IO.Swagger.Model.ProjectException>(data);
+            //GameManager.Instance.HandleProjectException(projectException.Data);
         }
 
         /// <summary>
@@ -855,9 +855,9 @@ namespace Base {
         /// Invoked when openning of project is requested
         /// </summary>
         /// <param name="data">Message from server</param>
-        private async Task HandleOpenProject(string data) {
+        private void HandleOpenProject(string data) {
             IO.Swagger.Model.OpenProject openProjectEvent = JsonConvert.DeserializeObject<IO.Swagger.Model.OpenProject>(data);
-            await GameManager.Instance.ProjectOpened(openProjectEvent.Data.Scene, openProjectEvent.Data.Project);
+            GameManager.Instance.ProjectOpened(openProjectEvent.Data.Scene, openProjectEvent.Data.Project);
         }
 
         /// <summary>

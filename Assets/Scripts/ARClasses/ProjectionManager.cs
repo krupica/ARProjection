@@ -47,9 +47,18 @@ namespace Assets.Scripts.ARClasses
             }
             kinect = kinectObj;
 
-            projector = Instantiate(ProjectorPrefab, SceneManager.Instance.ActionObjectsSpawn.transform);
+            projector = Instantiate(ProjectorPrefab, SceneManager.Instance.World.transform);
             UpdateProjectorTransform();
             projector.name = "Projector";
+
+            foreach (var ao in SceneManager.Instance.ActionObjects)
+            {
+                ao.Value.ResetPosition();
+            }
+            foreach (var ap in ProjectManager.Instance.ActionPoints)
+            {
+                ap.Value.ResetPosition();
+            }
         }
 
         public void UpdateProjectorTransform()
