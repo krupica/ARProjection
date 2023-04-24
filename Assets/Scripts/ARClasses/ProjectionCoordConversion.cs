@@ -10,10 +10,14 @@ namespace Assets.Scripts.ARClasses
             return new Vector3(-position.y, 0, position.x);
         }
 
-        public static Quaternion ROSToUnityCanvas(Quaternion rotation)
+        public static Quaternion ROSToCanvas(Quaternion rotation)
         {
-            var test = new Quaternion(rotation.y, -rotation.x, -rotation.z, rotation.w);
+            var test = new Quaternion(rotation.y, -rotation.x, rotation.z, rotation.w);
             return test;
+        }
+        public static Vector3 ROSToCanvasScale(Vector3 scale)
+        {
+            return new Vector3(scale.y, scale.x, scale.z);
         }
 
         // inspirováno https://answers.unity.com/questions/1014337/calculation-behind-cameraworldtoscreenpoint.html

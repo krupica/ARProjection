@@ -6,6 +6,7 @@ using IO.Swagger.Model;
 using System.Threading.Tasks;
 using System.Collections;
 using Newtonsoft.Json;
+using Assets.Scripts.ARClasses;
 //using UnityEngine.XR.ARSubsystems;
 
 namespace Base
@@ -100,6 +101,10 @@ namespace Base
                 {
                     actionObjectMetadata.Update(obj);
                     actionObjectMetadata.ActionsLoaded = true;
+                    foreach (ActionObject updatedObj in SceneManager.Instance.GetAllObjectsOfType(obj.Type))
+                    {
+                        updatedObj.UpdateModel();
+                    }
                 }
                 else
                 {

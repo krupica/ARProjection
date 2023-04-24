@@ -39,6 +39,18 @@ namespace Assets.Scripts.ARClasses
             }
         }
 
+        public void ResetAllPositions()
+        {
+            foreach (var ao in SceneManager.Instance.ActionObjects)
+            {
+                ao.Value.ResetPosition();
+            }
+            foreach (var ap in ProjectManager.Instance.ActionPoints)
+            {
+                ap.Value.ResetPosition();
+            }
+        }
+
         public void SetupProjection(GameObject kinectObj)
         {
             if (mainCamera)
@@ -51,14 +63,7 @@ namespace Assets.Scripts.ARClasses
             UpdateProjectorTransform();
             projector.name = "Projector";
 
-            foreach (var ao in SceneManager.Instance.ActionObjects)
-            {
-                ao.Value.ResetPosition();
-            }
-            foreach (var ap in ProjectManager.Instance.ActionPoints)
-            {
-                ap.Value.ResetPosition();
-            }
+            ResetAllPositions();
         }
 
         public void UpdateProjectorTransform()
@@ -67,6 +72,7 @@ namespace Assets.Scripts.ARClasses
             Matrix4x4 rotation = calibrationData.Rotation.inverse;
             Quaternion rotationQuaternion = Quaternion.LookRotation(rotation.GetColumn(2), rotation.GetColumn(1));
             projector.transform.rotation = kinect.transform.rotation * rotationQuaternion;
+            ResetAllPositions();
         }
 
         public void DestroyProjection()

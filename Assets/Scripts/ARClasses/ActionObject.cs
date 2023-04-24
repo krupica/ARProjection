@@ -28,13 +28,35 @@ namespace Assets.Scripts.ARClasses
 
         }
 
+        public void UpdateModel()
+        {
+            if (ActionObjectMetadata.ObjectModel == null)
+                return;
+            Vector3? dimensions = null;
+            switch (ActionObjectMetadata.ObjectModel.Type)
+            {
+                case ObjectModel.TypeEnum.Box:
+                    dimensions = ProjectionCoordConversion.ROSToCanvasScale(new Vector3((float)ActionObjectMetadata.ObjectModel.Box.SizeX, (float)ActionObjectMetadata.ObjectModel.Box.SizeY, (float)ActionObjectMetadata.ObjectModel.Box.SizeZ));
+                    break;
+                case ObjectModel.TypeEnum.Sphere:
+                    dimensions = ProjectionCoordConversion.ROSToCanvasScale(new Vector3((float)ActionObjectMetadata.ObjectModel.Sphere.Radius, (float)ActionObjectMetadata.ObjectModel.Sphere.Radius, (float)ActionObjectMetadata.ObjectModel.Sphere.Radius));
+                    break;
+                case ObjectModel.TypeEnum.Cylinder:
+                    dimensions = ProjectionCoordConversion.ROSToCanvasScale(new Vector3((float)ActionObjectMetadata.ObjectModel.Cylinder.Radius, (float)ActionObjectMetadata.ObjectModel.Cylinder.Radius, (float)ActionObjectMetadata.ObjectModel.Cylinder.Height));
+                    break;
+
+            }
+            if (dimensions != null)
+                Model.transform.localScale = new Vector3(dimensions.Value.x, dimensions.Value.y, dimensions.Value.z);
+        }
+
         public virtual void CreateModel()
         {
             switch (ActionObjectMetadata.ObjectModel.Type)
             {
                 case IO.Swagger.Model.ObjectModel.TypeEnum.Box:
                     Model = Instantiate(Square, transform);
-                    Model.transform.localScale = TransformConvertor.ROSToUnityScale(new Vector3((float)ActionObjectMetadata.ObjectModel.Box.SizeX, (float)ActionObjectMetadata.ObjectModel.Box.SizeY, (float)ActionObjectMetadata.ObjectModel.Box.SizeZ));
+                    Model.transform.localScale = ProjectionCoordConversion.ROSToCanvasScale(new Vector3((float)ActionObjectMetadata.ObjectModel.Box.SizeX, (float)ActionObjectMetadata.ObjectModel.Box.SizeY, (float)ActionObjectMetadata.ObjectModel.Box.SizeZ));
                     break;
 
                 case IO.Swagger.Model.ObjectModel.TypeEnum.Cylinder:
@@ -81,7 +103,8 @@ namespace Assets.Scripts.ARClasses
 
         public virtual Quaternion GetSceneOrientation()
         {
-            return ProjectionCoordConversion.ROSToUnityCanvas(DataHelper.OrientationToQuaternion(Data.Pose.Orientation));
+            var x = Data.Name;
+            return ProjectionCoordConversion.ROSToCanvas(DataHelper.OrientationToQuaternion(Data.Pose.Orientation));
         }
 
         public virtual void SetSceneOrientation(Quaternion orientation)
