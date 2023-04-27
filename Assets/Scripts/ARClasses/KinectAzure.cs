@@ -24,6 +24,25 @@ public class KinectAzure : ActionObject
 
     }
 
+    public override void DeleteActionObject()
+    {
+        RemoveActionPoints();
+        // Remove this ActionObject reference from the scene ActionObject list
+        SceneManager.Instance.ActionObjects.Remove(Data.Id);
+        Destroy(gameObject);
+        ProjectionManager.Instance.DestroyProjection();
+    }
+
+    public override Quaternion GetSceneOrientation()
+    {
+        return TransformConvertor.ROSToUnity(DataHelper.OrientationToQuaternion(Data.Pose.Orientation));
+    }
+
+    public override void SetSceneOrientation(Quaternion orientation)
+    {
+        Data.Pose.Orientation = DataHelper.QuaternionToOrientation(TransformConvertor.UnityToROS(orientation));
+    }
+
     public override void CreateModel()
     {
         

@@ -52,6 +52,12 @@ namespace Assets.Scripts.ARClasses
 
         public virtual void CreateModel()
         {
+            if (ActionObjectMetadata.ObjectModel==null)
+            {
+                Model = Instantiate(Square, transform);
+                Model.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+                return;
+            }
             switch (ActionObjectMetadata.ObjectModel.Type)
             {
                 case IO.Swagger.Model.ObjectModel.TypeEnum.Box:
@@ -103,7 +109,6 @@ namespace Assets.Scripts.ARClasses
 
         public virtual Quaternion GetSceneOrientation()
         {
-            var x = Data.Name;
             return ProjectionCoordConversion.ROSToCanvas(DataHelper.OrientationToQuaternion(Data.Pose.Orientation));
         }
 
