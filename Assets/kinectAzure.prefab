@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &886395293713347599
+--- !u!1 &3732759439335168376
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6307510119187651307}
-  - component: {fileID: 5953626555755685907}
+  - component: {fileID: 6596004945600519475}
+  - component: {fileID: 2846017797798167508}
   m_Layer: 0
-  m_Name: CollisionObject
+  m_Name: kinectAzure
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6307510119187651307
+--- !u!4 &6596004945600519475
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 886395293713347599}
+  m_GameObject: {fileID: 3732759439335168376}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,19 +32,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5953626555755685907
+--- !u!114 &2846017797798167508
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 886395293713347599}
+  m_GameObject: {fileID: 3732759439335168376}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 470724dcfab94ae4d893491179d8c789, type: 3}
+  m_Script: {fileID: 11500000, guid: 98fa2b217c60a7d4aabcacdee648cbf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Square: {fileID: 2331139469154914799, guid: 0c47a397ca048fa45b0893eaf62822bb, type: 3}
-  Circle: {fileID: 2331139469154914799, guid: 155bfe73fc1d3e04a88f803768bd6888, type: 3}
+  Square: {fileID: 1429862277040400757, guid: bddfe2aa04d290e43abecbd3885ab2b1, type: 3}
+  Circle: {fileID: 6078801240473815496, guid: fa97684a02e87434f89f54e5ee8b5ff9, type: 3}
   Model: {fileID: 0}
-  test: {fileID: 6980277799461888240, guid: 87cbf9fdd871ab041aed456574890aa7, type: 3}

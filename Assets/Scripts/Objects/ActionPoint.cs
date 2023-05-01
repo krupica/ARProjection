@@ -9,7 +9,6 @@ namespace Assets.Scripts.ARClasses
         public IO.Swagger.Model.ActionPoint Data = new IO.Swagger.Model.ActionPoint(id: "", robotJoints: new List<IO.Swagger.Model.ProjectRobotJoints>(), orientations: new List<IO.Swagger.Model.NamedOrientation>(), position: new IO.Swagger.Model.Position(), actions: new List<IO.Swagger.Model.Action>(), name: "");
         
         public virtual void ActionPointBaseUpdate(IO.Swagger.Model.BareActionPoint apData) {
-            Data.Name = apData.Name;
             Data.Position = apData.Position;
             transform.localPosition = GetScenePosition();
         }

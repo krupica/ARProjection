@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using IO.Swagger.Model;
 using Base;
+using UnityEngine.UI;
+using System;
 
 namespace Assets.Scripts.ARClasses
 {
@@ -9,6 +11,10 @@ namespace Assets.Scripts.ARClasses
 
         public IO.Swagger.Model.SceneObject Data = new IO.Swagger.Model.SceneObject(id: "", name: "", pose: DataHelper.CreatePose(new Vector3(), new Quaternion()), type: "");
         public ActionObjectMetadata ActionObjectMetadata;
+
+        public Color ActionObjectColor;
+        public Color CollisionObjectColor;
+        public Color RobotColor;
 
         [SerializeField]
         public GameObject Square, Circle;
@@ -23,9 +29,8 @@ namespace Assets.Scripts.ARClasses
                 SetScenePosition(position);
                 SetSceneOrientation(orientation);
             }
-            CreateModel();
+            CreateModel();            
             enabled = true;
-
         }
 
         public void UpdateModel()
@@ -56,6 +61,7 @@ namespace Assets.Scripts.ARClasses
             {
                 Model = Instantiate(Square, transform);
                 Model.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+                UpdateColor();
                 return;
             }
             switch (ActionObjectMetadata.ObjectModel.Type)
@@ -78,6 +84,27 @@ namespace Assets.Scripts.ARClasses
                     Model = Instantiate(Square, transform);
                     Model.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
                     break;
+            }
+            UpdateColor();
+        }
+
+        public virtual void UpdateColor()
+        {
+            var image = Model.GetComponent<Image>();
+            if (ActionObjectMetadata.CollisionObject)
+            {
+                image.color = CollisionObjectColor;
+            }
+            else
+            {
+                if (ActionObjectMetadata.Robot)
+                {
+                    image.color = RobotColor;
+                }
+                else
+                {
+                    image.color = ActionObjectColor;
+                }
             }
         }
 

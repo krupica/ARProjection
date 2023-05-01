@@ -7,10 +7,10 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using NativeWebSocket;
 using IO.Swagger.Model;
-using UnityEditor;
 using UnityEngine.Events;
 
-namespace Base {
+namespace Base
+{
     public class WebsocketManager : Singleton<WebsocketManager> {
         /// <summary>
         /// ARServer URI
@@ -155,7 +155,6 @@ namespace Base {
         public async void ConnectToServer(string domain, int port) {
             Debug.Log("connectToServer called");
 
-            //CalibrationData calib = new CalibrationData("calibration_result.xml");
             GameManager.Instance.ConnectionStatus = GameManager.ConnectionStatusEnum.Connecting;
             try {
                 APIDomainWS = GetWSURI(domain.Trim(), port);
@@ -172,7 +171,6 @@ namespace Base {
                 Debug.LogError(ex);
                 Notifications.Instance.ShowNotification("Failed to parse domain", ex.Message);
                 GameManager.Instance.ConnectionStatus = GameManager.ConnectionStatusEnum.Disconnected;
-                //GameManager.Instance.HideLoadingScreen(true);
             }
         }
 
@@ -669,7 +667,6 @@ namespace Base {
                 case IO.Swagger.Model.ChangedObjectTypes.ChangeTypeEnum.Add:
                     //ActionsManager.Instance.ActionsReady = false;
                     OnObjectTypeAdded?.Invoke(this, new ObjectTypesEventArgs(objectTypesChangedEvent.Data));
-
                     break;
                 case IO.Swagger.Model.ChangedObjectTypes.ChangeTypeEnum.Remove:
                     List<string> removed = new List<string>();

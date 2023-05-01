@@ -33,8 +33,6 @@ namespace Base {
         /// </summary>
         public float APSize = 0.2f;
         
-        //public event AREditorEventArgs.ActionPointEventHandler OnActionPointAddedToScene;
-
         #endregion
 
         /// <summary>
@@ -72,11 +70,6 @@ namespace Base {
         /// <param name="allowEdit">Sets if project is editable</param>
         /// <returns>True if project sucessfully created</returns>
         public bool CreateProject(IO.Swagger.Model.Project project, bool allowEdit) {
-            foreach (SceneObjectOverride objectOverrides in project.ObjectOverrides) {
-                ActionObject actionObject = SceneManager.Instance.GetActionObject(objectOverrides.Id);
-                foreach (IO.Swagger.Model.Parameter p in objectOverrides.Parameters) {
-                }
-            }
             UpdateActionPoints(project);
             return true;
         }

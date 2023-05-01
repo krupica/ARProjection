@@ -29,6 +29,8 @@ namespace Base
         /// Indicates that scene should be opened with delay (waiting for action objects)
         /// </summary>
         private bool openScene = false;
+        
+        public GameObject canvasControl;
 
         #endregion
 
@@ -124,6 +126,7 @@ namespace Base
                         return;
                     }
                     await UpdateActionObjects();
+                    canvasControl.SetActive(false);
 
                     connectionStatus = newState;
                     break;
@@ -131,6 +134,7 @@ namespace Base
                     connectionStatus = ConnectionStatusEnum.Disconnected;
                     ProjectManager.Instance.DestroyProject();
                     SceneManager.Instance.DestroyScene();
+                    canvasControl.SetActive(true);
                     break;
             }
         }

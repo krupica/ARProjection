@@ -1,12 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using Base;
-using IO.Swagger.Model;
-using System;
-using System.Threading.Tasks;
-using static UnityEngine.GraphicsBuffer;
 using Assets.Scripts.ARClasses;
 
 public class KinectAzure : ActionObject
@@ -36,11 +29,6 @@ public class KinectAzure : ActionObject
     public override Quaternion GetSceneOrientation()
     {
         return TransformConvertor.ROSToUnity(DataHelper.OrientationToQuaternion(Data.Pose.Orientation));
-    }
-
-    public override void SetSceneOrientation(Quaternion orientation)
-    {
-        Data.Pose.Orientation = DataHelper.QuaternionToOrientation(TransformConvertor.UnityToROS(orientation));
     }
 
     public override void CreateModel()

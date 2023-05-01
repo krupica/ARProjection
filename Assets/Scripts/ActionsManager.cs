@@ -1,13 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using System;
-using UnityEngine;
 using IO.Swagger.Model;
-using System.Threading.Tasks;
-using System.Collections;
-using Newtonsoft.Json;
 using Assets.Scripts.ARClasses;
-//using UnityEngine.XR.ARSubsystems;
 
 namespace Base
 {

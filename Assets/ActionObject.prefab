@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8233323312096764643}
   - component: {fileID: 3182468905128027890}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ActionObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 470724dcfab94ae4d893491179d8c789, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActionObjectColor: {r: 0.7647059, g: 0.21568628, b: 0.105882354, a: 1}
+  CollisionObjectColor: {r: 0.7647059, g: 0.5019608, b: 0.105882354, a: 1}
+  RobotColor: {r: 0.14179295, g: 0.6415094, b: 0.08170167, a: 1}
   Square: {fileID: 2331139469154914799, guid: 0c47a397ca048fa45b0893eaf62822bb, type: 3}
   Circle: {fileID: 2331139469154914799, guid: 155bfe73fc1d3e04a88f803768bd6888, type: 3}
   Model: {fileID: 0}
-  test: {fileID: 6980277799461888240, guid: 87cbf9fdd871ab041aed456574890aa7, type: 3}

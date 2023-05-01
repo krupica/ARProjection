@@ -1,20 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Assets.Scripts.ARClasses;
 using IO.Swagger.Model;
 using UnityEngine;
-using UnityEngine.Networking;
-//using WebSocketSharp;
-using static Base.GameManager;
 
-namespace Base {
-   
+namespace Base
+{
     /// <summary>
     /// Takes care of currently opened scene
     /// </summary>
@@ -36,17 +28,9 @@ namespace Base {
         /// </summary>        
         public GameObject KinectPrefab;
         /// <summary>
-        /// Prefab for robot action object
-        /// </summary>        
-        public GameObject RobotPrefab;
-        /// <summary>
         /// Prefab for action object
         /// </summary>
         public GameObject ActionObjectPrefab;
-        /// <summary>
-        /// Prefab for collision object
-        /// </summary>
-        public GameObject CollisionObjectPrefab;
 
         /// <summary>
         /// Creates scene from given json
@@ -73,12 +57,6 @@ namespace Base {
             return true;
         }
 
-        /// <summary>
-        /// Initialization of scene manager
-        /// </summary>
-        private void Start() {
-        }
-
         #region ACTION_OBJECTS
         /// <summary>
         /// Spawns new action object
@@ -92,21 +70,16 @@ namespace Base {
                 return null;
             }
             GameObject obj;
-            if (aom.Robot) {
-                obj = Instantiate(RobotPrefab, CanvasScene.transform);
-            } else if (aom.CollisionObject) {
-                obj = Instantiate(CollisionObjectPrefab, CanvasScene.transform);
-            } else{
-                if (aom.Type == "KinectAzure")
-                {
-                    obj = Instantiate(KinectPrefab, World.transform);
-                    ProjectionManager.Instance.SetupProjection(obj);
-                }
-                else
-                {
-                    obj = Instantiate(ActionObjectPrefab, CanvasScene.transform);
-                }
-            } 
+            if (aom.Type == "KinectAzure")
+            {
+                obj = Instantiate(KinectPrefab, World.transform);
+                ProjectionManager.Instance.SetupProjection(obj);
+            }
+            else
+            {
+                obj = Instantiate(ActionObjectPrefab, CanvasScene.transform);
+            }
+
             ActionObject actionObject = obj.GetComponent<ActionObject>();
             actionObject.InitActionObject(sceneObject, obj.transform.localPosition, obj.transform.localRotation, aom, customCollisionModels);
 

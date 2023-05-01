@@ -1,74 +1,57 @@
-﻿using Base;
-using IO.Swagger.Model;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Assets.Scripts.ARClasses
 {
     public class CalibrationData
     {
-        public float CamFx
-        {
-            get { return CamMatrix[0,0]; }
-            set { CamMatrix[0,0] = value;}
-        }
-
-        public float CamFy
-        {
-            get { return CamMatrix[1,1]; }
-            set { CamMatrix[1,1] = value;}
-        }
-
-        public float CamCx
-        {
-            get { return CamMatrix[0,2]; }
-            set { CamMatrix[0,2] = value; }
-        }
-
-        public float CamCy
-        {
-            get { return CamMatrix[1,2]; }
-            set { CamMatrix[1,2] = value;}            
-        }
-
-        public Matrix4x4 CamMatrix;
-
-        //TODO nastavit šířku projektoru podle kalibračních dat
         public int Width
         {
             get { return imgShape[0]; }
-            set { imgShape[0] = value;}
         }
 
         public int Height
         {
             get { return imgShape[1]; }
-            set { imgShape[1] = value;}
         }
-        public Matrix4x4 Extrinsic
+
+        public float K1
         {
-            get { return extrinsic; }
-            set { extrinsic = value;}
+            get { return ProjDist[0]; }
+        }
+
+        public float K2
+        {
+            get { return ProjDist[1]; }
+        }
+
+        public float K3
+        {
+            get { return ProjDist[4]; }
+        }
+
+        public float P1
+        {
+            get { return ProjDist[2]; }
+        }
+
+        public float P2
+        {
+            get { return ProjDist[3]; }
         }
 
         public Matrix4x4 Rotation { get; set; }
 
         public Vector3 Translation { get; private set; }
 
-        public IEnumerable<decimal> CamDist {  get; private set; }
+        //k1,k2,p1,p2,k3
+        public List<float> ProjDist {  get; private set; }
 
         public Matrix4x4 ProjInt { get; private set; }
 
         private int[] imgShape;
-        private Matrix4x4 extrinsic;
-        
 
         public CalibrationData (string xmlPath)
         {
@@ -80,12 +63,15 @@ namespace Assets.Scripts.ARClasses
             XmlNode translationNode = rootNode.SelectSingleNode("translation");
             XmlNode imgShapeNode = rootNode.SelectSingleNode("img_shape");
             XmlNode projIntNode = rootNode.SelectSingleNode("proj_int");
+            XmlNode proj_dist = rootNode.SelectSingleNode("proj_dist");
+            
 
             float[] imgShapeData = ReadMatrixData(imgShapeNode.InnerText);
             float[] rotationData = ReadMatrixData(rotationNode.InnerText);
             float[] translationData = ReadMatrixData(translationNode.InnerText);
             float[] projIntData = ReadMatrixData(projIntNode.InnerText);
-
+            float[] proj_distData = ReadMatrixData(proj_dist.InnerText);
+            
             imgShape = new int[] { (int)imgShapeData[1], (int)imgShapeData[0] };
 
             ProjInt = new Matrix4x4(
@@ -110,45 +96,10 @@ namespace Assets.Scripts.ARClasses
             );
             Translation = Translation * 0.001f;
 
-
-            extrinsic = Matrix4x4.identity;
-            extrinsic.SetRow(0, new Vector4(Rotation[0, 0], Rotation[0, 1], Rotation[0, 2], Translation[0]));
-            extrinsic.SetRow(1, new Vector4(Rotation[1, 0], Rotation[1, 1], Rotation[1, 2], Translation[1]));
-            extrinsic.SetRow(2, new Vector4(Rotation[2, 0], Rotation[2, 1], Rotation[2, 2], Translation[2]));
-        }
-
-        public void SetCamCalibFromParams(CameraParameters camParams)
-        {
-            //File.WriteAllText("KinectCamData.json", camParams.ToJson());
-            CamMatrix = Matrix4x4.identity;
-            CamCx = (float)camParams.Cx;
-            CamCy = (float)camParams.Cy;
-            CamFx = (float)camParams.Fx;
-            CamFy = (float)camParams.Fy;
-            CamDist = camParams.DistCoefs;
-        }
-
-        public async Task GetCameraParameters(string kinectId)
-        {
-            try
+            ProjDist = new List<float>(proj_distData);
+            for( int i = 0; i < proj_distData.Length; i++)
             {
-                await WebsocketManager.Instance.WriteLock(kinectId, false);
-            }
-            catch(RequestFailedException e)
-            {
-                await WebsocketManager.Instance.WriteUnlock(kinectId);
-                await WebsocketManager.Instance.WriteLock(kinectId, false);
-            }
-
-            try
-            {
-                CameraParameters camParams = await WebsocketManager.Instance.GetCameraColorParameters(kinectId);
-                SetCamCalibFromParams(camParams);
-                await WebsocketManager.Instance.WriteUnlock(kinectId);
-            }
-            catch (RequestFailedException e)
-            {
-                await WebsocketManager.Instance.WriteUnlock(kinectId);
+                ProjDist[i] *= 0.001f;
             }
         }
 
@@ -156,7 +107,7 @@ namespace Assets.Scripts.ARClasses
         {
             int count = 0;
             string[] values = matrixData.Split(' ', '\n', System.StringSplitOptions.RemoveEmptyEntries);
-            float[] matrix = new float[values.Length];
+            float[] matrix = new float[values.Length-1];
             for (int i = 0; i < values.Length; i++)
             {
                 //převzato z https://stackoverflow.com/questions/64639/convert-from-scientific-notation-string-to-float-in-c-sharp

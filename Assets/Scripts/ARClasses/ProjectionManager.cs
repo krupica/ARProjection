@@ -16,14 +16,11 @@ namespace Assets.Scripts.ARClasses
         /// Calibration
         /// </summary>
         public CalibrationData calibrationData;
-        public string calibXmlPath = "calibration_result.xml";
+        private string calibXmlPath = "Calibration\\calibration_result.xml";
+
         public GameObject kinect;
         public GameObject projector;
-        public GameObject canvas;
-        public GameObject canvasScene;
-        public GameObject actionPointPrefab;
         public Camera mainCamera;
-
 
         /// <summary>
         /// Prefab for Projector
@@ -60,18 +57,25 @@ namespace Assets.Scripts.ARClasses
             kinect = kinectObj;
 
             projector = Instantiate(ProjectorPrefab, SceneManager.Instance.World.transform);
-            UpdateProjectorTransform();
+            //UpdateProjectorTransform();
             projector.name = "Projector";
-
-            ResetAllPositions();
+            SceneManager.Instance.CanvasScene.SetActive(true);
         }
 
+        /// <summary>
+        /// Nastaveni pozice projektoru z kalibracnich dat.
+        /// </summary>
         public void UpdateProjectorTransform()
         {
+            //pricteni posunu k aktualni pozici kinectu
             projector.transform.position = kinect.transform.position + calibrationData.Translation;
+            //rotacni matice
             Matrix4x4 rotation = calibrationData.Rotation.inverse;
+            //prevod matice na Quaternion
             Quaternion rotationQuaternion = Quaternion.LookRotation(rotation.GetColumn(2), rotation.GetColumn(1));
+            //aplikovani rotace na rotaci kinectu
             projector.transform.rotation = kinect.transform.rotation * rotationQuaternion;
+            //prepocitani pozice vsech objektu
             ResetAllPositions();
         }
 
@@ -85,10 +89,7 @@ namespace Assets.Scripts.ARClasses
             {
                 Destroy(projector);
             }
-            foreach (Transform child in canvasScene.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            SceneManager.Instance.CanvasScene.SetActive(false);
         }
     }
 }
