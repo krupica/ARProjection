@@ -24,15 +24,18 @@ namespace Assets.Scripts.ARClasses
         public static Vector2 ManualWorldToScreenPoint(Vector3 wp)
         {
             //vnitrni parametry projektoru
-            Matrix4x4 projIntrinsic = ProjectionManager.Instance.calibrationData.ProjInt;
+            CalibrationData calibData = ProjectionManager.Instance.calibrationData;
+            Matrix4x4 projIntrinsic = calibData.ProjInt;
+            GameObject projector = ProjectionManager.Instance.projector;
             Camera cam = ProjectionManager.Instance.projector.GetComponent<Camera>();
-            Matrix4x4 mat;
             //prevod do souradnicoveho systemu projektoru
-            Matrix4x4 worldToCam = cam.worldToCameraMatrix;
-            mat = projIntrinsic * worldToCam;
-            
+            Matrix4x4 worldToCam = projector.transform.worldToLocalMatrix;
+
+            Vector4 localPoint = worldToCam * new Vector4(wp.x, wp.y, wp.z, 1f);
+            localPoint.y = -localPoint.y;
+
             // vynasobeni bodu matici
-            Vector4 temp = mat * new Vector4(wp.x, wp.y, wp.z, 1f);
+            Vector4 temp = projIntrinsic * localPoint;
 
             if (temp.w == 0f)
             {
@@ -42,12 +45,11 @@ namespace Assets.Scripts.ARClasses
             else
             {
                 // prevede souradnice z clip space na souradnice platna
-                temp.x = (temp.x / temp.w + 1f) * .5f * cam.pixelWidth - cam.pixelWidth/2;
-                temp.y = (temp.y / temp.w + 1f) * .5f * cam.pixelHeight - cam.pixelHeight/2;
+                temp.x = (temp.x / temp.w + 1f) * .5f * calibData.Width - calibData.Width / 2;
+                temp.y = (temp.y / temp.w + 1f) * .5f * -calibData.Width + calibData.Width;
                 return new Vector2(temp.x, temp.y);
             }
         }
-
         public static Vector2 RemoveDistortion(Vector2 inputPoint)
         {
             CalibrationData calibData = ProjectionManager.Instance.calibrationData;

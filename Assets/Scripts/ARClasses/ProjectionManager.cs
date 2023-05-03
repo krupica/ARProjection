@@ -67,14 +67,15 @@ namespace Assets.Scripts.ARClasses
         /// </summary>
         public void UpdateProjectorTransform()
         {
+            GameObject actualKinect = kinect.transform.GetChild(0).gameObject;
             //pricteni posunu k aktualni pozici kinectu
-            projector.transform.position = kinect.transform.position + calibrationData.Translation;
+            projector.transform.position = actualKinect.transform.position + calibrationData.Translation;
             //rotacni matice
             Matrix4x4 rotation = calibrationData.Rotation.inverse;
             //prevod matice na Quaternion
             Quaternion rotationQuaternion = Quaternion.LookRotation(rotation.GetColumn(2), rotation.GetColumn(1));
             //aplikovani rotace na rotaci kinectu
-            projector.transform.rotation = kinect.transform.rotation * rotationQuaternion;
+            projector.transform.rotation = actualKinect.transform.rotation * rotationQuaternion;
             //prepocitani pozice vsech objektu
             ResetAllPositions();
         }

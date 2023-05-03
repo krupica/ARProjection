@@ -70,6 +70,10 @@ namespace Base
                 return null;
             }
             GameObject obj;
+            if (!aom.HasPose)
+            {
+                return null;
+            }
             if (aom.Type == "KinectAzure")
             {
                 obj = Instantiate(KinectPrefab, World.transform);

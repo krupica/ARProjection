@@ -114,12 +114,20 @@ namespace Assets.Scripts.ARClasses
         }
 
         public void ResetPosition() {
-            transform.localPosition = GetScenePosition();
-            transform.localRotation = GetSceneOrientation();
+            if(ActionObjectMetadata.HasPose)
+            {
+                transform.localPosition = GetScenePosition();
+                transform.localRotation = GetSceneOrientation();
+            }
         }
 
         public virtual Vector3 GetScenePosition()
         {
+            if (!ActionObjectMetadata.HasPose)
+            {
+                return Vector3.zero;
+            }
+
             Vector3 newPos = ProjectionCoordConversion.ROSToUnityY0(DataHelper.PositionToVector3(Data.Pose.Position));
             if (ProjectionManager.Instance.kinect != null)
             {
