@@ -46,7 +46,7 @@ namespace Assets.Scripts.ARClasses
             {
                 // prevede souradnice z clip space na souradnice platna
                 temp.x = (temp.x / temp.w + 1f) * .5f * calibData.Width - calibData.Width / 2;
-                temp.y = (temp.y / temp.w + 1f) * .5f * -calibData.Width + calibData.Width;
+                temp.y = (temp.y / temp.w + 1f) * .5f * -calibData.Height + calibData.Height;
                 return new Vector2(temp.x, temp.y);
             }
         }

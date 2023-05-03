@@ -117,7 +117,6 @@ namespace Assets.Scripts.ARClasses
                     matrix[count]= (float)value;
                     count++;
                 }
-                    
             }
             return matrix;
         }

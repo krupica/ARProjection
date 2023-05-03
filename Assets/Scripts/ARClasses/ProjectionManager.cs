@@ -2,6 +2,7 @@
 using Base;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.U2D;
 //using MiniJSON;
 
 
@@ -59,6 +60,10 @@ namespace Assets.Scripts.ARClasses
             projector = Instantiate(ProjectorPrefab, SceneManager.Instance.World.transform);
             //UpdateProjectorTransform();
             projector.name = "Projector";
+
+            PixelPerfectCamera cam = projector.GetComponent<PixelPerfectCamera>();
+            cam.refResolutionX = calibrationData.Width;
+            cam.refResolutionY = calibrationData.Height;
             SceneManager.Instance.CanvasScene.SetActive(true);
         }
 
