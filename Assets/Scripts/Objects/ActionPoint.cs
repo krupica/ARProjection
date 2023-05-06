@@ -34,13 +34,6 @@ namespace Assets.Scripts.ARClasses
 
         public Vector3 GetScenePosition()
         {
-
-            //Vector3 newPos = TransformConvertor.ROSToUnity(DataHelper.PositionToVector3(Data.Position));
-            //GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //sphere.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-            //sphere.transform.localPosition = newPos;
-
-
             Vector3 newPos = ProjectionCoordConversion.ROSToUnityY0(DataHelper.PositionToVector3(Data.Position));
             if (ProjectionManager.Instance.kinect != null)
             {

@@ -6,39 +6,41 @@ import requests
 import sys
 from PIL import Image
 
-def api_get_state(ip_address):  
-    url = f"http://{ip_address}:5016/state/started"
+def api_get_state(ip_address,port):
+    url = f"http://{ip_address}:{port}/state/started"
     response = requests.get(url)
     if response.status_code == 200:
         return response.content == b'true\n'
     else:
         print("chyba")
+        exit()
 
 
 #state = true to start
-def api_state_change(ip_address, state):
+def api_state_change(ip_address, port, state):
     if(state):
         newState="start"
     else:    
         newState="stop"    
-    url = f"http://{ip_address}:5016/state/{newState}"
+    url = f"http://{ip_address}:{port}/state/{newState}"
     print(url)
     response = requests.get(url)
     if response.status_code == 200:
         print("ok")
     else:
         print("chyba")
+        exit()
 
-def api_color_img(ip_address):
-    state=api_get_state(ip_address)
-    if(not state):
-        api_state_change(ip_address,True)
+def api_color_img(ip_address, port):
+    state=api_get_state(ip_address, port)
+    #if(not state):
+    #    api_state_change(ip_address, port,True)
 
 
-    url = f"http://{ip_address}:5016/color/image"
+    url = f"http://{ip_address}:{port}/color/image"
     response = requests.get(url)
-    if(not state):
-        api_state_change(ip_address,False)
+    #if(not state):
+     #   api_state_change(ip_address, port, False)
     if response.status_code == 200:
         image = Image.open(io.BytesIO(response.content))
         return image
@@ -48,8 +50,12 @@ def api_color_img(ip_address):
 
 if len(sys.argv) == 2:
     ip_address = sys.argv[1]
+elif len(sys.argv) == 3:
+    ip_address = sys.argv[1]
+    port = sys.argv[2]
 else:
-    ip_address="127.0.0.1"
+    ip_address = "127.0.0.1"
+    port = "5016"
 
 
 pygame.init()
@@ -59,7 +65,7 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 display_time = 0.6
 
 # Set up the image capture directory
-output_dir_path = "capture"
+output_dir_path = "capture_"
 if not os.path.exists(output_dir_path):
     os.makedirs(output_dir_path)
 
@@ -74,7 +80,7 @@ for filename in os.listdir(folder):
     pygame.display.flip()
     time.sleep(display_time)
 
-    result = api_color_img(ip_address)
+    result = api_color_img(ip_address, port)
     if result is None:
         print("Error calling API.")
         exit()

@@ -114,7 +114,7 @@ namespace Assets.Scripts.ARClasses
                 string curentValue = values[i].TrimEnd('.');
                 if (float.TryParse(curentValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
                 {
-                    matrix[count]= (float)value;
+                    matrix[count]= value;
                     count++;
                 }
             }

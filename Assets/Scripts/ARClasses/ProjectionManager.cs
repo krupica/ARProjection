@@ -22,6 +22,7 @@ namespace Assets.Scripts.ARClasses
         public GameObject kinect;
         public GameObject projector;
         public Camera mainCamera;
+        public float scaleModifier = 2.5f;
 
         /// <summary>
         /// Prefab for Projector

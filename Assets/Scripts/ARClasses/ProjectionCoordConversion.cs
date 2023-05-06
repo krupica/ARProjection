@@ -12,12 +12,13 @@ namespace Assets.Scripts.ARClasses
 
         public static Quaternion ROSToCanvas(Quaternion rotation)
         {
-            var test = new Quaternion(rotation.y, -rotation.x, rotation.z, rotation.w);
+            var test = new Quaternion(0, 0, rotation.z, rotation.w);
             return test;
         }
         public static Vector3 ROSToCanvasScale(Vector3 scale)
         {
-            return new Vector3(scale.y, scale.x, scale.z);
+            float scaleModifier = ProjectionManager.Instance.scaleModifier;
+            return new Vector3(scale.x * scaleModifier, scale.y * scaleModifier, scale.z * scaleModifier);
         }
 
         // inspirováno https://answers.unity.com/questions/1014337/calculation-behind-cameraworldtoscreenpoint.html
@@ -45,8 +46,10 @@ namespace Assets.Scripts.ARClasses
             else
             {
                 // prevede souradnice z clip space na souradnice platna
+                //temp = RemoveDistortion(temp);
                 temp.x = (temp.x / temp.w + 1f) * .5f * calibData.Width - calibData.Width / 2;
-                temp.y = (temp.y / temp.w + 1f) * .5f * -calibData.Height + calibData.Height;
+                temp.y = (temp.y / temp.w + 1f) * .5f * -calibData.Height + calibData.Height/2;
+                //return RemoveDistortion(temp);
                 return new Vector2(temp.x, temp.y);
             }
         }
