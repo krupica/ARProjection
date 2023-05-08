@@ -1,7 +1,7 @@
 # ARProjection
 This repository contains projected user interface based on Unity that complements the [AREditor](https://github.com/robofit/arcor2_areditor) application when working with the [ARCOR2](https://github.com/robofit/arcor2) system.
 
-## Návod k použití
+## System setup
 ### Calibration
 Calibration needs to be performed first. Proceed according to the [instructions](https://github.com/krupica/ARProjection/tree/main/Calibration).
 
