@@ -46,14 +46,11 @@ def api_color_img(ip_address, port):
         return None
 
 
-if len(sys.argv) == 2:
-    ip_address = sys.argv[1]
-elif len(sys.argv) == 3:
+if len(sys.argv) == 3:
     ip_address = sys.argv[1]
     port = sys.argv[2]
 else:
-    ip_address = "127.0.0.1"
-    port = "5016"
+    exit()
 
 
 pygame.init()

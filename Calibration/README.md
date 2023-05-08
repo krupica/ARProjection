@@ -1,5 +1,4 @@
 # procam-calibration
-
 This repository provides python scripts to calibrate projector-camera system using a chessboard and structured light (the gray codes).
 
 ## Requirement
@@ -8,6 +7,12 @@ This repository provides python scripts to calibrate projector-camera system usi
     * Python 3 is recommended
 * OpenCV
     * `python -m pip install opencv-python opencv-contrib-python`
+* pygame
+    * `pip install pygame`
+* PIL
+    * `pip install Pillow`
+* requests
+    * `pip install requests`
 * Printed chessboard
     * You can find PDF [here](http://opencv.jp/sample/pics/chesspattern_7x10.pdf)
 
@@ -31,18 +36,16 @@ If you get moire pattern in the captured images in the next step, increase this 
 ### Step 2 : Project and capture the gray code patterns
 
 Set up your system and place a chessboard in front of the projector and camera.
-Then, project the gray code patterns generated in the previous step from the projector to it and capture it from the camera.
+Run the following command.
+```sh
+python captureProjection.py <ip_address> <port>
+
+# example
+python captureProjection.py 192.168.104.100 5016
+```
+The `ip_address` and `port` must refer to the running Kinect service that is part of  ARCOR2.
 
 Although minimum required shot is one, it is recommended to capture more than 5 times with different attitudes of the chessboard to improve the calibration accuracy.
-
-Captured images must be saved as `./capture_*/graycode_*.(png/jpg)`.
-
-<table>
-   <tr>
-      <td><img src="./sample_data/capture_0/graycode_40.png"></td>
-      <td><img src="./sample_data/capture_0/graycode_15.png"></td>
-   </tr>
-</table>
 
 ### Step 3 : Calibrate projector & camera parameters
 
@@ -78,3 +81,5 @@ This algorithm is based on the following paper.
 ```
 MORENO, Daniel; TAUBIN, Gabriel. Simple, accurate, and robust projector-camera calibration. In: 3D Imaging, Modeling, Processing, Visualization and Transmission (3DIMPVT), 2012 Second International Conference on. IEEE, 2012. p. 464-471.
 ```
+
+This calibration method, including this documentation, was adopted from https://github.com/kamino410/procam-calibration and supplemented with a script for capturing the projection.
