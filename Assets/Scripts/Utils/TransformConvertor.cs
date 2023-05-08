@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This class was taken from AREditor. (https://github.com/robofit/arcor2_areditor)
 /// <summary>
 /// Converts transforms between ROS and Unity coordinate systems. Based on:
 /// https://github.com/siemens/ros-sharp/wiki/Dev_ROSUnityCoordinateSystemConversion

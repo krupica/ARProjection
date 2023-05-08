@@ -5,7 +5,7 @@ using Assets.Scripts.ARClasses;
 
 namespace Base
 {
-
+    //This class was taken from AREditor and modified for the needs of this application. (https://github.com/robofit/arcor2_areditor)
     public class ActionsManager : Singleton<ActionsManager>
     {
         private Dictionary<string, ActionObjectMetadata> actionObjectsMetadata = new Dictionary<string, ActionObjectMetadata>();

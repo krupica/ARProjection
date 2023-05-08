@@ -1,10 +1,6 @@
-//using UnityEngine.XR.ARFoundation;
 using Base;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.U2D;
-//using MiniJSON;
-
 
 namespace Assets.Scripts.ARClasses
 {
@@ -13,20 +9,22 @@ namespace Assets.Scripts.ARClasses
     /// </summary>
     public class ProjectionManager : Singleton<ProjectionManager>
     {
-        /// <summary>
-        /// Calibration
-        /// </summary>
         public CalibrationData calibrationData;
         private string calibXmlPath = "Calibration\\calibration_result.xml";
-
+        /// <summary>
+        /// /references to game objects
+        /// </summary>
         public GameObject kinect;
         public GameObject projector;
         public Camera mainCamera;
+        /// <summary>
+        /// scale of projected objects
+        /// </summary>
         public float scaleModifier = 2.5f;
 
         /// <summary>
-        /// Prefab for Projector
-        /// </summary>        
+        /// Projector Prefab to be created
+        /// </summary>
         public GameObject ProjectorPrefab;
 
         private void Start()
@@ -69,20 +67,17 @@ namespace Assets.Scripts.ARClasses
         }
 
         /// <summary>
-        /// Nastaveni pozice projektoru z kalibracnich dat.
+        /// Set projector transform based on calibration data.
         /// </summary>
         public void UpdateProjectorTransform()
         {
+            //get actual kinect transform
             GameObject actualKinect = kinect.transform.GetChild(0).gameObject;
-            //pricteni posunu k aktualni pozici kinektu
+
             projector.transform.position = actualKinect.transform.position + calibrationData.Translation;
-            //rotacni matice
             Matrix4x4 rotation = calibrationData.Rotation.inverse;
-            //prevod matice na Quaternion
             Quaternion rotationQuaternion = Quaternion.LookRotation(rotation.GetColumn(2), rotation.GetColumn(1));
-            //aplikovani rotace na rotaci kinektu
             projector.transform.rotation = actualKinect.transform.rotation * rotationQuaternion;
-            //prepocitani pozice vsech objektu
             ResetAllPositions();
         }
 

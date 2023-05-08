@@ -1,4 +1,5 @@
 #coding: UTF-8
+#This script was taken from https://github.com/kamino410/procam-calibration
 
 import os
 import os.path

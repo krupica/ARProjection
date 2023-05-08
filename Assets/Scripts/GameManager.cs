@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using IO.Swagger.Model;
 
+//This class was taken from AREditor and modified for the needs of this application. (https://github.com/robofit/arcor2_areditor)
 namespace Base
 {
     /// <summary>

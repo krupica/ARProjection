@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This class was taken from AREditor https://github.com/robofit/arcor2_areditor
 public static class DataHelper {
-    // Start is called before the first frame update
-
     public static IO.Swagger.Model.Position Vector3ToPosition(Vector3 vector) {
         return new IO.Swagger.Model.Position((decimal) vector.x, (decimal) vector.y, (decimal) vector.z);
     }

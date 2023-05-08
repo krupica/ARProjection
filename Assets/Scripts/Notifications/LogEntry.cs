@@ -1,7 +1,6 @@
 using System;
-using UnityEngine;
 
-//TODO remove
+//This class was taken from AREditor. (https://github.com/robofit/arcor2_areditor)
 public class LogEntry
 {
     private readonly string logType;

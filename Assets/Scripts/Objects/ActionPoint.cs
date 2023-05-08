@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Base;
 
+//This class was taken from AREditor and modified for the needs of this application. (https://github.com/robofit/arcor2_areditor)
 namespace Assets.Scripts.ARClasses
 {
     public class ActionPoint : MonoBehaviour {

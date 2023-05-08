@@ -7,48 +7,80 @@ namespace Assets.Scripts.ARClasses
 {
     public class CalibrationData
     {
+        /// <summary>
+        /// Projector width
+        /// </summary>
         public int Width
         {
             get { return imgShape[0]; }
         }
 
+        /// <summary>
+        /// Projector height
+        /// </summary>
         public int Height
         {
             get { return imgShape[1]; }
         }
 
+        /// <summary>
+        /// distortion coefficient
+        /// </summary>
         public float K1
         {
             get { return ProjDist[0]; }
         }
 
+        /// <summary>
+        /// distortion coefficient
+        /// </summary>
         public float K2
         {
             get { return ProjDist[1]; }
         }
 
+        /// <summary>
+        /// distortion coefficient
+        /// </summary>
         public float K3
         {
             get { return ProjDist[4]; }
         }
 
+        /// <summary>
+        /// distortion coefficient
+        /// </summary>
         public float P1
         {
             get { return ProjDist[2]; }
         }
 
+        /// <summary>
+        /// distortion coefficient
+        /// </summary>
         public float P2
         {
             get { return ProjDist[3]; }
         }
 
+        /// <summary>
+        /// Rotation from cam to projector
+        /// </summary>
         public Matrix4x4 Rotation { get; set; }
 
+        /// <summary>
+        /// translation from cam to projector
+        /// </summary>
         public Vector3 Translation { get; private set; }
 
+        /// <summary>
+        /// projector intrinsic/internal matrix
+        /// </summary>
         public Matrix4x4 ProjInt { get; private set; }
 
-        //k1,k2,p1,p2,k3
+        /// <summary>
+        /// distortion coefficients k1,k2,p1,p2,k3
+        /// </summary>
         private List<float> ProjDist { get; set; }
 
         private int[] imgShape;
@@ -94,7 +126,7 @@ namespace Assets.Scripts.ARClasses
                 translationData[2],
                 translationData[1]
             );
-            Translation = Translation * 0.001f;
+            Translation *= 0.001f;
 
             ProjDist = new List<float>(proj_distData);
             for( int i = 0; i < proj_distData.Length; i++)
@@ -110,7 +142,7 @@ namespace Assets.Scripts.ARClasses
             float[] matrix = new float[values.Length-1];
             for (int i = 0; i < values.Length; i++)
             {
-                //převzato z https://stackoverflow.com/questions/64639/convert-from-scientific-notation-string-to-float-in-c-sharp
+                //inspired by https://stackoverflow.com/questions/64639/convert-from-scientific-notation-string-to-float-in-c-sharp
                 string curentValue = values[i].TrimEnd('.');
                 if (float.TryParse(curentValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
                 {

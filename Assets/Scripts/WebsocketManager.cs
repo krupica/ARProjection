@@ -9,6 +9,7 @@ using NativeWebSocket;
 using IO.Swagger.Model;
 using UnityEngine.Events;
 
+//This class was taken from AREditor https://github.com/robofit/arcor2_areditor
 namespace Base
 {
     public class WebsocketManager : Singleton<WebsocketManager> {

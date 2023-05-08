@@ -1,15 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Threading.Tasks;
-using System;
-
 using IO.Swagger.Model;
 using System.Linq;
 using Assets.Scripts.ARClasses;
 using ActionPoint = Assets.Scripts.ARClasses.ActionPoint;
 
-namespace Base {
+//This class was taken from AREditor and modified for the needs of this application. (https://github.com/robofit/arcor2_areditor)
+namespace Base
+{
     /// <summary>
     /// Takes care of currently opened project. Provides methods for manipuation with project.
     /// </summary>

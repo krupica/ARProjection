@@ -3,6 +3,7 @@ using IO.Swagger.Model;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
+//This class was taken from AREditor. (https://github.com/robofit/arcor2_areditor)
 namespace Base {
     public class ActionObjectMetadata : ObjectTypeMeta {
 

@@ -4,6 +4,7 @@ using IO.Swagger.Model;
 using UnityEngine;
 using ActionPoint = Assets.Scripts.ARClasses.ActionPoint;
 
+//This class was taken from AREditor. (https://github.com/robofit/arcor2_areditor)
 namespace Base {
 
     public class StringEventArgs : EventArgs {

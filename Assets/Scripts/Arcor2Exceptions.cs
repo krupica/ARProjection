@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+//This class was taken from AREditor. (https://github.com/robofit/arcor2_areditor)
 namespace Base {
     public class RequestFailedException : Exception {
         public RequestFailedException() : base() { }
@@ -17,6 +18,4 @@ namespace Base {
         public ItemNotFoundException(List<string> messages) : base(messages.Count > 0 ? messages[0] : "") { }
         public ItemNotFoundException(string message, Exception inner) : base(message, inner) { }
     }
-
-
 }

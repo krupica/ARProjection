@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This class was taken from AREditor and modified for the needs of this application. (https://github.com/robofit/arcor2_areditor)
 namespace Base {
     public abstract class Notifications : Singleton<Notifications> {
         public abstract void SaveLogs(IO.Swagger.Model.Scene scene, IO.Swagger.Model.Project project, string customNotificationTitle = "");
@@ -15,5 +16,4 @@ namespace Base {
             //ToastMessage.Instance.ShowMessage(message, timeout);
         }
     }
-
 }

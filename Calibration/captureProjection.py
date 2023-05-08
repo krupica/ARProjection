@@ -15,7 +15,6 @@ def api_get_state(ip_address,port):
         print("chyba")
         exit()
 
-
 #state = true to start
 def api_state_change(ip_address, port, state):
     if(state):
@@ -45,13 +44,11 @@ def api_color_img(ip_address, port):
     else:
         return None
 
-
 if len(sys.argv) == 3:
     ip_address = sys.argv[1]
     port = sys.argv[2]
 else:
     exit()
-
 
 pygame.init()
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

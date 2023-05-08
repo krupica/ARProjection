@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System;
 using Base;
 
+//This class was taken from AREditor and modified for the needs of this application. (https://github.com/robofit/arcor2_areditor)
 public class LandingScreen : Base.Singleton<LandingScreen>
 {
     public TMPro.TMP_InputField Domain, Port;

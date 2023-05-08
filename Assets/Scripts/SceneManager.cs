@@ -5,6 +5,7 @@ using Assets.Scripts.ARClasses;
 using IO.Swagger.Model;
 using UnityEngine;
 
+//This class was taken from AREditor and modified for the needs of this application. (https://github.com/robofit/arcor2_areditor)
 namespace Base
 {
     /// <summary>

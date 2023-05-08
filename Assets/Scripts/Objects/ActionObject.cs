@@ -5,6 +5,7 @@ using Base;
 using UnityEngine.UI;
 using System;
 
+//This class was taken from AREditor and modified for the needs of this application. (https://github.com/robofit/arcor2_areditor)
 namespace Assets.Scripts.ARClasses
 {
     public class ActionObject : MonoBehaviour {

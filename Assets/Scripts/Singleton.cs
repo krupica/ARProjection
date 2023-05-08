@@ -5,6 +5,7 @@ using UnityEngine;
 /// e.g. public class MyClassName : Singleton<MyClassName> {}
 /// </summary>
 
+//This class was taken from AREditor https://github.com/robofit/arcor2_areditor
 namespace Base {
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour {
         // Check to see if we're about to be destroyed.
