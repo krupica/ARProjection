@@ -46,10 +46,10 @@ namespace Assets.Scripts.ARClasses
 
         public Vector3 Translation { get; private set; }
 
-        //k1,k2,p1,p2,k3
-        public List<float> ProjDist {  get; private set; }
-
         public Matrix4x4 ProjInt { get; private set; }
+
+        //k1,k2,p1,p2,k3
+        private List<float> ProjDist { get; set; }
 
         private int[] imgShape;
 

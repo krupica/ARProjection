@@ -28,7 +28,6 @@ namespace Assets.Scripts.ARClasses
             CalibrationData calibData = ProjectionManager.Instance.calibrationData;
             Matrix4x4 projIntrinsic = calibData.ProjInt;
             GameObject projector = ProjectionManager.Instance.projector;
-            Camera cam = ProjectionManager.Instance.projector.GetComponent<Camera>();
             //prevod do souradnicoveho systemu projektoru
             Matrix4x4 worldToCam = projector.transform.worldToLocalMatrix;
 

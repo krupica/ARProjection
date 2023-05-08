@@ -35,8 +35,6 @@ def api_color_img(ip_address, port):
     state=api_get_state(ip_address, port)
     #if(not state):
     #    api_state_change(ip_address, port,True)
-
-
     url = f"http://{ip_address}:{port}/color/image"
     response = requests.get(url)
     #if(not state):
@@ -59,17 +57,20 @@ else:
 
 
 pygame.init()
-# Set display mode to fullscreen
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 # Set display time per image in seconds
 display_time = 0.6
 
-# Set up the image capture directory
 output_dir_path = "capture_"
-if not os.path.exists(output_dir_path):
-    os.makedirs(output_dir_path)
+j = 1
+
+while os.path.exists(f"{output_dir_path}{j}"):
+    j += 1
+output_dir_path+=str(j)
+os.makedirs(output_dir_path)
 
 folder = "graycode_pattern"
+
 i=0
 for filename in os.listdir(folder):
     input_file_path = os.path.join(folder, filename)
@@ -90,5 +91,4 @@ for filename in os.listdir(folder):
     result.save(output_file_path)
     i+=1       
     
-# Quit Pygame
 pygame.quit()
