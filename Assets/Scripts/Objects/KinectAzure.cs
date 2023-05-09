@@ -14,7 +14,6 @@ public class KinectAzure : ActionObject
         base.ActionObjectUpdate(actionObjectSwagger);
         ResetPosition();
         ProjectionManager.Instance.UpdateProjectorTransform();
-
     }
 
     public override void DeleteActionObject()

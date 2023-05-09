@@ -11,12 +11,14 @@ namespace Assets.Scripts.ARClasses
     {
         public CalibrationData calibrationData;
         private string calibXmlPath = "Calibration\\calibration_result.xml";
+
         /// <summary>
         /// /references to game objects
         /// </summary>
         public GameObject kinect;
         public GameObject projector;
         public Camera mainCamera;
+
         /// <summary>
         /// scale of projected objects
         /// </summary>
